@@ -33,5 +33,40 @@
     "blocks_before": 0,
     "decision": "allow",
     "why": "clean"
+  },
+  {
+    "at": "2026-11-08T18:06:46Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 52957,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "SY-03",
+    "role": "afs-bootstrapper",
+    "changed": [
+      ".migration/capabilities.yaml",
+      ".migration/characterization/source/characterize.py",
+      ".migration/characterization/source/goldens/browser.json",
+      ".migration/characterization/source/goldens/http.json",
+      ".migration/costs/a866d4d5-3c8d-47d6-973a-9df8d3b1a816.json",
+      ".migration/evidence/runs/SY-03.md",
+      ".migration/evidence/source-coverage-SY-03.md",
+      ".migration/evidence/source-crap-risk-map-SY-03.md",
+      ".migration/returns/SY-03.afs-bootstrapper.yaml",
+      "requirements-dev.txt",
+      "tests/test_ui_smoke.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
   }
 ]
