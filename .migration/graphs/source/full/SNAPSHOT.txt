@@ -1,0 +1,6 @@
+side: source
+scope: full
+source: martins-vds/ai-factory-synthetic-target@563c316ed51462b08fd6e58f3781a3c8b2890453
+source_sha: 563c316ed51462b08fd6e58f3781a3c8b2890453
+understand_anything: 4e6d3299017a7432da15957874992837a315c5b4
+run: https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42502043195
