@@ -1,0 +1,11 @@
+role: afs-bootstrapper
+ticket: SY-01C
+issue: "martins-vds/ai-factory-synthetic-target#6"
+characterization_tier: C
+tier_evidence: "The pinned legacy-reports tree contains only Markdown specifications and CSV/plain-text report samples; it has no source implementation, build/test configuration, executable, or runnable legacy environment."
+tier_b_attempt: "no code: only Markdown specifications, a CSV report sample, and a plain-text notice sample"
+capabilities:
+  met: 0
+  gap: 5
+  waived: 0
+  not_applicable: 9
