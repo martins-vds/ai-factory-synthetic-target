@@ -1,0 +1,156 @@
+{
+  "GET /fees/L1 before return": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/fees/L1"
+    },
+    "response": {
+      "body": "<h1>Late fee for L1</h1><p>Due 2026-01-16, 296 day(s) late.</p><p class=\"fee\">Fee: $10.00</p>",
+      "content_type": "text/html",
+      "status": 200
+    }
+  },
+  "GET /fees/L2 early return": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/fees/L2"
+    },
+    "response": {
+      "body": "<h1>Late fee for L2</h1><p>Due 2026-01-24, 0 day(s) late.</p><p class=\"fee\">Fee: $0.00</p>",
+      "content_type": "text/html",
+      "status": 200
+    }
+  },
+  "GET /fees/unknown": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/fees/unknown"
+    },
+    "response": {
+      "body": "<p>No such loan.</p>",
+      "content_type": "text/html",
+      "status": 404
+    }
+  },
+  "GET /loans after writes": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\nL2;bo;9780596007126;2026-01-10;2026-01-24;2026-11-08\nL3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\nL4;dee;123;2026-11-08;2026-11-22;\nL5;;;2026-11-08;2026-11-22;\nL6;a;b;123;456;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /loans/L5": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans/L5"
+    },
+    "response": {
+      "body": "L5;;;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /loans/unknown": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans/unknown"
+    },
+    "response": {
+      "body": "no such loan\n",
+      "content_type": "text/plain",
+      "status": 404
+    }
+  },
+  "POST /loans/L2/return again": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/loans/L2/return"
+    },
+    "response": {
+      "body": "L2;bo;9780596007126;2026-01-10;2026-01-24;2026-11-08\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /loans/blank-fields": {
+    "request": {
+      "form": {
+        "isbn": "",
+        "member": ""
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L5;;;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /loans/delimiter-fields": {
+    "request": {
+      "form": {
+        "isbn": "123;456",
+        "member": "a;b"
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L6;a;b;123;456;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /loans/missing-isbn": {
+    "request": {
+      "form": {
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /loans/missing-member": {
+    "request": {
+      "form": {
+        "isbn": "456"
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /payments/unknown": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/payments/unknown"
+    },
+    "response": {
+      "body": "no such loan\n",
+      "content_type": "text/plain",
+      "status": 404
+    }
+  }
+}

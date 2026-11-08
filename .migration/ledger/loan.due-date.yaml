@@ -8,4 +8,6 @@ source:
 boundary: "Every loan is due 14 calendar days after its lentOn date; the due date is included in loan text output and late-fee calculation."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: pending
+verification: characterized
+characterization_tier: A
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]

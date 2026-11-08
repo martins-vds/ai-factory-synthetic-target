@@ -9,6 +9,8 @@ source:
 boundary: "POST /payments/{id} first requires an existing loan, then POSTs /charge?loan={id} to PAYMENT_GATEWAY_URL or the configured default; gateway HTTP 200 is returned as 200, other responses and I/O/interruption failures become 502."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: pending
+verification: characterized
+characterization_tier: A
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/gateway.json]
 notes: "The source swallows InterruptedException while returning 502; human decision draft: martins-vds/ai-factory-synthetic-target#40."
 quirks: [martins-vds/ai-factory-synthetic-target#40]
