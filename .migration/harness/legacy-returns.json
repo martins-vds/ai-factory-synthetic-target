@@ -1,0 +1,8 @@
+{
+  "rule": "ADR-0017",
+  "returns": [
+    "SY-01.afs-bootstrapper.yaml",
+    "SY-01B2.afs-bootstrapper.yaml",
+    "SY-01C.afs-bootstrapper.yaml"
+  ]
+}

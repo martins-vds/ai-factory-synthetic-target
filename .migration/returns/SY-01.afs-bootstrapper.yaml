@@ -1,7 +1,7 @@
 role: afs-bootstrapper
 ticket: SY-01
 issue: martins-vds/ai-factory-synthetic-target#3
-setup_pr: null
+setup_pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/22
 characterization_tier: A
 tier_evidence: "Pinned legacy tree built and ran with ./run.sh; /loans, /fees/L3, /payments/L3, /about, and loan-creation POST returned HTTP 200, 200, 502, 200, and 201."
 capabilities:

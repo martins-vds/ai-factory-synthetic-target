@@ -48,6 +48,10 @@ install.
    patches, `graph.enrich` and `graph.require` (copy the stack pack's `graph` block; bootstrap refuses a
    profile without them), risk-map exclusions (vendored/minified/generated code), stack skills, gate commands,
    thresholds (defaults unless the operator says otherwise), concurrency, context budgets, RTK edition.
+   **With a data stack, write the test services now** (the Test services paragraph of step 6): the profile's
+   `services` is required when `target.stacks.data` is set, and it must name a `compose.yaml` that exists.
+   Every CI job and Copilot setup step starts those services, so bootstrap refuses to install a profile
+   whose compose file is missing (the setup PR would fail every check).
 5. **Install** (in a session that may write `.github/`; the Copilot coding agent may not change
    `.github/agents/`, so there you stop after steps 1–4, commit the profile and checklist, and hand off: the
    dispatcher runs this step) with the harness's `tools/bootstrap.py` (from a harness checkout at the release being
@@ -59,7 +63,7 @@ install.
    `afs-harness-check.yml` CI. Never hand-edit those files; re-run bootstrap.
 6. **Scaffold the target** per the architecture ADRs: layout, CI running the gates, lint/format, test
    runner, coverage, CRAP and mutation tooling, containers.
-   **Test services:** write the target's `compose.yaml` with `docker-compose-orchestration` (images with
+   **Test services** (written in step 4 when there is a data stack): write the target's `compose.yaml` with `docker-compose-orchestration` (images with
    `docker-expert`, Dockerfiles with `multi-stage-dockerfile`; never by hand). It defines every real
    service the tests need — the database from `target.stacks.data`, brokers, stand-ins for external
    systems — each with a healthcheck, with credentials that match the target's default settings, and
@@ -68,6 +72,10 @@ install.
    pass and the test gate runs against it. Copilot setup steps and the CI gates start these services, so
    agents never test against mocks where a real service exists. A later slice that needs a new service
    adds it to the same file.
+   The setup PR must be complete when it's opened (profile, checklist, test services) and is merged
+   before any Copilot session runs: Copilot's setup steps come from the default branch only, but a
+   branch's hooks are live, so a session based on the unmerged setup branch has no RTK and the RTK
+   pre-tool hook blocks every tool call. Fix a setup PR from the dispatcher's clone, never by a session.
 7. **Graph first (ADR-0020).** Once the setup PR is merged, the dispatcher runs the afs-understand
    workflow with `side=source` on `main` and merges its PR. It builds, enriches and stamps the full source
    graph. `python .migration/harness/tools/graph_gate.py --side source --require-graph` must pass before

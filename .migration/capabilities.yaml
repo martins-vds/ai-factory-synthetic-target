@@ -1,102 +1,116 @@
+# Capability checklist (ADR-0012), written by bootstrap. A gap blocks Phase 2 until its ticket is resolved.
 harness_version: 0.2.0
-checked_at: "2026-11-08T04:51:00Z"
+checked_at: '2026-11-08T16:50:38Z'
 characterization:
   legacy_environment: available
-  source_builds: "yes"
+  source_builds: 'yes'
   tier: A
-  reason: "The pinned legacy source builds and runs; HTTP endpoint probes returned the expected responses (see references/characterization.md)."
+  reason: The pinned legacy source builds and runs; HTTP endpoint probes returned the expected responses (see references/characterization.md).
 capabilities:
-  - id: build-run
-    applies_to: source
-    status: met
-    provided_by:
-      - { kind: tool, name: "legacy/run.sh (Maven, Java 17)" }
-    notes: "Built and started successfully from the pinned legacy tree."
-  - id: build-run
-    applies_to: target
-    status: gap
-    ticket: new
-    notes: "The Django target and its build gate are not scaffolded yet."
-  - id: characterization-harness
-    applies_to: source
-    status: gap
-    ticket: new
-    notes: "The application is runnable, but the source has no characterization test harness or tests."
-  - id: unit-integration-tests
-    applies_to: both
-    status: gap
-    ticket: new
-    notes: "The source has no tests and the target test runner has not yet been scaffolded."
-  - id: coverage
-    applies_to: source
-    status: gap
-    best_effort: true
-    ticket: new
-    notes: "No source coverage instrumentation or tests are configured; source coverage is best-effort."
-  - id: coverage
-    applies_to: target
-    status: gap
-    ticket: new
-    notes: "Target coverage dependencies and test infrastructure are not scaffolded yet."
-  - id: complexity
-    applies_to: both
-    status: met
-    provided_by:
-      - { kind: tool, name: lizard }
-    notes: "The pinned bootstrap installs lizard."
-  - id: crap
-    applies_to: source
-    status: gap
-    best_effort: true
-    ticket: new
-    notes: "No source coverage data exists for CRAP analysis; source CRAP is best-effort."
-  - id: crap
-    applies_to: target
-    status: gap
-    ticket: new
-    notes: "Target coverage and test infrastructure are not scaffolded yet."
-  - id: mutation-testing
-    applies_to: both
-    status: gap
-    ticket: new
-    notes: "No source or target mutation-testing runner is currently configured."
-  - id: lint-format
-    applies_to: both
-    status: gap
-    ticket: new
-    notes: "Neither source nor target has a configured lint/format gate."
-  - id: stack-idioms
-    applies_to: both
-    status: met
-    provided_by:
-      - { kind: skill, name: java-docs }
-      - { kind: skill, name: java-junit }
-      - { kind: skill, name: django-patterns }
-      - { kind: skill, name: django-security }
-      - { kind: skill, name: django-tdd }
-      - { kind: skill, name: django-verification }
-  - id: data-migration
-    applies_to: both
-    status: gap
-    ticket: new
-    notes: "The source uses H2; the stack pack's database migration skills cover Oracle-to-PostgreSQL, not H2-to-PostgreSQL."
-  - id: ui-end-to-end
-    applies_to: both
-    status: gap
-    ticket: new
-    notes: "No repeatable browser end-to-end test runner is configured."
-  - id: code-graph
-    applies_to: both
-    status: met
-    provided_by:
-      - { kind: tool, name: understand-anything, version: "4e6d3299017a7432da15957874992837a315c5b4" }
-  - id: graph-data-links
-    applies_to: both
-    status: met
-    provided_by:
-      - { kind: tool, name: "enrich_graph.py (java-ee, django)" }
-  - id: output-filtering
-    applies_to: both
-    status: met
-    provided_by:
-      - { kind: tool, name: rtk-oss, version: "1.1.0" }
+- id: build-run
+  applies_to: source
+  status: met
+  provided_by:
+  - kind: tool
+    name: legacy/run.sh (Maven, Java 17)
+  notes: Built and started successfully from the pinned legacy tree.
+- id: build-run
+  applies_to: target
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#11
+  notes: The Django target and its build gate are not scaffolded yet.
+- id: characterization-harness
+  applies_to: source
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#12
+  notes: The application is runnable, but the source has no characterization test harness or tests.
+- id: unit-integration-tests
+  applies_to: both
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#13
+  notes: The source has no tests and the target test runner has not yet been scaffolded.
+- id: coverage
+  applies_to: source
+  status: gap
+  best_effort: true
+  ticket: martins-vds/ai-factory-synthetic-target#14
+  notes: No source coverage instrumentation or tests are configured; source coverage is best-effort.
+- id: coverage
+  applies_to: target
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#15
+  notes: Target coverage dependencies and test infrastructure are not scaffolded yet.
+- id: complexity
+  applies_to: both
+  status: met
+  provided_by:
+  - kind: tool
+    name: lizard
+  notes: The pinned bootstrap installs lizard.
+- id: crap
+  applies_to: source
+  status: gap
+  best_effort: true
+  ticket: martins-vds/ai-factory-synthetic-target#16
+  notes: No source coverage data exists for CRAP analysis; source CRAP is best-effort.
+- id: crap
+  applies_to: target
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#17
+  notes: Target coverage and test infrastructure are not scaffolded yet.
+- id: mutation-testing
+  applies_to: both
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#18
+  notes: No source or target mutation-testing runner is currently configured.
+- id: lint-format
+  applies_to: both
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#19
+  notes: Neither source nor target has a configured lint/format gate.
+- id: stack-idioms
+  applies_to: both
+  status: met
+  provided_by:
+  - kind: skill
+    name: java-docs
+  - kind: skill
+    name: java-junit
+  - kind: skill
+    name: django-patterns
+  - kind: skill
+    name: django-security
+  - kind: skill
+    name: django-tdd
+  - kind: skill
+    name: django-verification
+- id: data-migration
+  applies_to: both
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#20
+  notes: The source uses H2; the stack pack's database migration skills cover Oracle-to-PostgreSQL, not H2-to-PostgreSQL.
+- id: ui-end-to-end
+  applies_to: both
+  status: gap
+  ticket: martins-vds/ai-factory-synthetic-target#21
+  notes: No repeatable browser end-to-end test runner is configured.
+- id: code-graph
+  applies_to: both
+  status: met
+  provided_by:
+  - kind: tool
+    name: understand-anything
+    version: 4e6d3299017a7432da15957874992837a315c5b4
+- id: graph-data-links
+  applies_to: both
+  status: met
+  provided_by:
+  - kind: tool
+    name: enrich_graph.py (java-ee, django)
+- id: output-filtering
+  applies_to: both
+  status: met
+  provided_by:
+  - kind: tool
+    name: rtk-oss
+    version: 1.1.0

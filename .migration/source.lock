@@ -1,3 +1,4 @@
+# Pinned, read-only migration source. Written by bootstrap; change only through a new setup PR.
 repo: martins-vds/ai-factory-synthetic-target
 sha: 563c316ed51462b08fd6e58f3781a3c8b2890453
 path: legacy

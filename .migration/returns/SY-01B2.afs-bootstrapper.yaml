@@ -10,3 +10,6 @@ capabilities:
   not_applicable: 1
 evidence: /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/references/characterization-legacy-billing.md
 handoff: /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/handoffs/SY-01B2.md
+setup_pr: null
+gap_tickets: []
+validation: "n/a: the harness was not installed on this repository when this session ran; added by the dispatcher at install"
