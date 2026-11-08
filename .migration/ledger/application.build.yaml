@@ -1,0 +1,11 @@
+id: application.build
+kind: structural
+title: Build and launch the Lending Library
+source:
+  graph_node: file:legacy/run.sh
+  location: legacy/run.sh:1-6
+boundary: "The packaged Java 17 application is built with Maven, dependency jars are copied at package time, and run.sh launches lib.App."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "The source has no src/test tree or legacy test suite."

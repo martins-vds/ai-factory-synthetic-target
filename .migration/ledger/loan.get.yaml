@@ -1,0 +1,11 @@
+id: loan.get
+kind: behavioral
+title: Retrieve one loan
+source:
+  graph_node: endpoint:legacy/src/main/java/lib/LoanResource.java:GET /loans/{id}
+  location: legacy/src/main/java/lib/LoanResource.java:30-35
+  risk: {crap: 1, complexity: 1, coverage: 1.0}
+boundary: "GET /loans/{id} returns the formatted loan line and newline with HTTP 200, or HTTP 404 with `no such loan` and a newline when the id is absent."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending

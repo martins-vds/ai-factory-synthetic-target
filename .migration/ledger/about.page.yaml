@@ -1,0 +1,12 @@
+id: about.page
+kind: ui
+title: Serve the public About page
+source:
+  graph_node: page:legacy/src/main/resources/static/about.html:legacy/src/main/resources/static/about.html
+  flow: View About Page
+  location: legacy/src/main/resources/static/about.html:1-9
+  risk: {crap: 1, complexity: 1, coverage: 1.0}
+boundary: "GET /about serves the packaged static HTML page with the library name, Monday–Saturday opening hours, 14-day lending period, and contact address."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending

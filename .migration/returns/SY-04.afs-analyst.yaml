@@ -1,0 +1,34 @@
+role: afs-analyst
+ticket: SY-04
+issue: martins-vds/ai-factory-synthetic-target#35
+graphs:
+  knowledge: .migration/graphs/source/full/knowledge-graph.json
+  domain: .migration/graphs/source/full/domain-graph.json
+  nodes: 86
+  edges: 119
+  flows: 6
+ledger:
+  entries: 17
+  by_kind:
+    structural: 3
+    behavioral: 9
+    ui: 2
+    integration: 1
+    data: 2
+risk_map:
+  path: .migration/risk-map/SY-04.md
+  methods: 19
+  above_threshold: 0
+  hot_spots:
+    - "LateFeeView.page (CCN 4, complexity-only CRAP 20)"
+    - "FinePayments.pay (CCN 4, complexity-only CRAP 20)"
+    - "LoanResource.lend (CCN 3, complexity-only CRAP 12)"
+    - "LoanRepository.markReturned (CCN 2, complexity-only CRAP 6)"
+    - "LoanRepository.write (CCN 2, complexity-only CRAP 6)"
+quirk_tickets:
+  - .migration/quirks/blank-loan-fields.md
+  - .migration/quirks/restart-data-loss.md
+  - .migration/quirks/repeated-loan-return.md
+  - .migration/quirks/unescaped-loan-export.md
+  - .migration/quirks/payment-interrupt.md
+graph_discrepancies: []
