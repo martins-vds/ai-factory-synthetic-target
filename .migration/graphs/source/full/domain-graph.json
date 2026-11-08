@@ -1,0 +1,608 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "lending-library",
+    "languages": [
+      "java",
+      "shell",
+      "sql",
+      "html",
+      "xml",
+      "markdown"
+    ],
+    "frameworks": [
+      "Jersey",
+      "Hibernate",
+      "Maven"
+    ],
+    "description": "Library lending app: lending books, late fees and payments, and public info.",
+    "analyzedAt": "2026-11-08T17:23:45.202Z",
+    "gitCommitHash": "563c316ed51462b08fd6e58f3781a3c8b2890453",
+    "analyzedCommit": "a07cf65063a2134c24572af95f9d494efbc9a1d4"
+  },
+  "nodes": [
+    {
+      "id": "domain:lending",
+      "type": "domain",
+      "name": "Book Lending",
+      "summary": "Tracks books lent to members and returned, with a 14-day lending period.",
+      "tags": [
+        "lending",
+        "loans"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Member",
+          "ISBN"
+        ],
+        "businessRules": [
+          "Loan is due 14 days after lending",
+          "Returning records returnedOn date"
+        ],
+        "crossDomainInteractions": [
+          "Late fees are computed from loans"
+        ]
+      }
+    },
+    {
+      "id": "domain:late-fees",
+      "type": "domain",
+      "name": "Late Fees & Payments",
+      "summary": "Computes late fees on overdue loans and collects them via an external payment gateway.",
+      "tags": [
+        "fees",
+        "payments"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Late fee",
+          "Payment"
+        ],
+        "businessRules": [
+          "25 cents/day late, capped at $10",
+          "Waived up to 2 days late"
+        ],
+        "crossDomainInteractions": [
+          "Reads loans from Book Lending",
+          "Calls external payment gateway"
+        ]
+      }
+    },
+    {
+      "id": "domain:library-info",
+      "type": "domain",
+      "name": "Library Information",
+      "summary": "Serves static public information such as opening hours and lending policy.",
+      "tags": [
+        "static",
+        "info"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "About page"
+        ],
+        "businessRules": [],
+        "crossDomainInteractions": []
+      }
+    },
+    {
+      "id": "flow:list-loans",
+      "type": "flow",
+      "name": "List Loans",
+      "summary": "Returns all loans as semicolon-separated lines (CSV export for spreadsheets).",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:list-loans:receive-list-request",
+      "type": "step",
+      "name": "Receive list request",
+      "summary": "Jersey routes GET /loans to LoanResource.list.",
+      "tags": [
+        "list-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "lineRange": [
+        25,
+        28
+      ]
+    },
+    {
+      "id": "step:list-loans:read-all-loans",
+      "type": "step",
+      "name": "Read all loans",
+      "summary": "Repository reads all Loan entities in a read transaction.",
+      "tags": [
+        "list-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "lineRange": [
+        19,
+        21
+      ]
+    },
+    {
+      "id": "step:list-loans:format-as-csv-lines",
+      "type": "step",
+      "name": "Format as CSV lines",
+      "summary": "Each loan is formatted as a semicolon-separated line.",
+      "tags": [
+        "list-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "flow:lend-book",
+      "type": "flow",
+      "name": "Lend Book",
+      "summary": "Creates a loan of a book to a member dated today.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /loans",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:lend-book:receive-member-and-isbn",
+      "type": "step",
+      "name": "Receive member and ISBN",
+      "summary": "Form params member and isbn are read.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "lineRange": [
+        37,
+        38
+      ]
+    },
+    {
+      "id": "step:lend-book:create-loan",
+      "type": "step",
+      "name": "Create loan",
+      "summary": "Repository persists a new Loan in a write transaction.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "lineRange": [
+        27,
+        34
+      ]
+    },
+    {
+      "id": "step:lend-book:return-created-loan",
+      "type": "step",
+      "name": "Return created loan",
+      "summary": "Response returns the new loan line.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "flow:return-book",
+      "type": "flow",
+      "name": "Return Book",
+      "summary": "Marks a loan as returned.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /loans/{id}/return",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:return-book:receive-return-request",
+      "type": "step",
+      "name": "Receive return request",
+      "summary": "Loan id taken from path.",
+      "tags": [
+        "return-book"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "lineRange": [
+        45,
+        47
+      ]
+    },
+    {
+      "id": "step:return-book:mark-loan-returned",
+      "type": "step",
+      "name": "Mark loan returned",
+      "summary": "Repository finds loan and records returnedOn.",
+      "tags": [
+        "return-book"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "lineRange": [
+        36,
+        43
+      ]
+    },
+    {
+      "id": "step:return-book:respond-with-outcome",
+      "type": "step",
+      "name": "Respond with outcome",
+      "summary": "Returns the updated loan or 404 if unknown.",
+      "tags": [
+        "return-book"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "flow:view-late-fee",
+      "type": "flow",
+      "name": "View Late Fee",
+      "summary": "Shows an HTML page with the late fee for a loan.",
+      "tags": [
+        "late-fees"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "GET /fees/{id}",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:view-late-fee:find-loan",
+      "type": "step",
+      "name": "Find loan",
+      "summary": "Looks up the loan; 404 if missing.",
+      "tags": [
+        "view-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "lineRange": [
+        26,
+        38
+      ]
+    },
+    {
+      "id": "step:view-late-fee:compute-days-late",
+      "type": "step",
+      "name": "Compute days late",
+      "summary": "Days past the due date are calculated.",
+      "tags": [
+        "view-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "lineRange": [
+        26,
+        38
+      ]
+    },
+    {
+      "id": "step:view-late-fee:apply-fee-rules",
+      "type": "step",
+      "name": "Apply fee rules",
+      "summary": "25c/day, capped at $10, waived up to 2 days late.",
+      "tags": [
+        "view-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "lineRange": [
+        26,
+        38
+      ]
+    },
+    {
+      "id": "step:view-late-fee:render-html-fragment",
+      "type": "step",
+      "name": "Render HTML fragment",
+      "summary": "Fee is rendered as HTML.",
+      "tags": [
+        "view-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "lineRange": [
+        26,
+        38
+      ]
+    },
+    {
+      "id": "flow:pay-late-fee",
+      "type": "flow",
+      "name": "Pay Late Fee",
+      "summary": "Charges a loan's late fee through the external payment gateway.",
+      "tags": [
+        "late-fees"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /payments/{id}",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:pay-late-fee:verify-loan-exists",
+      "type": "step",
+      "name": "Verify loan exists",
+      "summary": "Loan is looked up before charging.",
+      "tags": [
+        "pay-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "lineRange": [
+        29,
+        41
+      ]
+    },
+    {
+      "id": "step:pay-late-fee:call-payment-gateway",
+      "type": "step",
+      "name": "Call payment gateway",
+      "summary": "POSTs to PAYMENT_GATEWAY_URL.",
+      "tags": [
+        "pay-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "lineRange": [
+        29,
+        41
+      ]
+    },
+    {
+      "id": "step:pay-late-fee:map-gateway-response",
+      "type": "step",
+      "name": "Map gateway response",
+      "summary": "Returns 200 on success or 502 on gateway failure.",
+      "tags": [
+        "pay-late-fee"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "lineRange": [
+        29,
+        41
+      ]
+    },
+    {
+      "id": "flow:view-about-page",
+      "type": "flow",
+      "name": "View About Page",
+      "summary": "Serves the static About page.",
+      "tags": [
+        "library-info"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /about",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:view-about-page:receive-about-request",
+      "type": "step",
+      "name": "Receive about request",
+      "summary": "Jersey routes GET /about to AboutPage.",
+      "tags": [
+        "view-about-page"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java"
+    },
+    {
+      "id": "step:view-about-page:load-static-page",
+      "type": "step",
+      "name": "Load static page",
+      "summary": "about.html is read from the classpath.",
+      "tags": [
+        "view-about-page"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/resources/static/about.html"
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:lending",
+      "target": "flow:list-loans",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:list-loans",
+      "target": "step:list-loans:receive-list-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:list-loans",
+      "target": "step:list-loans:read-all-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:list-loans",
+      "target": "step:list-loans:format-as-csv-lines",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:lending",
+      "target": "flow:lend-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:receive-member-and-isbn",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:create-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:return-created-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:lending",
+      "target": "flow:return-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:receive-return-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:mark-loan-returned",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:respond-with-outcome",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:late-fees",
+      "target": "flow:view-late-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:find-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:compute-days-late",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:apply-fee-rules",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:render-html-fragment",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:late-fees",
+      "target": "flow:pay-late-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:verify-loan-exists",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:call-payment-gateway",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:map-gateway-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:library-info",
+      "target": "flow:view-about-page",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:view-about-page",
+      "target": "step:view-about-page:receive-about-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-about-page",
+      "target": "step:view-about-page:load-static-page",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:late-fees",
+      "target": "domain:lending",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Fees are computed from loan due dates",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}
