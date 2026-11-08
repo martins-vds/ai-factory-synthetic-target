@@ -28,8 +28,8 @@ capabilities:
   provided_by:
   - kind: tool
     name: .migration/characterization/source/characterize.py and HTTP/browser golden files
-  notes: 'All 7 source graph endpoints, 12 edge cases, 2 browser pages, restart reset and payment-gateway mappings are captured.
-    Evidence: .migration/evidence/runs/SY-05.md (source-characterization-record, source-characterization-verify).'
+  notes: 'All 7 source graph endpoints, 12 edge cases, 2 browser pages, restart reset and payment-gateway mappings
+    are captured. Evidence: .migration/evidence/runs/SY-05.md (source-characterization-record, source-characterization-verify).'
 - id: unit-integration-tests
   applies_to: target
   status: met
@@ -46,8 +46,9 @@ capabilities:
   - kind: tool
     name: JaCoCo agent and Maven report
     version: 0.8.13
-  notes: 'No legacy test sources were found; tier-A characterization covered 93/98 lines, 497/513 instructions and 18/20 branches.
-    Evidence: .migration/evidence/runs/SY-05.md (source-coverage-characterization, source-jacoco-report, source-coverage-summary).'
+  notes: 'No legacy test sources were found; tier-A characterization covered 93/98 lines, 497/513 instructions and
+    18/20 branches. Evidence: .migration/evidence/runs/SY-05.md (source-coverage-characterization, source-jacoco-report,
+    source-coverage-summary).'
 - id: coverage
   applies_to: target
   status: met
