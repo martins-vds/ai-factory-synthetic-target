@@ -3,6 +3,7 @@ coverage==7.17.2
 lizard==1.25.1
 mutmut==2.5.1
 psycopg[binary]==3.3.8
+playwright==1.64.1
 pytest==9.2.0
 pytest-cov==7.1.0
 pytest-django==4.14.0
