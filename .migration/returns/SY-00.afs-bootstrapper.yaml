@@ -1,0 +1,14 @@
+role: afs-bootstrapper
+ticket: SY-00
+issue: martins-vds/ai-factory-synthetic-target#1
+setup_pr: null
+characterization_tier: B
+tier_evidence: "Supplied run evidence shows the service starts but all root resources are ignored, probes return 000, and FinePayments lacks a gateway test instance; pinned scenario catalog classifies partial-runtime as tier B."
+capabilities:
+  met: null
+  gap: null
+  waived: null
+  not_applicable: null
+gap_tickets: null
+handoff: .migration/handoffs/SY-00.md
+validation: "fail: documented target path is absent (.migration/harness/tools/validate.py); direct pinned validator reported 2 output files checked, 0 errors. Bootstrap was not run because .github/agents/ access is prohibited."
