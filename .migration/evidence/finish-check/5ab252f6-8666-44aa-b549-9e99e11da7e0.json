@@ -1,0 +1,26 @@
+[
+  {
+    "at": "2026-11-08T15:30:49Z",
+    "python": "/usr/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 13499,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": null,
+    "role": "afs-bootstrapper",
+    "changed": [
+      ".migration/harness/tools/__pycache__/afs_trace.cpython-312.pyc",
+      ".migration/harness/tools/__pycache__/check_plan.cpython-312.pyc"
+    ],
+    "decision": "allow",
+    "why": "no ticket/role for this session"
+  }
+]

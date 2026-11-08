@@ -1,0 +1,137 @@
+{
+  "branch": "copilot/sy-01-write-compose-yaml",
+  "diagnostics": {
+    "data_keys": {
+      "assistant.message": [
+        "apiCallId",
+        "chunkCount",
+        "chunkIndex",
+        "clientRequestId",
+        "content",
+        "encryptedContent",
+        "interactionId",
+        "messageId",
+        "model",
+        "outputTokens",
+        "phase",
+        "reasoningOpaque",
+        "requestId",
+        "rte",
+        "serviceRequestId",
+        "toolRequests",
+        "turnId"
+      ],
+      "assistant.turn_end": [
+        "turnId"
+      ],
+      "assistant.turn_start": [
+        "interactionId",
+        "turnId"
+      ],
+      "hook.end": [
+        "error",
+        "hookInvocationId",
+        "hookType",
+        "output",
+        "success"
+      ],
+      "hook.start": [
+        "hookInvocationId",
+        "hookType",
+        "input"
+      ],
+      "session.start": [
+        "alreadyInUse",
+        "context",
+        "contextTier",
+        "copilotVersion",
+        "producer",
+        "reasoningEffort",
+        "remoteSteerable",
+        "selectedModel",
+        "sessionId",
+        "startTime",
+        "version"
+      ],
+      "subagent.selected": [
+        "agentDisplayName",
+        "agentName",
+        "tools"
+      ],
+      "system.message": [
+        "content",
+        "interactionId",
+        "role"
+      ],
+      "tool.execution_complete": [
+        "error",
+        "interactionId",
+        "model",
+        "rte",
+        "success",
+        "toolCallId",
+        "toolTelemetry",
+        "turnId"
+      ],
+      "tool.execution_start": [
+        "arguments",
+        "mcpServerName",
+        "mcpToolName",
+        "model",
+        "rte",
+        "shellToolInfo",
+        "toolCallId",
+        "toolName",
+        "turnId"
+      ],
+      "user.message": [
+        "attachments",
+        "content",
+        "delivery",
+        "interactionId",
+        "parentAgentTaskId",
+        "supportedNativeDocumentMimeTypes",
+        "transformedContent"
+      ]
+    },
+    "event_types": {
+      "assistant.message": 5,
+      "assistant.turn_end": 5,
+      "assistant.turn_start": 5,
+      "hook.end": 7,
+      "hook.start": 8,
+      "session.start": 1,
+      "subagent.selected": 1,
+      "system.message": 2,
+      "tool.execution_complete": 7,
+      "tool.execution_start": 7,
+      "user.message": 1
+    },
+    "events": 49,
+    "usage_fields": []
+  },
+  "ended_at": "2026-11-08T15:30:49.814Z",
+  "event": "sessionEnd",
+  "harness_tools": [
+    {
+      "count": 1,
+      "exit": 0,
+      "tool": "afs-cost-hook"
+    }
+  ],
+  "log": "/home/runner/.copilot/session-state/5ab252f6-8666-44aa-b549-9e99e11da7e0/events.jsonl",
+  "models": {
+    "gpt-6.1-terra": {
+      "output": 485,
+      "requests": 5
+    }
+  },
+  "prompt_head": null,
+  "recorded_at": "2026-11-08T15:30:51+00:00",
+  "schema": "afs-cost/1",
+  "session_id": "5ab252f6-8666-44aa-b549-9e99e11da7e0",
+  "shutdown_wait_s": "skipped: the coding agent writes session.shutdown after session hooks",
+  "started_at": "2026-11-08T15:30:34.631Z",
+  "surface": "coding-agent",
+  "usage_source": "assistant.message (output only, partial)"
+}
