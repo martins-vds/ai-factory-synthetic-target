@@ -1,0 +1,12 @@
+role: afs-bootstrapper
+ticket: SY-01B2
+issue: martins-vds/ai-factory-synthetic-target#9
+characterization_tier: B
+tier_evidence: "Pinned sourcepath compilation of the invoice-calculator test dependencies succeeded and all 6 JUnit tests passed; the full Maven build/run and test command are blocked by the inaccessible Northgate Vault 4.2.1 artifact."
+capabilities:
+  met: 5
+  gap: 8
+  waived: 0
+  not_applicable: 1
+evidence: /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/references/characterization-legacy-billing.md
+handoff: /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/handoffs/SY-01B2.md
