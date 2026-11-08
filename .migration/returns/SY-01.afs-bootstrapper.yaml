@@ -1,0 +1,14 @@
+role: afs-bootstrapper
+ticket: SY-01
+issue: martins-vds/ai-factory-synthetic-target#3
+setup_pr: null
+characterization_tier: A
+tier_evidence: "Pinned legacy tree built and ran with ./run.sh; /loans, /fees/L3, /payments/L3, /about, and loan-creation POST returned HTTP 200, 200, 502, 200, and 201."
+capabilities:
+  met: 6
+  gap: 11
+  waived: 0
+  not_applicable: 0
+gap_tickets: null
+validation: "YAML syntax and required profile/capability fields checked; full harness validation is pending step 5 because harness tools are not installed."
+handoff: .migration/handoffs/SY-01.md
