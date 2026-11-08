@@ -1,6 +1,6 @@
 # Capability checklist (ADR-0012), written by bootstrap. A gap blocks Phase 2 until its ticket is resolved.
 harness_version: 0.2.0
-checked_at: '2026-11-08T18:01:12Z'
+checked_at: '2026-11-08T18:05:29Z'
 characterization:
   legacy_environment: available
   source_builds: 'yes'
@@ -21,7 +21,7 @@ capabilities:
   - kind: tool
     name: Django manage.py project and profile build gates
     version: 5.2.19
-  notes: "Evidence: .migration/evidence/runs/SY-02.md (build-compileall, build-django-check)."
+  notes: 'Evidence: .migration/evidence/runs/SY-02.md (build-compileall, build-django-check).'
 - id: characterization-harness
   applies_to: source
   status: met
@@ -36,7 +36,7 @@ capabilities:
   - kind: tool
     name: pytest and pytest-django
     version: 9.2.0 / 4.14.0
-  notes: "Evidence: .migration/evidence/runs/SY-02.md (tests); PostgreSQL smoke query passes."
+  notes: 'Evidence: .migration/evidence/runs/SY-02.md (tests); PostgreSQL smoke query passes.'
 - id: coverage
   applies_to: source
   status: met
@@ -53,7 +53,7 @@ capabilities:
   - kind: tool
     name: pytest-cov and coverage
     version: 7.1.0 / 7.17.2
-  notes: "Evidence: .migration/evidence/runs/SY-02.md (crap-coverage); LCOV generated for src."
+  notes: 'Evidence: .migration/evidence/runs/SY-02.md (crap-coverage); LCOV generated for src.'
 - id: complexity
   applies_to: both
   status: met
@@ -75,7 +75,7 @@ capabilities:
   provided_by:
   - kind: tool
     name: lizard and harness crap.py
-  notes: "Evidence: .migration/evidence/runs/SY-02.md (crap-coverage, crap-lizard, crap-score); max CRAP 1.0."
+  notes: 'Evidence: .migration/evidence/runs/SY-02.md (crap-coverage, crap-lizard, crap-score); max CRAP 1.0.'
 - id: mutation-testing
   applies_to: target
   status: met
@@ -83,7 +83,7 @@ capabilities:
   - kind: tool
     name: mutmut and afs-mutation
     version: 2.5.1
-  notes: "Evidence: .migration/evidence/runs/SY-02.md (mutation-changed, mutation-full); both score 1.000."
+  notes: 'Evidence: .migration/evidence/runs/SY-02.md (mutation-changed, mutation-full); both score 1.000.'
 - id: lint-format
   applies_to: target
   status: met
@@ -91,7 +91,7 @@ capabilities:
   - kind: tool
     name: Ruff check and format gates
     version: 0.17.4
-  notes: "Evidence: .migration/evidence/runs/SY-02.md (lint-ruff-check, lint-ruff-format)."
+  notes: 'Evidence: .migration/evidence/runs/SY-02.md (lint-ruff-check, lint-ruff-format).'
 - id: stack-idioms
   applies_to: both
   status: met
