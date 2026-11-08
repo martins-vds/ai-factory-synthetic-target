@@ -15,3 +15,12 @@
 - The README says the reporting server was retired in 2019 and its report definitions were not kept. No build, run, or test command was available to execute; the specifications and samples are the only surviving evidence.
 - The report specification and examples can inform implementation, but they cannot establish behavior beyond what is documented. Resolve any ambiguity with the operator before treating inferred behavior as source characterization.
 - This handoff stops after the requested source assessment; no bootstrap, target setup, or later migration phase was performed.
+
+### Remaining
+- [ ] None for this source: it was assessed only, and only `legacy/` continues past bootstrap.
+
+### Blockers / questions
+- None.
+
+### Next step for the next session
+- None. (Sections added by the dispatcher at harness install; the session's content above is unchanged.)

@@ -9,3 +9,6 @@ capabilities:
   gap: 5
   waived: 0
   not_applicable: 9
+setup_pr: null
+gap_tickets: []
+validation: "n/a: the harness was not installed on this repository when this session ran; added by the dispatcher at install"
