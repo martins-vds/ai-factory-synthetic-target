@@ -1,0 +1,12 @@
+id: loan.list
+kind: behavioral
+title: List all loans
+source:
+  graph_node: endpoint:legacy/src/main/java/lib/LoanResource.java:GET /loans
+  flow: List Loans
+  location: legacy/src/main/java/lib/LoanResource.java:25-28
+  risk: {crap: 1, complexity: 1, coverage: 1.0}
+boundary: "GET /loans returns every loan ordered by id as one semicolon-separated text line per record, with a trailing newline."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending

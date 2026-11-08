@@ -1,0 +1,13 @@
+id: loan.return
+kind: behavioral
+title: Return a loan
+source:
+  graph_node: endpoint:legacy/src/main/java/lib/LoanResource.java:POST /loans/{id}/return
+  flow: Return Book
+  location: legacy/src/main/java/lib/LoanResource.java:45-50
+  risk: {crap: 2, complexity: 2, coverage: 0.83}
+boundary: "POST /loans/{id}/return returns HTTP 200 with the formatted loan after marking it returned, or HTTP 404 with `no such loan` and a newline when the id is absent."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "Repeated-return date replacement is raised in .migration/quirks/repeated-loan-return.md."

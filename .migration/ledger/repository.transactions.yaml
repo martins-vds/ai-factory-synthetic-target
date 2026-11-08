@@ -1,0 +1,11 @@
+id: repository.transactions
+kind: structural
+title: Manage JPA read and write transactions
+source:
+  graph_node: class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository
+  location: legacy/src/main/java/lib/LoanRepository.java:47-69
+  risk: {crap: 2, complexity: 2, coverage: 0.88}
+boundary: "Each repository read closes its EntityManager; each write begins and commits a transaction, rolls back if still active after failure, and closes the EntityManager."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending

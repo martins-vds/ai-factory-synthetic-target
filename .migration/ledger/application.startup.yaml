@@ -1,0 +1,12 @@
+id: application.startup
+kind: structural
+title: Start and stop the HTTP application
+source:
+  graph_node: method:legacy/src/main/java/lib/App.java:App.main
+  location: legacy/src/main/java/lib/App.java:13-25
+  risk: {crap: 1, complexity: 1, coverage: 0.85}
+boundary: "PORT selects the listening port (default 8080); startup creates the library persistence unit, wires four HTTP resources, binds Grizzly to 0.0.0.0, and shutdown closes the server and EntityManagerFactory."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "Restart reset behavior is raised in .migration/quirks/restart-data-loss.md."

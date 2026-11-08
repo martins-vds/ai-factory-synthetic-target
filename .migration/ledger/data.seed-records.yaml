@@ -1,0 +1,11 @@
+id: data.seed-records
+kind: data
+title: Seed the three example loans
+source:
+  graph_node: table:legacy/src/main/resources/META-INF/seed.sql:LOAN
+  location: legacy/src/main/resources/META-INF/seed.sql:1-3
+boundary: "The persistence unit loads three fixed example loan rows at startup: L1, L2, and L3, with their member, ISBN, and lent/returned dates."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "Seed reload and reset-on-restart behavior are raised in .migration/quirks/restart-data-loss.md."

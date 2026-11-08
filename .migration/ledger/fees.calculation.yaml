@@ -1,0 +1,12 @@
+id: fees.calculation
+kind: behavioral
+title: Calculate a loan late fee
+source:
+  graph_node: function:legacy/src/main/java/lib/LateFeeView.java:page
+  flow: View Late Fee
+  location: legacy/src/main/java/lib/LateFeeView.java:31-37
+  risk: {crap: 4, complexity: 4, coverage: 0.9}
+boundary: "Late days are max(0, days from due date to returnedOn or today); up to two days late is waived, otherwise the fee is 25 cents per day capped at $10."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending

@@ -9,7 +9,7 @@ If the payment gateway call is interrupted, the source catches `InterruptedExcep
 - Why it looks wrong: clearing the interrupt can prevent the server from promptly stopping or cancelling interrupted request work.
 
 ## Impact
-- Ledger capabilities: `integration.payment-gateway`, `payment.gateway-errors`
+- Ledger capabilities: `integration.payment-gateway`
 - Blocks: future migration tickets implementing these capabilities (not yet filed)
 
 ## Options

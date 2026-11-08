@@ -1,0 +1,11 @@
+id: loan.due-date
+kind: behavioral
+title: Calculate the loan due date
+source:
+  graph_node: method:legacy/src/main/java/lib/Loan.java:Loan.dueOn
+  flow: Lend Book
+  location: legacy/src/main/java/lib/Loan.java:44-46
+boundary: "Every loan is due 14 calendar days after its lentOn date; the due date is included in loan text output and late-fee calculation."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending

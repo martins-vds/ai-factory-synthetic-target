@@ -1,0 +1,13 @@
+id: loan.return-date
+kind: behavioral
+title: Record the loan return date
+source:
+  graph_node: method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned
+  flow: Return Book
+  location: legacy/src/main/java/lib/LoanRepository.java:36-44
+  risk: {crap: 2, complexity: 2, coverage: 0.83}
+boundary: "A successful return assigns the supplied date to returnedOn and persists the changed loan; the source does not reject or preserve an earlier return date."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "The human decision on overwriting an existing return date is in .migration/quirks/repeated-loan-return.md."

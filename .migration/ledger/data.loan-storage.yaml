@@ -1,0 +1,11 @@
+id: data.loan-storage
+kind: data
+title: Persist loan records
+source:
+  graph_node: table:legacy/src/main/java/lib/Loan.java:LOAN
+  location: legacy/src/main/java/lib/Loan.java:11-26
+boundary: "The LOAN table stores id, member, ISBN, lentOn, and nullable returnedOn; JPA accesses it through the repository using the in-memory H2 library persistence unit."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "persistence.xml uses drop-and-create on startup; the reset-on-restart question is in .migration/quirks/restart-data-loss.md."

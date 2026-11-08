@@ -1,0 +1,13 @@
+id: loan.text-export
+kind: behavioral
+title: Format loans for spreadsheet export
+source:
+  graph_node: method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line
+  flow: List Loans
+  location: legacy/src/main/java/lib/LoanResource.java:52-55
+  risk: {crap: 2, complexity: 2, coverage: 1.0}
+boundary: "Each exported record has fields in id, member, isbn, lent-on, due-on, returned-on order, separated by semicolons; an unreturned loan has an empty final field. The docs state spreadsheet users rely on this format."
+tickets: [martins-vds/ai-factory-synthetic-target#35]
+status: pending
+verification: pending
+notes: "Delimiter-containing input is not escaped; human decision draft: .migration/quirks/unescaped-loan-export.md."
