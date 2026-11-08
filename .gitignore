@@ -3,3 +3,7 @@
 .migration/data/snapshot/
 .migration/data/target-export/
 __pycache__/
+.coverage*
+.mutmut-cache
+.pytest_cache/
+.ruff_cache/

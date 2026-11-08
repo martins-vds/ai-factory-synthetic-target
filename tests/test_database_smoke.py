@@ -1,9 +1,8 @@
 import pytest
-from django.db import connection
+
+from src.core.database import database_probe
 
 
 @pytest.mark.django_db
 def test_postgresql_connection_executes_query():
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT 1")
-        assert cursor.fetchone() == (1,)
+    assert database_probe() == 1
