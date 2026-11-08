@@ -1,0 +1,13 @@
+role: afs-bootstrapper
+ticket: SY-03
+issue: martins-vds/ai-factory-synthetic-target#32
+setup_pr: null
+characterization_tier: A
+tier_evidence: "Pinned source SHA 563c316ed51462b08fd6e58f3781a3c8b2890453 builds and runs; all seven graph endpoints and two browser pages are characterized in .migration/evidence/runs/SY-03.md."
+capabilities:
+  met: 16
+  gap: 0
+  waived: 1
+  not_applicable: 0
+gap_tickets: []
+validation: "pass: python .migration/harness/tools/validate.py .migration"
