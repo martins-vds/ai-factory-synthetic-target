@@ -1,0 +1,6 @@
+role: afs-bootstrapper
+ticket: SY-01B
+issue: https://github.com/martins-vds/ai-factory-synthetic-target/issues/5
+characterization_tier: C
+tier_evidence: "The pinned source cannot build because the required Northgate Vault runtime dependency is unavailable from its private Maven repository; it is not compile-only."
+capabilities: {met: 4, gap: 8, waived: 0, not_applicable: 2}
