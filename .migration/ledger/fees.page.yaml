@@ -1,4 +1,5 @@
 id: fees.page
+slice: fees-payments
 kind: ui
 title: Show a loan late-fee page
 source:
@@ -8,7 +9,7 @@ source:
 boundary: "GET /fees/{id} renders an HTML heading, due/late-day text, and a two-decimal dollar fee; an unknown loan returns HTTP 404 with `<p>No such loan.</p>`."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/characterization/source/goldens/browser.json]
 notes: "The fee formula and date edge cases are inventoried separately in fees.calculation."

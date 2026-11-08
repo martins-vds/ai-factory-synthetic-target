@@ -1,0 +1,6 @@
+# The source retains a tier-C specification, not an executable entry point.
+data_paths:
+  source: []
+  target:
+    # Proposed command; scheduling and month-boundary time zone remain open.
+    - command=monthly_report

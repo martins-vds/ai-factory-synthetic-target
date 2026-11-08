@@ -1,0 +1,19 @@
+slice: monthly-report
+tickets:
+  - id: LL-05
+    title: Produce the specified monthly report
+    role: afs-migrator
+    specialty: null
+    files:
+      - config/settings.py
+      - src/reports/
+      - tests/reports/
+      - .migration/ledger/reports.monthly-spec.yaml
+      - .migration/evidence/runs/LL-05.md
+      - .migration/returns/LL-05.afs-migrator.yaml
+    capabilities: [reports.monthly-spec]
+    blocked_by: [LL-03]
+cross_slice:
+  - file: config/settings.py
+    slices: [loan-catalog, monthly-report]
+    note: Register the report command app in the project settings established by the catalog.

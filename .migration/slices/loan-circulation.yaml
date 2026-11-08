@@ -1,0 +1,14 @@
+data_paths:
+  source:
+    - endpoint=POST /loans
+    - endpoint=POST /loans/{id}/return
+  target:
+    - endpoint=POST /loans
+    - endpoint=POST /loans/{id}/return
+    # Proposed UI paths; pending operator approval.
+    - endpoint=POST /ui/loans
+    - endpoint=POST /ui/loans/{id}/return
+entry_points:
+  target:
+    # Proposed form page; pending operator approval.
+    - endpoint=GET /ui/loans/new

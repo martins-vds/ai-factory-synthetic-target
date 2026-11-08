@@ -1,0 +1,14 @@
+data_paths:
+  source:
+    - endpoint=GET /loans
+    - endpoint=GET /loans/{id}
+  target:
+    - endpoint=GET /loans
+    - endpoint=GET /loans/{id}
+    # Proposed UI paths; pending operator approval.
+    - endpoint=GET /ui/loans
+    - endpoint=GET /ui/loans/{id}
+entry_points:
+  target:
+    # Existing scaffold route; ownership depends on the operator's retain/remove decision.
+    - endpoint=GET /admin/

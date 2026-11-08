@@ -1,4 +1,5 @@
 id: loan.lend
+slice: loan-circulation
 kind: behavioral
 title: Lend a book to a member
 source:
@@ -9,7 +10,7 @@ source:
 boundary: "POST /loans requires non-null member and ISBN form fields (otherwise HTTP 400); it creates a loan dated today with id L<count+1> and returns HTTP 201 with the formatted record."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]
 notes: "Blank-value acceptance and unescaped export fields are raised in martins-vds/ai-factory-synthetic-target#39 and martins-vds/ai-factory-synthetic-target#43."

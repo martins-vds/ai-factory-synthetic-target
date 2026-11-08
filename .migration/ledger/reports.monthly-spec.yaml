@@ -1,4 +1,5 @@
 id: reports.monthly-spec
+slice: monthly-report
 kind: behavioral
 title: Produce the specified monthly lending report
 source:

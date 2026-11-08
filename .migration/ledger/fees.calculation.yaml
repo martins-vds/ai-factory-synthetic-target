@@ -1,4 +1,5 @@
 id: fees.calculation
+slice: fees-payments
 kind: behavioral
 title: Calculate a loan late fee
 source:
@@ -9,6 +10,6 @@ source:
 boundary: "Late days are max(0, days from due date to returnedOn or today); up to two days late is waived, otherwise the fee is 25 cents per day capped at $10."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]

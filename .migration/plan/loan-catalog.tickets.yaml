@@ -1,0 +1,52 @@
+slice: loan-catalog
+tickets:
+  - id: LL-01
+    title: Build the persistent loan catalog
+    role: afs-migrator
+    specialty: null
+    files:
+      - config/settings.py
+      - config/urls.py
+      - src/loans/
+      - tests/loans/
+      - templates/base.html
+      - templates/loans/
+      - static/
+      - .migration/ledger/application.build.yaml
+      - .migration/ledger/application.startup.yaml
+      - .migration/ledger/data.loan-storage.yaml
+      - .migration/ledger/data.seed-records.yaml
+      - .migration/ledger/repository.transactions.yaml
+      - .migration/ledger/loan.due-date.yaml
+      - .migration/ledger/loan.get.yaml
+      - .migration/ledger/loan.list.yaml
+      - .migration/ledger/loan.text-export.yaml
+      - .migration/evidence/runs/LL-01.md
+      - .migration/returns/LL-01.afs-migrator.yaml
+    capabilities:
+      - application.build
+      - application.startup
+      - data.loan-storage
+      - data.seed-records
+      - repository.transactions
+      - loan.due-date
+      - loan.get
+      - loan.list
+      - loan.text-export
+    blocked_by: []
+cross_slice:
+  - file: config/settings.py
+    slices: [loan-catalog, monthly-report]
+    note: The report command registers its Django app after the catalog establishes project settings.
+  - file: config/urls.py
+    slices: [loan-catalog, loan-circulation, fees-payments, library-info]
+    note: Each later web slice extends the root route composition in dependency order.
+  - file: src/loans/
+    slices: [loan-catalog, loan-circulation]
+    note: Circulation extends the model and repository introduced by the catalog.
+  - file: templates/loans/
+    slices: [loan-catalog, loan-circulation]
+    note: Circulation extends the catalog's browser flow.
+  - file: tests/loans/
+    slices: [loan-catalog, loan-circulation]
+    note: Circulation extends tests in the loans context.

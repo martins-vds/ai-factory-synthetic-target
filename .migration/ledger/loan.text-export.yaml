@@ -1,4 +1,5 @@
 id: loan.text-export
+slice: loan-catalog
 kind: behavioral
 title: Format loans for spreadsheet export
 source:
@@ -9,7 +10,7 @@ source:
 boundary: "Each exported record has fields in id, member, isbn, lent-on, due-on, returned-on order, separated by semicolons; an unreturned loan has an empty final field. The docs state spreadsheet users rely on this format."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]
 notes: "Delimiter-containing input is not escaped; human decision draft: martins-vds/ai-factory-synthetic-target#43."

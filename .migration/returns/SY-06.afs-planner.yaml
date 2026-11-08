@@ -1,0 +1,35 @@
+role: afs-planner
+ticket: SY-06
+issue: martins-vds/ai-factory-synthetic-target#48
+plan: .migration/plan
+slices:
+  - name: loan-catalog
+    anchor: GET /loans; GET /loans/{id}
+    tickets: 1
+    blocked_by: []
+  - name: loan-circulation
+    anchor: POST /loans; POST /loans/{id}/return
+    tickets: 1
+    blocked_by: [loan-catalog]
+  - name: fees-payments
+    anchor: GET /fees/{id}; POST /payments/{id}
+    tickets: 1
+    blocked_by: [loan-circulation]
+  - name: library-info
+    anchor: GET /about (static, non-data flow)
+    tickets: 1
+    blocked_by: [fees-payments]
+  - name: monthly-report
+    anchor: tier-C monthly report specification; proposed command=monthly_report
+    tickets: 1
+    blocked_by: [fees-payments]
+design_tickets: []
+data_slices: []
+unmapped_capabilities: []
+open_questions:
+  - Approve the five-slice breakdown, ticket scopes, and dependency order before publishing or dispatching.
+  - Confirm the browser UI route map and how HTML/htmx interactions coexist with unchanged characterized API responses; the UI path proposals in the slice specs are not approved.
+  - Confirm the Tailwind/daisyUI/htmx asset-delivery approach from the pilot; no frontend asset pipeline is present in the target scaffold.
+  - Choose the timezone and date formats for "today", due dates, fee calculations, report month boundaries, pages, and exports.
+  - Choose how the first-of-month report command is scheduled and invoked.
+  - Decide whether to retain the target scaffold's unsourced Django /admin/ endpoint; it is currently assigned to loan-catalog only so graph ownership is explicit.
