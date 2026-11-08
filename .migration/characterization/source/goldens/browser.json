@@ -1,0 +1,14 @@
+{
+  "pages": [
+    {
+      "heading": "About the Lending Library",
+      "path": "/about",
+      "status": 200
+    },
+    {
+      "heading": "Late fee for L3",
+      "path": "/fees/L3",
+      "status": 200
+    }
+  ]
+}

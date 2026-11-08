@@ -1,0 +1,89 @@
+{
+  "GET /about": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/about"
+    },
+    "response": {
+      "body": "<!doctype html>\n<html lang=\"en\">\n<head><meta charset=\"utf-8\"><title>About the Lending Library</title></head>\n<body>\n  <h1>About the Lending Library</h1>\n  <p>Open Monday to Saturday, 9:00 to 18:00. Books are lent for 14 days.</p>\n  <p>Contact: desk@lending-library.invalid</p>\n</body>\n</html>\n",
+      "content_type": "text/html",
+      "status": 200
+    }
+  },
+  "GET /fees/{id}": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/fees/L3"
+    },
+    "response": {
+      "body": "<h1>Late fee for L3</h1><p>Due 2025-12-15, 19 day(s) late.</p><p class=\"fee\">Fee: $4.75</p>",
+      "content_type": "text/html",
+      "status": 200
+    }
+  },
+  "GET /loans": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\nL2;bo;9780596007126;2026-01-10;2026-01-24;2026-01-20\nL3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /loans/{id}": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans/L1"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /loans": {
+    "request": {
+      "form": {
+        "isbn": "123",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L4;dee;123;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /loans/{id}/return": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/loans/L1/return"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;2026-11-08\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /payments/{id}": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/payments/L3"
+    },
+    "response": {
+      "body": "payment gateway unavailable\n",
+      "content_type": "text/plain",
+      "status": 502
+    }
+  }
+}
