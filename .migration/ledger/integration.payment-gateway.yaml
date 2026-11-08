@@ -10,4 +10,5 @@ boundary: "POST /payments/{id} first requires an existing loan, then POSTs /char
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "The source swallows InterruptedException while returning 502; human decision draft: .migration/quirks/payment-interrupt.md."
+notes: "The source swallows InterruptedException while returning 502; human decision draft: martins-vds/ai-factory-synthetic-target#40."
+quirks: [martins-vds/ai-factory-synthetic-target#40]

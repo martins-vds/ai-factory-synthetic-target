@@ -9,4 +9,5 @@ boundary: "PORT selects the listening port (default 8080); startup creates the l
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "Restart reset behavior is raised in .migration/quirks/restart-data-loss.md."
+notes: "Restart reset behavior is raised in martins-vds/ai-factory-synthetic-target#42."
+quirks: [martins-vds/ai-factory-synthetic-target#42]

@@ -8,4 +8,5 @@ boundary: "The persistence unit loads three fixed example loan rows at startup: 
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "Seed reload and reset-on-restart behavior are raised in .migration/quirks/restart-data-loss.md."
+notes: "Seed reload and reset-on-restart behavior are raised in martins-vds/ai-factory-synthetic-target#42."
+quirks: [martins-vds/ai-factory-synthetic-target#42]

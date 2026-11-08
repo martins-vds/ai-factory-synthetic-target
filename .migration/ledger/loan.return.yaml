@@ -10,4 +10,5 @@ boundary: "POST /loans/{id}/return returns HTTP 200 with the formatted loan afte
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "Repeated-return date replacement is raised in .migration/quirks/repeated-loan-return.md."
+notes: "Repeated-return date replacement is raised in martins-vds/ai-factory-synthetic-target#41."
+quirks: [martins-vds/ai-factory-synthetic-target#41]

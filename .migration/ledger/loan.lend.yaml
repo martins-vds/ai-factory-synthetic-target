@@ -10,4 +10,5 @@ boundary: "POST /loans requires non-null member and ISBN form fields (otherwise 
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "Blank-value acceptance and unescaped export fields are raised in .migration/quirks/blank-loan-fields.md and .migration/quirks/unescaped-loan-export.md."
+notes: "Blank-value acceptance and unescaped export fields are raised in martins-vds/ai-factory-synthetic-target#39 and martins-vds/ai-factory-synthetic-target#43."
+quirks: [martins-vds/ai-factory-synthetic-target#39, martins-vds/ai-factory-synthetic-target#43]

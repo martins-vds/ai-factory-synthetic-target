@@ -8,4 +8,5 @@ boundary: "The LOAN table stores id, member, ISBN, lentOn, and nullable returned
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "persistence.xml uses drop-and-create on startup; the reset-on-restart question is in .migration/quirks/restart-data-loss.md."
+notes: "persistence.xml uses drop-and-create on startup; the reset-on-restart question is in martins-vds/ai-factory-synthetic-target#42."
+quirks: [martins-vds/ai-factory-synthetic-target#42]

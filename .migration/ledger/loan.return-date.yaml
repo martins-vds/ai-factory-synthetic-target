@@ -10,4 +10,5 @@ boundary: "A successful return assigns the supplied date to returnedOn and persi
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "The human decision on overwriting an existing return date is in .migration/quirks/repeated-loan-return.md."
+notes: "The human decision on overwriting an existing return date is in martins-vds/ai-factory-synthetic-target#41."
+quirks: [martins-vds/ai-factory-synthetic-target#41]

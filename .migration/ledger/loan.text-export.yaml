@@ -10,4 +10,5 @@ boundary: "Each exported record has fields in id, member, isbn, lent-on, due-on,
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
 verification: pending
-notes: "Delimiter-containing input is not escaped; human decision draft: .migration/quirks/unescaped-loan-export.md."
+notes: "Delimiter-containing input is not escaped; human decision draft: martins-vds/ai-factory-synthetic-target#43."
+quirks: [martins-vds/ai-factory-synthetic-target#43]
