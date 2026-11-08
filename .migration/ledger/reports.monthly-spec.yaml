@@ -7,5 +7,7 @@ source:
 boundary: "The retired report specification calls for a run on each month's first day over the prior month, one row per member with loans started, late returns, and late fees in cents, sorted by fees descending then member id; omit members with no loans in that month."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: pending
+verification: spec-derived
+characterization_tier: C
+evidence: [legacy/docs/reports-spec.md, .migration/references/characterization-SY-05.md]
 notes: "Only the document remains; the source explicitly states that the separate reporting module and runtime are unavailable."

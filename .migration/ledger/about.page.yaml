@@ -9,4 +9,6 @@ source:
 boundary: "GET /about serves the packaged static HTML page with the library name, Monday–Saturday opening hours, 14-day lending period, and contact address."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: pending
+verification: characterized
+characterization_tier: A
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/browser.json]

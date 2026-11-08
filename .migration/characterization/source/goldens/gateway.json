@@ -1,0 +1,52 @@
+{
+  "gateway_requests": [
+    {
+      "body": "",
+      "method": "POST",
+      "path": "/charge?loan=L1"
+    },
+    {
+      "body": "",
+      "method": "POST",
+      "path": "/charge?loan=L2"
+    }
+  ],
+  "responses": {
+    "POST /payments/L1 via test gateway": {
+      "request": {
+        "form": null,
+        "method": "POST",
+        "path": "/payments/L1"
+      },
+      "response": {
+        "body": "charged\n",
+        "content_type": "text/plain",
+        "status": 200
+      }
+    },
+    "POST /payments/L2 via test gateway": {
+      "request": {
+        "form": null,
+        "method": "POST",
+        "path": "/payments/L2"
+      },
+      "response": {
+        "body": "declined\n",
+        "content_type": "text/plain",
+        "status": 502
+      }
+    },
+    "POST /payments/unknown via test gateway": {
+      "request": {
+        "form": null,
+        "method": "POST",
+        "path": "/payments/unknown"
+      },
+      "response": {
+        "body": "no such loan\n",
+        "content_type": "text/plain",
+        "status": 404
+      }
+    }
+  }
+}

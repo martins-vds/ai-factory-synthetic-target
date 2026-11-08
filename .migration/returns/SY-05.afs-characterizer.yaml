@@ -1,0 +1,35 @@
+role: afs-characterizer
+ticket: SY-05
+issue: martins-vds/ai-factory-synthetic-target#44
+tier_used: {A: 16, B: 0, C: 1}
+suite:
+  path: .migration/characterization/source/characterize.py
+  cases: 25
+  passing: 25
+  run_log: .migration/evidence/runs/SY-05.md
+predicted_vs_observed: {match: 16, differs: 0}
+ledger_updated:
+  - about.page
+  - application.build
+  - application.startup
+  - data.loan-storage
+  - data.seed-records
+  - fees.calculation
+  - fees.page
+  - integration.payment-gateway
+  - loan.due-date
+  - loan.get
+  - loan.lend
+  - loan.list
+  - loan.return-date
+  - loan.return
+  - loan.text-export
+  - reports.monthly-spec
+  - repository.transactions
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#39
+  - martins-vds/ai-factory-synthetic-target#40
+  - martins-vds/ai-factory-synthetic-target#41
+  - martins-vds/ai-factory-synthetic-target#42
+  - martins-vds/ai-factory-synthetic-target#43
+review_only_requests: []
