@@ -1,7 +1,7 @@
 {
   "harness_version": "0.2.0",
-  "harness_commit": "412d98d78bc02fa6a63ba312da2895759b40c393",
-  "installed_at": "2026-11-08T20:51:47Z",
+  "harness_commit": "db3586a43acfbcc887524130b1fb18bb2c21f667",
+  "installed_at": "2026-11-08T21:37:19Z",
   "entries": [
     {
       "path": ".github/agents/afs-analyst.agent.md",
@@ -49,7 +49,7 @@
       "path": ".github/agents/afs-program-orchestrator.agent.md",
       "kind": "agent",
       "files": {
-        ".github/agents/afs-program-orchestrator.agent.md": "4a0e60c1571543b3491ff996236669d855900438da1aa71992b71ac0acfbac4e"
+        ".github/agents/afs-program-orchestrator.agent.md": "d4255e8f981595beb9ea7cf945e0fad671ace7560ba60bad2dca29cce07fa0a6"
       }
     },
     {
@@ -63,7 +63,7 @@
       "path": ".github/agents/afs-specialist-migrator.agent.md",
       "kind": "agent",
       "files": {
-        ".github/agents/afs-specialist-migrator.agent.md": "94be3c84306761fc8dad8c50643b384c3634a29cb42d1acc8ce9ba0a02360b8a"
+        ".github/agents/afs-specialist-migrator.agent.md": "870bd7cced2e6929c60cdf6423dba0fcbcf27532e9476e15383177cb9392b21c"
       }
     },
     {
@@ -748,6 +748,23 @@
         ".github/skills/research/PROVENANCE.md": "cd7ac9d6cf71cf8cf311447c3a04be77f27d830af577ac03493c9d29732b861d",
         ".github/skills/research/SKILL.md": "1f629e18ab899412683bc6a1c4efb4339999e27c2fdac328f26ee10a8c031d33",
         ".github/skills/research/agents/openai.yaml": "9b4c470d63221c1f68f22df70b83e2f12401b317babe0d1b7b5f24a974474d0d"
+      }
+    },
+    {
+      "path": ".github/skills/prototype",
+      "kind": "skill",
+      "origin": "menu",
+      "install": "upstream",
+      "repo": "mattpocock/skills",
+      "commit": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa",
+      "upstream_path": "skills/engineering/prototype",
+      "files": {
+        ".github/skills/prototype/LICENSE": "0e7ac423bf2c6e223b7c5b156f8cf72da49d748e56a1641402c31f22ad07dbb5",
+        ".github/skills/prototype/LOGIC.md": "f61c7d249e786a79ef289018901c348271e1798dd0b0bc5607b5c6f4d4a01ab9",
+        ".github/skills/prototype/PROVENANCE.md": "31f503821c86ed23bda4cf26b7dc67829ffc3857d8a20fde96357476d0d89280",
+        ".github/skills/prototype/SKILL.md": "714de632d116bb73f65cdb5a882db15b9369a6713b9a47c0fad827848f0bfbe3",
+        ".github/skills/prototype/UI.md": "723211e878acbc7b6ff09755263f3295cde724ba902ff0064da41eed51d45ad3",
+        ".github/skills/prototype/agents/openai.yaml": "5af65e43ab41a350436697b81e27b7f848d36782043b73c322bb2c9fa9cc55dc"
       }
     },
     {
