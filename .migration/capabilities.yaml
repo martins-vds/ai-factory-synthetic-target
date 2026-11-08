@@ -1,6 +1,6 @@
 # Capability checklist (ADR-0012), written by bootstrap. A gap blocks Phase 2 until its ticket is resolved.
 harness_version: 0.2.0
-checked_at: '2026-11-08T17:18:25Z'
+checked_at: '2026-11-08T18:01:12Z'
 characterization:
   legacy_environment: available
   source_builds: 'yes'
@@ -24,9 +24,11 @@ capabilities:
   notes: "Evidence: .migration/evidence/runs/SY-02.md (build-compileall, build-django-check)."
 - id: characterization-harness
   applies_to: source
-  status: gap
-  ticket: martins-vds/ai-factory-synthetic-target#12
-  notes: The source has no characterization test harness; executable source HTTP behavior cases are still needed.
+  status: met
+  provided_by:
+  - kind: tool
+    name: .migration/characterization/source/characterize.py and HTTP/browser golden files
+  notes: "All 7 source graph endpoints are captured as request/response goldens. Evidence: .migration/evidence/runs/SY-03.md (source-characterization, source-characterization-verify)."
 - id: unit-integration-tests
   applies_to: target
   status: met
@@ -37,10 +39,13 @@ capabilities:
   notes: "Evidence: .migration/evidence/runs/SY-02.md (tests); PostgreSQL smoke query passes."
 - id: coverage
   applies_to: source
-  status: gap
+  status: met
   best_effort: true
-  ticket: martins-vds/ai-factory-synthetic-target#14
-  notes: Source tests and coverage instrumentation are still absent; source coverage remains best-effort.
+  provided_by:
+  - kind: tool
+    name: JaCoCo agent and Maven report
+    version: 0.8.13
+  notes: "No legacy test sources were found; characterization covered 89/98 lines and 460/513 instructions. Evidence: .migration/evidence/runs/SY-03.md (source-coverage-characterization, source-jacoco-report, source-coverage-summary)."
 - id: coverage
   applies_to: target
   status: met
@@ -58,10 +63,12 @@ capabilities:
   notes: The pinned bootstrap installs lizard.
 - id: crap
   applies_to: source
-  status: gap
+  status: met
   best_effort: true
-  ticket: martins-vds/ai-factory-synthetic-target#16
-  notes: Source coverage data is unavailable for CRAP analysis; source CRAP remains best-effort.
+  provided_by:
+  - kind: tool
+    name: lizard and .migration/harness/tools/crap.py
+  notes: "Source CRAP risk map maximum was 4.2 (0 methods over 30). Evidence: .migration/evidence/runs/SY-03.md (source-complexity, source-crap-risk-map); report: .migration/evidence/source-crap-risk-map-SY-03.md."
 - id: crap
   applies_to: target
   status: met
@@ -103,14 +110,22 @@ capabilities:
     name: django-verification
 - id: data-migration
   applies_to: both
-  status: gap
-  ticket: martins-vds/ai-factory-synthetic-target#20
-  notes: An H2-to-PostgreSQL migration pipeline and deterministic reconciliation evidence are still required.
+  status: waived
+  waiver:
+    reason: "Synthetic target: the legacy data is only a seed script, no planted scenario needs data migration, and the pilot exercises data migration end to end."
+    approved_by: "martins-vds (2026-11-08)"
 - id: ui-end-to-end
   applies_to: both
-  status: gap
-  ticket: martins-vds/ai-factory-synthetic-target#21
-  notes: A repeatable browser end-to-end runner and critical UI flow tests are still required.
+  status: met
+  provided_by:
+  - kind: tool
+    name: Playwright Chromium
+    version: 1.64.1
+  - kind: tool
+    name: .migration/characterization/source/characterize.py
+  - kind: tool
+    name: tests/test_ui_smoke.py
+  notes: "The target Django admin login smoke and source /about and /fees pages pass in Chromium. Evidence: .migration/evidence/runs/SY-03.md (ui-target-smoke, source-characterization)."
 - id: code-graph
   applies_to: both
   status: met
