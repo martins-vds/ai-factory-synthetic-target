@@ -52,7 +52,7 @@ skills:
       - postgresql-optimization
 gates:
   build: ["python -m compileall -q src", "python manage.py check"]
-  idiom: ["ruff check", "ruff format --check"]
+  idiom: ["ruff check src config manage.py tests", "ruff format --check src config manage.py tests"]
   tests: ["pytest -q"]
   crap:
     - "pytest -q --cov=src --cov-report=lcov:.migration/runs/crap.lcov"

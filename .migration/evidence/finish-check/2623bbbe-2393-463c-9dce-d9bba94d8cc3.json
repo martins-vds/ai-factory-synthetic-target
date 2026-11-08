@@ -1,0 +1,44 @@
+[
+  {
+    "at": "2026-11-08T17:04:58Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 77293,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "SY-02",
+    "role": "afs-bootstrapper",
+    "changed": [
+      ".gitignore",
+      ".migration/capabilities.yaml",
+      ".migration/evidence/mutants/SY-02.md",
+      ".migration/evidence/runs/SY-02.md",
+      ".migration/profile.yaml",
+      ".migration/returns/SY-02.afs-bootstrapper.yaml",
+      "config/__init__.py",
+      "config/asgi.py",
+      "config/settings.py",
+      "config/urls.py",
+      "config/wsgi.py",
+      "manage.py",
+      "pyproject.toml",
+      "requirements-dev.txt",
+      "src/__init__.py",
+      "src/core/__init__.py",
+      "src/core/database.py",
+      "tests/test_database_smoke.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
