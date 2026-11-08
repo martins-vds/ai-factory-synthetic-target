@@ -1,0 +1,14 @@
+role: afs-program-orchestrator
+ticket: SY-07
+issue: martins-vds/ai-factory-synthetic-target#52
+phase: 4
+decisions:
+  - "Applied the UI direction from #38 and the rulings from #39 and #41."
+  - "Built three alternatives but did not choose a variant; #50 remains open."
+dispatched: []
+awaiting_human:
+  - "Publish local commit db4459a on prototype/loan-screens; the progress-tool push was rejected with HTTP 403."
+  - "Post the branch, command, URL, and variant summaries on #50; issue comments cannot be created with the available tools."
+  - "Review the prototype and record a verdict on #50."
+next_step: "An authorized human publishes and comments on #50; the operator then records the variant verdict. Do not close #50."
+handoff: .migration/handoffs/SY-07.md
