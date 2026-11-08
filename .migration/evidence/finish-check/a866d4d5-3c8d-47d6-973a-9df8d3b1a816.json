@@ -1,0 +1,37 @@
+[
+  {
+    "at": "2026-11-08T18:04:17Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 35862,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "SY-03",
+    "role": "afs-bootstrapper",
+    "changed": [
+      ".github/workflows/copilot-setup-steps.yml",
+      ".migration/capabilities.yaml",
+      ".migration/characterization/source/characterize.py",
+      ".migration/characterization/source/goldens/browser.json",
+      ".migration/characterization/source/goldens/http.json",
+      ".migration/evidence/runs/SY-03.md",
+      ".migration/evidence/source-coverage-SY-03.md",
+      ".migration/evidence/source-crap-risk-map-SY-03.md",
+      ".migration/returns/SY-03.afs-bootstrapper.yaml",
+      "requirements-dev.txt",
+      "tests/test_ui_smoke.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
