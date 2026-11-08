@@ -1,0 +1,51 @@
+[
+  {
+    "at": "2026-11-08T18:45:52Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 39996,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "SY-04",
+    "role": "afs-analyst",
+    "changed": [
+      ".migration/evidence/runs/SY-04.md",
+      ".migration/ledger/about.page.yaml",
+      ".migration/ledger/application.build.yaml",
+      ".migration/ledger/application.startup.yaml",
+      ".migration/ledger/data.loan-storage.yaml",
+      ".migration/ledger/data.seed-records.yaml",
+      ".migration/ledger/fees.calculation.yaml",
+      ".migration/ledger/fees.page.yaml",
+      ".migration/ledger/integration.payment-gateway.yaml",
+      ".migration/ledger/loan.due-date.yaml",
+      ".migration/ledger/loan.get.yaml",
+      ".migration/ledger/loan.lend.yaml",
+      ".migration/ledger/loan.list.yaml",
+      ".migration/ledger/loan.return-date.yaml",
+      ".migration/ledger/loan.return.yaml",
+      ".migration/ledger/loan.text-export.yaml",
+      ".migration/ledger/reports.monthly-spec.yaml",
+      ".migration/ledger/repository.transactions.yaml",
+      ".migration/quirks/blank-loan-fields.md",
+      ".migration/quirks/payment-interrupt.md",
+      ".migration/quirks/repeated-loan-return.md",
+      ".migration/quirks/restart-data-loss.md",
+      ".migration/quirks/unescaped-loan-export.md",
+      ".migration/returns/SY-04.afs-analyst.yaml",
+      ".migration/risk-map/SY-04.md"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
