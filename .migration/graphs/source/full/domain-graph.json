@@ -1,0 +1,671 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "lending-library",
+    "languages": [
+      "html",
+      "java",
+      "markdown",
+      "shell",
+      "sql",
+      "xml"
+    ],
+    "frameworks": [
+      "Jersey",
+      "Hibernate",
+      "Maven"
+    ],
+    "description": "A small library lending app: members borrow books on 14-day loans, return them, and pay late fees through an external gateway.",
+    "analyzedAt": "2026-11-08T16:55:04.700Z",
+    "gitCommitHash": "563c316ed51462b08fd6e58f3781a3c8b2890453",
+    "analyzedCommit": "d2fb1258f7f4101148237d4bd484089cb6fa6d1a"
+  },
+  "nodes": [
+    {
+      "id": "domain:loan-management",
+      "type": "domain",
+      "name": "Loan Management",
+      "summary": "Tracks books lent to members, their due dates and returns. Exposes loans as semicolon-separated text used by spreadsheet consumers.",
+      "tags": [
+        "loans",
+        "lending"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Member",
+          "ISBN"
+        ],
+        "businessRules": [
+          "Loans are due 14 days after being lent",
+          "A loan is returned by recording a return date",
+          "Loan list format is a semicolon-separated CSV contract"
+        ],
+        "crossDomainInteractions": [
+          "Late fees are computed from loan due and return dates",
+          "Fine payments require an existing loan"
+        ]
+      }
+    },
+    {
+      "id": "domain:fines-and-payments",
+      "type": "domain",
+      "name": "Fines & Payments",
+      "summary": "Computes late fees on overdue loans and lets members pay them via an external payment gateway.",
+      "tags": [
+        "fees",
+        "payments"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Late fee",
+          "Payment charge"
+        ],
+        "businessRules": [
+          "25 cents per day late",
+          "Fee capped at $10",
+          "Waived when within 2 days of due date",
+          "Unknown loans yield 404; gateway failure yields 502"
+        ],
+        "crossDomainInteractions": [
+          "Reads loans from Loan Management",
+          "Calls external gateway at PAYMENT_GATEWAY_URL"
+        ]
+      }
+    },
+    {
+      "id": "domain:library-operations",
+      "type": "domain",
+      "name": "Library Operations",
+      "summary": "Application bootstrap, persistence setup with seeded data, and public library information such as opening hours.",
+      "tags": [
+        "platform",
+        "bootstrap"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "EntityManagerFactory",
+          "HTTP server",
+          "About page"
+        ],
+        "businessRules": [
+          "Schema is recreated in-memory H2 and seeded with sample loans at startup",
+          "Server port defaults and is configurable via PORT"
+        ],
+        "crossDomainInteractions": [
+          "Wires repository into loan and fee resources"
+        ]
+      }
+    },
+    {
+      "id": "flow:lend-book",
+      "type": "flow",
+      "name": "Lend Book",
+      "summary": "A member borrows a book, creating a new loan with a 14-day due date.",
+      "tags": [
+        "loans"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /loans",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "flow:return-book",
+      "type": "flow",
+      "name": "Return Book",
+      "summary": "A member returns a loaned book, recording the return date.",
+      "tags": [
+        "loans"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /loans/{id}/return",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "flow:list-loans",
+      "type": "flow",
+      "name": "List and View Loans",
+      "summary": "Retrieve all loans or a single loan as semicolon-separated lines.",
+      "tags": [
+        "loans",
+        "export"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans, GET /loans/{id}",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "flow:view-late-fee",
+      "type": "flow",
+      "name": "View Late Fee",
+      "summary": "Shows an HTML page with the late fee owed for a loan.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /fees/{id}",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "flow:pay-fine",
+      "type": "flow",
+      "name": "Pay Fine",
+      "summary": "Charges a loan's late fee through the external payment gateway.",
+      "tags": [
+        "payments"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "POST /payments/{id}",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "flow:start-service",
+      "type": "flow",
+      "name": "Start Lending Service",
+      "summary": "Boots persistence, registers resources and starts the HTTP server with graceful shutdown.",
+      "tags": [
+        "bootstrap"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "lib.App.main (run.sh)",
+        "entryType": "cli"
+      }
+    },
+    {
+      "id": "flow:view-about-page",
+      "type": "flow",
+      "name": "View About Page",
+      "summary": "Serves the static page with opening hours, lending period and contact details.",
+      "tags": [
+        "information"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /about",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:lend-book:receive-request",
+      "type": "step",
+      "name": "Receive lend request",
+      "summary": "Resource accepts member and ISBN from the POST request.",
+      "tags": [
+        "http"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "step:lend-book:create-loan",
+      "type": "step",
+      "name": "Create loan",
+      "summary": "Repository builds a Loan with id derived from loan count and today's date.",
+      "tags": [
+        "persistence"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java"
+    },
+    {
+      "id": "step:lend-book:persist-loan",
+      "type": "step",
+      "name": "Persist in transaction",
+      "summary": "Loan is saved in a committed transaction, rolled back on failure.",
+      "tags": [
+        "persistence"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java"
+    },
+    {
+      "id": "step:lend-book:format-response",
+      "type": "step",
+      "name": "Format loan line",
+      "summary": "Returns the loan as id;member;isbn;lent;due;returned.",
+      "tags": [
+        "format"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "step:return-book:receive-request",
+      "type": "step",
+      "name": "Receive return request",
+      "summary": "Resource takes the loan id from the path.",
+      "tags": [
+        "http"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "step:return-book:mark-returned",
+      "type": "step",
+      "name": "Mark loan returned",
+      "summary": "Loan.markReturned sets the return date; repository merges the update or yields empty.",
+      "tags": [
+        "persistence"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java"
+    },
+    {
+      "id": "step:return-book:format-response",
+      "type": "step",
+      "name": "Respond with loan",
+      "summary": "Returns the updated loan line or a not-found result.",
+      "tags": [
+        "format"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "step:list-loans:query-loans",
+      "type": "step",
+      "name": "Query loans",
+      "summary": "Repository reads all loans or one by id in a read unit of work.",
+      "tags": [
+        "persistence"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java"
+    },
+    {
+      "id": "step:list-loans:compute-due-date",
+      "type": "step",
+      "name": "Compute due date",
+      "summary": "Loan.dueOn adds the 14-day lending period to the lent date.",
+      "tags": [
+        "rules"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/Loan.java"
+    },
+    {
+      "id": "step:list-loans:emit-lines",
+      "type": "step",
+      "name": "Emit semicolon-separated lines",
+      "summary": "Each loan is formatted per the documented CSV export contract.",
+      "tags": [
+        "format",
+        "export"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java"
+    },
+    {
+      "id": "step:view-late-fee:find-loan",
+      "type": "step",
+      "name": "Find loan",
+      "summary": "Looks up the loan by id, returning 404 if absent.",
+      "tags": [
+        "persistence"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java"
+    },
+    {
+      "id": "step:view-late-fee:compute-days-late",
+      "type": "step",
+      "name": "Compute days late",
+      "summary": "Compares return (or current) date against the due date.",
+      "tags": [
+        "rules"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java"
+    },
+    {
+      "id": "step:view-late-fee:apply-fee-rules",
+      "type": "step",
+      "name": "Apply fee rules",
+      "summary": "25 cents per day, capped at $10, waived within 2 days.",
+      "tags": [
+        "rules",
+        "fees"
+      ],
+      "complexity": "moderate",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java"
+    },
+    {
+      "id": "step:view-late-fee:render-page",
+      "type": "step",
+      "name": "Render fee page",
+      "summary": "Returns an HTML page showing the fee.",
+      "tags": [
+        "html"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java"
+    },
+    {
+      "id": "step:pay-fine:verify-loan",
+      "type": "step",
+      "name": "Verify loan exists",
+      "summary": "Returns 404 when the loan id is unknown.",
+      "tags": [
+        "validation"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java"
+    },
+    {
+      "id": "step:pay-fine:charge-gateway",
+      "type": "step",
+      "name": "Charge payment gateway",
+      "summary": "POSTs a charge for the late fee to PAYMENT_GATEWAY_URL.",
+      "tags": [
+        "integration",
+        "payments"
+      ],
+      "complexity": "moderate",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java"
+    },
+    {
+      "id": "step:pay-fine:map-status",
+      "type": "step",
+      "name": "Map gateway status",
+      "summary": "Maps gateway success to 200 and failures to 502.",
+      "tags": [
+        "error-handling"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java"
+    },
+    {
+      "id": "step:start-service:create-emf",
+      "type": "step",
+      "name": "Create persistence unit",
+      "summary": "Builds the EntityManagerFactory for the 'library' unit; H2 schema is recreated and seeded.",
+      "tags": [
+        "persistence"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/resources/META-INF/persistence.xml"
+    },
+    {
+      "id": "step:start-service:wire-resources",
+      "type": "step",
+      "name": "Wire resources",
+      "summary": "Creates the repository and registers loan, fee, payment and about resources.",
+      "tags": [
+        "wiring"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/App.java"
+    },
+    {
+      "id": "step:start-service:start-server",
+      "type": "step",
+      "name": "Start Grizzly server",
+      "summary": "Listens on PORT and installs a shutdown hook closing server and EMF.",
+      "tags": [
+        "server"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/App.java"
+    },
+    {
+      "id": "step:view-about-page:load-resource",
+      "type": "step",
+      "name": "Load about.html",
+      "summary": "Reads /static/about.html from the classpath.",
+      "tags": [
+        "static"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java"
+    },
+    {
+      "id": "step:view-about-page:return-html",
+      "type": "step",
+      "name": "Return HTML",
+      "summary": "Serves the page as UTF-8 text/html.",
+      "tags": [
+        "html"
+      ],
+      "complexity": "simple",
+      "filePath": "legacy/src/main/resources/static/about.html"
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:loan-management",
+      "target": "flow:lend-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:return-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:list-loans",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fines-and-payments",
+      "target": "flow:view-late-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fines-and-payments",
+      "target": "flow:pay-fine",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:library-operations",
+      "target": "flow:start-service",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:library-operations",
+      "target": "flow:view-about-page",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:receive-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:create-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:persist-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:format-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:receive-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:mark-returned",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:format-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "flow:list-loans",
+      "target": "step:list-loans:query-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:list-loans",
+      "target": "step:list-loans:compute-due-date",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:list-loans",
+      "target": "step:list-loans:emit-lines",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:find-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:compute-days-late",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:apply-fee-rules",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:render-page",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:pay-fine",
+      "target": "step:pay-fine:verify-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:pay-fine",
+      "target": "step:pay-fine:charge-gateway",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:pay-fine",
+      "target": "step:pay-fine:map-status",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "flow:start-service",
+      "target": "step:start-service:create-emf",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:start-service",
+      "target": "step:start-service:wire-resources",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:start-service",
+      "target": "step:start-service:start-server",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "flow:view-about-page",
+      "target": "step:view-about-page:load-resource",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-about-page",
+      "target": "step:view-about-page:return-html",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fines-and-payments",
+      "target": "domain:loan-management",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Fees and payments are derived from loan due/return dates and require an existing loan",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:library-operations",
+      "target": "domain:loan-management",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Bootstraps persistence, seed loans and wires the loan repository",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}

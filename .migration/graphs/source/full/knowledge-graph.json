@@ -1,0 +1,1997 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "lending-library",
+    "languages": [
+      "html",
+      "java",
+      "markdown",
+      "shell",
+      "sql",
+      "xml"
+    ],
+    "frameworks": [
+      "Jersey",
+      "Hibernate",
+      "Maven"
+    ],
+    "description": "The Lending Library: a small library lending app (legacy Jersey/Grizzly + Hibernate Java service).",
+    "analyzedAt": "2026-11-08T16:54:52.214Z",
+    "gitCommitHash": "563c316ed51462b08fd6e58f3781a3c8b2890453",
+    "afsEnrichment": {
+      "enrichers": [
+        "graphify",
+        "java-ee"
+      ],
+      "added": {
+        "edge:calls": 24,
+        "edge:contains": 27,
+        "edge:defines_schema": 1,
+        "edge:reads_from": 4,
+        "edge:routes": 7,
+        "edge:writes_to": 2,
+        "node:endpoint": 7,
+        "node:method": 27,
+        "node:table": 1
+      },
+      "graphify": {
+        "schema_version": 1,
+        "graphify_version": "0.9.101"
+      }
+    },
+    "analyzedCommit": "d2fb1258f7f4101148237d4bd484089cb6fa6d1a"
+  },
+  "nodes": [
+    {
+      "id": "document:legacy/docs/export-csv.md",
+      "type": "document",
+      "name": "export-csv.md",
+      "filePath": "legacy/docs/export-csv.md",
+      "summary": "Describes the semicolon-separated CSV format returned by GET /loans (id, member, isbn, lent on, due on, returned on), which spreadsheet users rely on.",
+      "tags": [
+        "documentation",
+        "csv",
+        "api-contract"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:legacy/docs/reports-spec.md",
+      "type": "document",
+      "name": "reports-spec.md",
+      "filePath": "legacy/docs/reports-spec.md",
+      "summary": "Specification of a monthly lending report from a removed reporting module: one row per member with loans started, late returns and total late fees, sorted by fees. Only the spec remains; no code exists.",
+      "tags": [
+        "documentation",
+        "specification",
+        "reporting"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:legacy/pom.xml",
+      "type": "config",
+      "name": "pom.xml",
+      "filePath": "legacy/pom.xml",
+      "summary": "Maven build for the lending-library artifact, declaring Jersey/Grizzly, Hibernate and H2 dependencies and a dependency-copy plugin.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "maven"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:legacy/run.sh",
+      "type": "file",
+      "name": "run.sh",
+      "filePath": "legacy/run.sh",
+      "summary": "Shell launcher that builds the project with Maven (skipping tests) and starts lib.App using the compiled classes and copied dependencies.",
+      "tags": [
+        "entry-point",
+        "script",
+        "build-system"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/AboutPage.java",
+      "type": "file",
+      "name": "AboutPage.java",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "JAX-RS resource serving GET /about by returning the static about.html classpath resource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "static-content"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "class",
+      "name": "AboutPage",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "Resource class mapped to /about that reads and returns about.html as text/html.",
+      "tags": [
+        "api-handler",
+        "jax-rs"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        13,
+        22
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/AboutPage.java:page",
+      "type": "function",
+      "name": "page",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "GET handler that loads /static/about.html from the classpath and returns it as a UTF-8 string.",
+      "tags": [
+        "api-handler",
+        "io"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        15,
+        21
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/App.java",
+      "type": "file",
+      "name": "App.java",
+      "filePath": "legacy/src/main/java/lib/App.java",
+      "summary": "Application entry point: creates the JPA EntityManagerFactory, wires the repository into the resources, and starts a Grizzly HTTP server on PORT (default 8080).",
+      "tags": [
+        "entry-point",
+        "bootstrap",
+        "jax-rs",
+        "grizzly"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/App.java:App",
+      "type": "class",
+      "name": "App",
+      "filePath": "legacy/src/main/java/lib/App.java",
+      "summary": "Final bootstrap class holding main().",
+      "tags": [
+        "entry-point",
+        "bootstrap"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        12,
+        27
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/App.java:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "legacy/src/main/java/lib/App.java",
+      "summary": "Builds the object graph, registers JAX-RS resources, starts the server and installs a shutdown hook closing the server and EMF.",
+      "tags": [
+        "entry-point",
+        "bootstrap"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        13,
+        26
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/FinePayments.java",
+      "type": "file",
+      "name": "FinePayments.java",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "JAX-RS resource for POST /payments/{id} that verifies the loan exists and charges the late fee via an external payment gateway.",
+      "tags": [
+        "api-handler",
+        "payments",
+        "http-client"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "type": "class",
+      "name": "FinePayments",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "Resource that proxies fine payments to the gateway configured by PAYMENT_GATEWAY_URL.",
+      "tags": [
+        "api-handler",
+        "payments"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        17,
+        42
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/FinePayments.java:pay",
+      "type": "function",
+      "name": "pay",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "Returns 404 for unknown loans, otherwise POSTs a charge to the gateway and maps its status to 200 or 502.",
+      "tags": [
+        "api-handler",
+        "payments",
+        "error-handling"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        26,
+        41
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "type": "file",
+      "name": "LateFeeView.java",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "JAX-RS resource rendering an HTML page with a loan's late fee (25 cents/day, capped at $10, waived within 2 days).",
+      "tags": [
+        "api-handler",
+        "business-logic",
+        "html"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "type": "class",
+      "name": "LateFeeView",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "Resource mapped to /fees that computes and displays late fees.",
+      "tags": [
+        "api-handler",
+        "business-logic"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        15,
+        39
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LateFeeView.java:page",
+      "type": "function",
+      "name": "page",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "Looks up the loan, computes days late and the fee in cents, and returns an HTML fee page or 404.",
+      "tags": [
+        "api-handler",
+        "fee-calculation"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        23,
+        38
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/Loan.java",
+      "type": "file",
+      "name": "Loan.java",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "JPA entity for a book loan mapped to the LOAN table, with a 14-day due date rule.",
+      "tags": [
+        "data-model",
+        "jpa",
+        "entity"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "class",
+      "name": "Loan",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "Entity holding id, member, isbn, lent and returned dates, with dueOn() and markReturned().",
+      "tags": [
+        "data-model",
+        "jpa",
+        "entity"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        11,
+        51
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "file",
+      "name": "LoanRepository.java",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Repository encapsulating JPA access to loans, with helpers that manage EntityManager and transaction lifecycles.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "type": "class",
+      "name": "LoanRepository",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Provides all, find, lend and markReturned over Loan using read/write unit-of-work helpers.",
+      "tags": [
+        "repository",
+        "persistence"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        12,
+        70
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:lend",
+      "type": "function",
+      "name": "lend",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Creates and persists a new loan with an id derived from the current loan count.",
+      "tags": [
+        "persistence",
+        "write"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        27,
+        34
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:markReturned",
+      "type": "function",
+      "name": "markReturned",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Marks a loan returned on a date and merges it, or returns empty if not found.",
+      "tags": [
+        "persistence",
+        "write"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        36,
+        45
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:write",
+      "type": "function",
+      "name": "write",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Runs work in a transaction, committing on success and rolling back if still active.",
+      "tags": [
+        "transaction",
+        "persistence",
+        "utility"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        56,
+        69
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/LoanResource.java",
+      "type": "file",
+      "name": "LoanResource.java",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "JAX-RS resource for /loans: list, get, lend and return endpoints emitting semicolon-separated plain-text lines.",
+      "tags": [
+        "api-handler",
+        "rest",
+        "csv"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "type": "class",
+      "name": "LoanResource",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Resource exposing GET /loans, GET /loans/{id}, POST /loans and POST /loans/{id}/return.",
+      "tags": [
+        "api-handler",
+        "rest"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        16,
+        56
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "type": "function",
+      "name": "line",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Formats a Loan as a semicolon-separated line (id, member, isbn, lent, due, returned).",
+      "tags": [
+        "serialization",
+        "csv"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        52,
+        55
+      ]
+    },
+    {
+      "id": "config:legacy/src/main/resources/META-INF/persistence.xml",
+      "type": "config",
+      "name": "persistence.xml",
+      "filePath": "legacy/src/main/resources/META-INF/persistence.xml",
+      "summary": "JPA persistence unit \"library\" using in-memory H2, drop-and-create schema generation and seed.sql loading for lib.Loan.",
+      "tags": [
+        "configuration",
+        "jpa",
+        "database",
+        "h2"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "type": "table",
+      "name": "seed.sql (LOAN)",
+      "filePath": "legacy/src/main/resources/META-INF/seed.sql",
+      "summary": "Seed script inserting three sample loans into the LOAN table at startup.",
+      "tags": [
+        "database",
+        "seed-data",
+        "sql"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:legacy/src/main/resources/static/about.html",
+      "type": "file",
+      "name": "about.html",
+      "filePath": "legacy/src/main/resources/static/about.html",
+      "summary": "Static about page with opening hours, 14-day lending period and contact address.",
+      "tags": [
+        "html",
+        "static-content",
+        "markup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.Loan",
+      "type": "method",
+      "name": "Loan.Loan",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.Loan (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        28,
+        28
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/AboutPage.java:AboutPage.page",
+      "type": "method",
+      "name": "AboutPage.page",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "method AboutPage.page (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        15,
+        15
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/App.java:App.main",
+      "type": "method",
+      "name": "App.main",
+      "filePath": "legacy/src/main/java/lib/App.java",
+      "summary": "method App.main (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        13,
+        13
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.FinePayments",
+      "type": "method",
+      "name": "FinePayments.FinePayments",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "method FinePayments.FinePayments (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
+      "type": "method",
+      "name": "FinePayments.pay",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "method FinePayments.pay (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        26,
+        26
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.LateFeeView",
+      "type": "method",
+      "name": "LateFeeView.LateFeeView",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "method LateFeeView.LateFeeView (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        19,
+        19
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "type": "method",
+      "name": "LateFeeView.page",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "method LateFeeView.page (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        23,
+        23
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.getId",
+      "type": "method",
+      "name": "Loan.getId",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.getId (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        38,
+        38
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.getMember",
+      "type": "method",
+      "name": "Loan.getMember",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.getMember (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        39,
+        39
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.getIsbn",
+      "type": "method",
+      "name": "Loan.getIsbn",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.getIsbn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        40,
+        40
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.getLentOn",
+      "type": "method",
+      "name": "Loan.getLentOn",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.getLentOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        41,
+        41
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.getReturnedOn",
+      "type": "method",
+      "name": "Loan.getReturnedOn",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.getReturnedOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        42,
+        42
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.dueOn",
+      "type": "method",
+      "name": "Loan.dueOn",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.dueOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        44,
+        44
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Loan.java:Loan.markReturned",
+      "type": "method",
+      "name": "Loan.markReturned",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "method Loan.markReturned (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        48,
+        48
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.LoanRepository",
+      "type": "method",
+      "name": "LoanRepository.LoanRepository",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.LoanRepository (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        15,
+        15
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
+      "type": "method",
+      "name": "LoanRepository.all",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.all (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        19,
+        19
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "type": "method",
+      "name": "LoanRepository.find",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.find (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        23,
+        23
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.lend",
+      "type": "method",
+      "name": "LoanRepository.lend",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.lend (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        27,
+        27
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "type": "method",
+      "name": "LoanRepository.markReturned",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.markReturned (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        36,
+        36
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.read",
+      "type": "method",
+      "name": "LoanRepository.read",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.read (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        47,
+        47
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.write",
+      "type": "method",
+      "name": "LoanRepository.write",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "method LoanRepository.write (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        56,
+        56
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.LoanResource",
+      "type": "method",
+      "name": "LoanResource.LoanResource",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "method LoanResource.LoanResource (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        21,
+        21
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.list",
+      "type": "method",
+      "name": "LoanResource.list",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "method LoanResource.list (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        25,
+        25
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.one",
+      "type": "method",
+      "name": "LoanResource.one",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "method LoanResource.one (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        30,
+        30
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.lend",
+      "type": "method",
+      "name": "LoanResource.lend",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "method LoanResource.lend (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        37,
+        37
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.giveBack",
+      "type": "method",
+      "name": "LoanResource.giveBack",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "method LoanResource.giveBack (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        45,
+        45
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "type": "method",
+      "name": "LoanResource.line",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "method LoanResource.line (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        52,
+        52
+      ]
+    },
+    {
+      "id": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "table",
+      "name": "LOAN",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "Table LOAN mapped by JPA entity Loan",
+      "tags": [
+        "afs-enriched",
+        "jpa-entity"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        11,
+        11
+      ]
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/AboutPage.java:GET /about",
+      "type": "endpoint",
+      "name": "GET /about",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "HTTP GET /about (AboutPage.page)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/FinePayments.java:POST /payments/{id}",
+      "type": "endpoint",
+      "name": "POST /payments/{id}",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "HTTP POST /payments/{id} (FinePayments.pay)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/LateFeeView.java:GET /fees/{id}",
+      "type": "endpoint",
+      "name": "GET /fees/{id}",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "HTTP GET /fees/{id} (LateFeeView.page)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/LoanResource.java:GET /loans",
+      "type": "endpoint",
+      "name": "GET /loans",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "HTTP GET /loans (LoanResource.list)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/LoanResource.java:GET /loans/{id}",
+      "type": "endpoint",
+      "name": "GET /loans/{id}",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "HTTP GET /loans/{id} (LoanResource.one)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/LoanResource.java:POST /loans",
+      "type": "endpoint",
+      "name": "POST /loans",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "HTTP POST /loans (LoanResource.lend)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/LoanResource.java:POST /loans/{id}/return",
+      "type": "endpoint",
+      "name": "POST /loans/{id}/return",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "HTTP POST /loans/{id}/return (LoanResource.giveBack)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "function:legacy/src/main/java/lib/AboutPage.java:page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "function:legacy/src/main/java/lib/AboutPage.java:page",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "class:legacy/src/main/java/lib/App.java:App",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "class:legacy/src/main/java/lib/App.java:App",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "function:legacy/src/main/java/lib/App.java:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "function:legacy/src/main/java/lib/App.java:main",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "function:legacy/src/main/java/lib/FinePayments.java:pay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "function:legacy/src/main/java/lib/FinePayments.java:pay",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "function:legacy/src/main/java/lib/LateFeeView.java:page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "function:legacy/src/main/java/lib/LateFeeView.java:page",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Loan.java",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Loan.java",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:lend",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:markReturned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:markReturned",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:write",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/LoanResource.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/FinePayments.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/AboutPage.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "file:legacy/src/main/java/lib/Loan.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "file:legacy/src/main/java/lib/Loan.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "file:legacy/src/main/java/lib/Loan.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:legacy/src/main/java/lib/AboutPage.java:page",
+      "target": "file:legacy/src/main/resources/static/about.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/run.sh",
+      "target": "file:legacy/src/main/java/lib/App.java",
+      "type": "deploys",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "config:legacy/pom.xml",
+      "target": "file:legacy/src/main/java/lib/App.java",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:legacy/src/main/resources/META-INF/persistence.xml",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:legacy/src/main/resources/META-INF/persistence.xml",
+      "target": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:legacy/docs/export-csv.md",
+      "target": "file:legacy/src/main/java/lib/LoanResource.java",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:legacy/docs/export-csv.md",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:legacy/docs/reports-spec.md",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:legacy/docs/reports-spec.md",
+      "target": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:legacy/src/main/resources/static/about.html",
+      "target": "file:legacy/src/main/java/lib/AboutPage.java",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.Loan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "target": "method:legacy/src/main/java/lib/AboutPage.java:AboutPage.page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/App.java:App",
+      "target": "method:legacy/src/main/java/lib/App.java:App.main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "target": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.FinePayments",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "target": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "target": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.LateFeeView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "target": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getId",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getMember",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getIsbn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getLentOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getReturnedOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.dueOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.markReturned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.LoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.read",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.write",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.LoanResource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.one",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.giveBack",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.read",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanRepository.java:L20"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.read",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanRepository.java:L24"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.lend",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.write",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanRepository.java:L28"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.write",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanRepository.java:L37"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.giveBack",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanResource.java:L48"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.lend",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanResource.java:L42"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.one",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/LoanResource.java:L33"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/App.java:App.main",
+      "target": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/App.java:L21"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/FinePayments.java:L30"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LateFeeView.java:L27"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getReturnedOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LateFeeView.java:L32"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.dueOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LateFeeView.java:L33"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getId",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LateFeeView.java:L35"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.markReturned",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanRepository.java:L42"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.giveBack",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L48"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.lend",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.lend",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L42"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.dueOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getId",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getIsbn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getLentOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getMember",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.line",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getReturnedOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L54"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.list",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L27"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.one",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L33"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-entity"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/AboutPage.java:GET /about",
+      "target": "method:legacy/src/main/java/lib/AboutPage.java:AboutPage.page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/FinePayments.java:POST /payments/{id}",
+      "target": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/LateFeeView.java:GET /fees/{id}",
+      "target": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.find",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.lend",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.lend",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.markReturned",
+      "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/LoanResource.java:GET /loans",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.list",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/LoanResource.java:GET /loans/{id}",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.one",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/LoanResource.java:POST /loans",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.lend",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/LoanResource.java:POST /loans/{id}/return",
+      "target": "method:legacy/src/main/java/lib/LoanResource.java:LoanResource.giveBack",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:api",
+      "name": "API & Application Layer",
+      "description": "Application entry point and HTTP-facing JAX-RS resources and views, including the static about page.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/App.java",
+        "file:legacy/src/main/java/lib/LoanResource.java",
+        "file:legacy/src/main/java/lib/AboutPage.java",
+        "file:legacy/src/main/java/lib/LateFeeView.java",
+        "file:legacy/src/main/resources/static/about.html"
+      ]
+    },
+    {
+      "id": "layer:domain-data",
+      "name": "Domain & Data Access Layer",
+      "description": "JPA entities, repositories, fine payment logic, and seed data for the H2 database.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/Loan.java",
+        "file:legacy/src/main/java/lib/LoanRepository.java",
+        "file:legacy/src/main/java/lib/FinePayments.java",
+        "table:legacy/src/main/resources/META-INF/seed.sql:LOAN"
+      ]
+    },
+    {
+      "id": "layer:config-build",
+      "name": "Configuration & Build Layer",
+      "description": "Maven build, JPA persistence configuration, and run script.",
+      "nodeIds": [
+        "config:legacy/pom.xml",
+        "config:legacy/src/main/resources/META-INF/persistence.xml",
+        "file:legacy/run.sh"
+      ]
+    },
+    {
+      "id": "layer:docs",
+      "name": "Documentation Layer",
+      "description": "Specification documents for reports and CSV export.",
+      "nodeIds": [
+        "document:legacy/docs/export-csv.md",
+        "document:legacy/docs/reports-spec.md"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "App Entry Point",
+      "description": "App.java is the entry point. It creates the JPA EntityManagerFactory and wires up the Grizzly/Jersey server and its resources. There is no README, so start here.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/App.java"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Running the App",
+      "description": "run.sh builds the project with Maven, skipping tests, and launches the server. It is the quickest way to get the app running locally.",
+      "nodeIds": [
+        "file:legacy/run.sh"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Loan Domain Entity",
+      "description": "Loan is the JPA entity mapped to the LOAN table. It carries the 14-day due-date logic that the rest of the app builds on.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/Loan.java"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "Data Access",
+      "description": "LoanRepository encapsulates JPA access to loans and manages the transaction helpers. Resources go through it instead of touching the EntityManager directly.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/LoanRepository.java"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Loan REST API",
+      "description": "LoanResource exposes /loans to list, get, lend and return books. It is the core JAX-RS endpoint and is backed by the repository.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/LoanResource.java",
+        "file:legacy/src/main/java/lib/LoanRepository.java"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Fees and Payments",
+      "description": "LateFeeView renders a loan's late fee as an HTML page. FinePayments handles POST /payments/{id} after checking that the loan exists. Both build on the Loan model.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/LateFeeView.java",
+        "file:legacy/src/main/java/lib/FinePayments.java"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Static About Page",
+      "description": "AboutPage serves the static about.html at GET /about. The page lists opening hours, the 14-day lending period and contact details.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/AboutPage.java",
+        "file:legacy/src/main/resources/static/about.html"
+      ]
+    }
+  ]
+}
