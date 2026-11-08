@@ -73,7 +73,8 @@ rtk:
   edition: oss
   version: 1.1.0
 services:
-  compose: compose.yaml
+  compose: compose.yaml   # real test services (harness ADR-0016)
   test: [db]
+  env: {POSTGRES_DB: lending, POSTGRES_USER: lending, POSTGRES_HOST: 127.0.0.1, POSTGRES_PORT: '5432'}   # scaffolding writes settings to these defaults
 signoff:
   approvers: [martins-vds]

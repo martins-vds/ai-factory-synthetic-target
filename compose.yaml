@@ -1,0 +1,26 @@
+# Real services the tests run against (harness ADR-0016; profile `services`).
+# Copilot setup steps and the CI gates start `db` with `.migration/harness/tools/afs-services up`;
+# locally: `docker compose up -d --wait db`.
+# Scaffolding writes the target's settings to these defaults (profile services.env).
+name: lending-library
+
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-lending}
+      POSTGRES_USER: ${POSTGRES_USER:-lending}
+      # Test database only, reachable from this machine alone (port bound to 127.0.0.1). The default user
+      # is a superuser, so test runs and mutation shards can create their own databases.
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    # Throwaway data: tests create and drop their own databases.
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+      start_period: 5s
