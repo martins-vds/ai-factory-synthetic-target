@@ -7,9 +7,11 @@ source:
   location: legacy/src/main/resources/META-INF/seed.sql:1-3
 boundary: "The persistence unit loads three fixed example loan rows at startup: L1, L2, and L3, with their member, ISBN, and lent/returned dates."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
-status: pending
+target:
+  components: [src.loans.migrations.seed_loans]
+status: migrated
 verification: differential
 characterization_tier: A
-evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json]
-notes: "Seed reload and reset-on-restart behavior are raised in martins-vds/ai-factory-synthetic-target#42."
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records]
+notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 seeds fresh databases only; subsequent startup does not overwrite existing loans."
 quirks: [martins-vds/ai-factory-synthetic-target#42]

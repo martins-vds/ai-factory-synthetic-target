@@ -9,7 +9,9 @@ source:
   risk: {crap: 1, complexity: 1, coverage: 1.0}
 boundary: "GET /loans returns every loan ordered by id as one semicolon-separated text line per record, with a trailing newline."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
-status: pending
+target:
+  components: [src.loans.views.loan_list, src.loans.services.list_loans_text]
+status: migrated
 verification: differential
 characterization_tier: A
-evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records, tests/loans/test_catalog.py::test_list_endpoint_orders_all_records_by_id]
