@@ -1,0 +1,85 @@
+::error::graph gate (target): slice loan-catalog: data path from `endpoint=GET /loans`: no matching node (match a node's name, or the end of its file path or id)
+::error::graph gate (target): slice loan-catalog: data path from `endpoint=GET /loans/{id}`: no matching node (match a node's name, or the end of its file path or id)
+::error::graph gate (target): slice loan-catalog: data path from `endpoint=GET /ui/loans/`: no matching node (match a node's name, or the end of its file path or id)
+::error::graph gate (target): slice loan-catalog: data path from `endpoint=GET /ui/loans/{id}/`: no matching node (match a node's name, or the end of its file path or id)
+::error::graph gate (target): endpoint=/loans (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+::error::graph gate (target): endpoint=/loans/<str:loan_id> (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+::error::graph gate (target): endpoint=/ui/loans/ (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+::error::graph gate (target): endpoint=/ui/loans/<str:loan_id>/ (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+::error::graph gate (target): slice library-info: entry_points.target `endpoint=GET /about` matches no node
+::error::graph gate (target): slice library-info: entry_points.target `endpoint=GET /ui/about/` matches no node
+::error::graph gate (target): slice loan-circulation: entry_points.target `endpoint=GET /ui/loans/new/` matches no node
+::warning::graph gate (target): slice fees-payments: data path from `endpoint=GET /fees/{id}`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-03 still open)
+::warning::graph gate (target): slice fees-payments: data path from `endpoint=POST /payments/{id}`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-03 still open)
+::warning::graph gate (target): slice fees-payments: data path from `endpoint=GET /ui/fees/{id}/`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-03 still open)
+::warning::graph gate (target): slice fees-payments: data path from `endpoint=POST /ui/payments/{id}/`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-03 still open)
+::warning::graph gate (target): slice loan-circulation: data path from `endpoint=POST /loans`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-02 still open)
+::warning::graph gate (target): slice loan-circulation: data path from `endpoint=POST /loans/{id}/return`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-02 still open)
+::warning::graph gate (target): slice loan-circulation: data path from `endpoint=POST /ui/loans/`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-02 still open)
+::warning::graph gate (target): slice loan-circulation: data path from `endpoint=POST /ui/loans/{id}/return/`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-02 still open)
+::warning::graph gate (target): slice monthly-report: data path from `command=monthly_report`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-05 still open)
+AFS-TOOL graph_gate.py exit=1
+# Graph gate: target
+
+- 64 nodes, 82 edges
+- Edges added by harness enrichers: 20
+
+## Required types (profile graph.require)
+
+- node `table`: 1
+- node `endpoint`: 4
+- edge `reads_from`: 6
+- edge `writes_to`: 3
+- edge `routes`: 10
+- edge `calls`: 9
+
+## Data paths (slice specs data_paths)
+
+- `fees-payments` **endpoint=GET /fees/{id}**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-03 open)_
+- `fees-payments` **endpoint=POST /payments/{id}**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-03 open)_
+- `fees-payments` **endpoint=GET /ui/fees/{id}/**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-03 open)_
+- `fees-payments` **endpoint=POST /ui/payments/{id}/**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-03 open)_
+- `loan-catalog` **endpoint=GET /loans**: no matching node (match a node's name, or the end of its file path or id)
+- `loan-catalog` **endpoint=GET /loans/{id}**: no matching node (match a node's name, or the end of its file path or id)
+- `loan-catalog` **endpoint=GET /ui/loans/**: no matching node (match a node's name, or the end of its file path or id)
+- `loan-catalog` **endpoint=GET /ui/loans/{id}/**: no matching node (match a node's name, or the end of its file path or id)
+- `loan-circulation` **endpoint=POST /loans**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-02 open)_
+- `loan-circulation` **endpoint=POST /loans/{id}/return**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-02 open)_
+- `loan-circulation` **endpoint=POST /ui/loans/**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-02 open)_
+- `loan-circulation` **endpoint=POST /ui/loans/{id}/return/**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-02 open)_
+- `monthly-report` **command=monthly_report**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-05 open)_
+
+## Entry points owned by a slice (ADR-0026)
+
+- 0 owned, 4 not owned
+  - endpoint=/loans (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+  - endpoint=/loans/<str:loan_id> (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+  - endpoint=/ui/loans/ (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+  - endpoint=/ui/loans/<str:loan_id>/ (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+  - slice library-info: entry_points.target `endpoint=GET /about` matches no node
+  - slice library-info: entry_points.target `endpoint=GET /ui/about/` matches no node
+  - slice loan-circulation: entry_points.target `endpoint=GET /ui/loans/new/` matches no node
+
+## Entry points reaching data (for review)
+
+- 3 of 7 pages/endpoints
+  - no path: page `templates/loans/list.html`
+  - no path: page `templates/loans/detail.html`
+  - no path: endpoint `/ui/loans/<str:loan_id>/`
+  - no path: page `templates/base.html`
+
+## Gate
+
+- FAIL: slice loan-catalog: data path from `endpoint=GET /loans`: no matching node (match a node's name, or the end of its file path or id)
+- FAIL: slice loan-catalog: data path from `endpoint=GET /loans/{id}`: no matching node (match a node's name, or the end of its file path or id)
+- FAIL: slice loan-catalog: data path from `endpoint=GET /ui/loans/`: no matching node (match a node's name, or the end of its file path or id)
+- FAIL: slice loan-catalog: data path from `endpoint=GET /ui/loans/{id}/`: no matching node (match a node's name, or the end of its file path or id)
+- FAIL: endpoint=/loans (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+- FAIL: endpoint=/loans/<str:loan_id> (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+- FAIL: endpoint=/ui/loans/ (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+- FAIL: endpoint=/ui/loans/<str:loan_id>/ (src/loans/urls.py) is owned by no slice: reach it from a slice's data_paths.target or list it in its entry_points.target, or remove it
+- FAIL: slice library-info: entry_points.target `endpoint=GET /about` matches no node
+- FAIL: slice library-info: entry_points.target `endpoint=GET /ui/about/` matches no node
+- FAIL: slice loan-circulation: entry_points.target `endpoint=GET /ui/loans/new/` matches no node
+
+AFS-RESULT gate=graph side=target verdict=fail failures=11 entry_points=7 reaching_data=3 enriched_edges=20

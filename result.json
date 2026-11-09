@@ -1,0 +1,347 @@
+{
+  "format": 1,
+  "ticket": "LL-ACCEPT",
+  "status": "failed",
+  "started_at": "2026-11-09T21:24:16+00:00",
+  "commit": "008507cf59e92b055c00daf6cdd426d8aca4674a",
+  "input_tree_sha256": "3f82a36744a187de5671af584c337505fe93cfa240058903ad6bd2fc0d432248",
+  "harness_commit": "77288cd14e8291e88e1045acc075ab5a059e1273",
+  "inputs": {
+    ".migration/profile.yaml": "1f1a92610e5f5b6fa389dfb6f57c41d3030a390d4af9b0454da26b3af085371d",
+    ".migration/source.lock": "a5f481c3a3715e8a11ce182599bdf580b67613edd337c3f2ed8dbdf119ba4411",
+    ".migration/harness/installed.json": "54624326ddebf6622ed1ccfaaebd8e3a4081fb2fda9f37fa4f967fe7592af6b1"
+  },
+  "workflow": {
+    "GITHUB_SERVER_URL": "https://github.com",
+    "GITHUB_REPOSITORY": "martins-vds/ai-factory-synthetic-target",
+    "GITHUB_RUN_ID": "42701574649",
+    "GITHUB_RUN_ATTEMPT": "1"
+  },
+  "plan": [
+    {
+      "name": "runtime",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_runtime.py"
+      ]
+    },
+    {
+      "name": "harness-integrity",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_installed.py"
+      ]
+    },
+    {
+      "name": "services",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/afs-services",
+        "check"
+      ]
+    },
+    {
+      "name": "graph-freshness",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_graph_fresh.py",
+        "--require",
+        "source,target"
+      ]
+    },
+    {
+      "name": "graph-source",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/graph_gate.py",
+        "--side",
+        "source",
+        "--require-graph"
+      ]
+    },
+    {
+      "name": "graph-target",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/graph_gate.py",
+        "--side",
+        "target",
+        "--require-graph",
+        "--enforce-ownership"
+      ]
+    },
+    {
+      "name": "build-0",
+      "command": [
+        "bash",
+        "-c",
+        "python -m compileall -q src"
+      ]
+    },
+    {
+      "name": "build-1",
+      "command": [
+        "bash",
+        "-c",
+        "python manage.py check"
+      ]
+    },
+    {
+      "name": "idiom-0",
+      "command": [
+        "bash",
+        "-c",
+        "ruff check src config manage.py tests"
+      ]
+    },
+    {
+      "name": "idiom-1",
+      "command": [
+        "bash",
+        "-c",
+        "ruff format --check src config manage.py tests"
+      ]
+    },
+    {
+      "name": "tests-0",
+      "command": [
+        "bash",
+        "-c",
+        "pytest -q"
+      ]
+    },
+    {
+      "name": "crap-0",
+      "command": [
+        "bash",
+        "-c",
+        "pytest -q --cov=src --cov-report=lcov:.migration/runs/crap.lcov"
+      ]
+    },
+    {
+      "name": "crap-1",
+      "command": [
+        "bash",
+        "-c",
+        "lizard --csv src > .migration/runs/lizard.csv"
+      ]
+    },
+    {
+      "name": "crap-2",
+      "command": [
+        "bash",
+        "-c",
+        "python .migration/harness/tools/crap.py .migration/runs/lizard.csv --lcov .migration/runs/crap.lcov --max 30"
+      ]
+    },
+    {
+      "name": "mutation_full-0",
+      "command": [
+        "bash",
+        "-c",
+        "python .migration/harness/tools/afs-mutation --all"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "name": "runtime",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_runtime.py"
+      ],
+      "status": "passed",
+      "started_at": "2026-11-09T21:24:16+00:00",
+      "exit": 0,
+      "finished_at": "2026-11-09T21:24:16+00:00",
+      "record": {
+        "ts": "2026-11-09T21:24:16+00:00",
+        "ticket": "LL-ACCEPT",
+        "name": "runtime",
+        "command": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_runtime.py",
+        "exit": 0,
+        "seconds": 0.04,
+        "log": ".migration/runs/acceptance-42701574649-1/logs/LL-ACCEPT/20261109T212416890080Z-runtime.log",
+        "lines": 2,
+        "bytes": 61
+      },
+      "result": {},
+      "log": "logs/LL-ACCEPT/20261109T212416890080Z-runtime.log"
+    },
+    {
+      "name": "harness-integrity",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_installed.py"
+      ],
+      "status": "passed",
+      "started_at": "2026-11-09T21:24:16+00:00",
+      "exit": 0,
+      "finished_at": "2026-11-09T21:24:17+00:00",
+      "record": {
+        "ts": "2026-11-09T21:24:17+00:00",
+        "ticket": "LL-ACCEPT",
+        "name": "harness-integrity",
+        "command": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_installed.py",
+        "exit": 0,
+        "seconds": 0.06,
+        "log": ".migration/runs/acceptance-42701574649-1/logs/LL-ACCEPT/20261109T212416965451Z-harness-integrity.log",
+        "lines": 2,
+        "bytes": 96
+      },
+      "result": {},
+      "log": "logs/LL-ACCEPT/20261109T212416965451Z-harness-integrity.log"
+    },
+    {
+      "name": "services",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/afs-services",
+        "check"
+      ],
+      "status": "passed",
+      "started_at": "2026-11-09T21:24:17+00:00",
+      "exit": 0,
+      "finished_at": "2026-11-09T21:24:17+00:00",
+      "record": {
+        "ts": "2026-11-09T21:24:17+00:00",
+        "ticket": "LL-ACCEPT",
+        "name": "services",
+        "command": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/afs-services check",
+        "exit": 0,
+        "seconds": 0.11,
+        "log": ".migration/runs/acceptance-42701574649-1/logs/LL-ACCEPT/20261109T212417055138Z-services.log",
+        "lines": 2,
+        "bytes": 45
+      },
+      "result": {},
+      "log": "logs/LL-ACCEPT/20261109T212417055138Z-services.log"
+    },
+    {
+      "name": "graph-freshness",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_graph_fresh.py",
+        "--require",
+        "source,target"
+      ],
+      "status": "passed",
+      "started_at": "2026-11-09T21:24:17+00:00",
+      "exit": 0,
+      "finished_at": "2026-11-09T21:24:17+00:00",
+      "record": {
+        "ts": "2026-11-09T21:24:17+00:00",
+        "ticket": "LL-ACCEPT",
+        "name": "graph-freshness",
+        "command": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/check_graph_fresh.py --require source,target",
+        "exit": 0,
+        "seconds": 0.05,
+        "log": ".migration/runs/acceptance-42701574649-1/logs/LL-ACCEPT/20261109T212417201814Z-graph-freshness.log",
+        "lines": 2,
+        "bytes": 220
+      },
+      "result": {},
+      "log": "logs/LL-ACCEPT/20261109T212417201814Z-graph-freshness.log"
+    },
+    {
+      "name": "graph-source",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/graph_gate.py",
+        "--side",
+        "source",
+        "--require-graph"
+      ],
+      "status": "passed",
+      "started_at": "2026-11-09T21:24:17+00:00",
+      "exit": 0,
+      "finished_at": "2026-11-09T21:24:17+00:00",
+      "record": {
+        "ts": "2026-11-09T21:24:17+00:00",
+        "ticket": "LL-ACCEPT",
+        "name": "graph-source",
+        "command": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/graph_gate.py --side source --require-graph",
+        "exit": 0,
+        "seconds": 0.12,
+        "log": ".migration/runs/acceptance-42701574649-1/logs/LL-ACCEPT/20261109T212417284537Z-graph-source.log",
+        "lines": 36,
+        "bytes": 1535
+      },
+      "result": {
+        "gate": "graph",
+        "side": "source",
+        "verdict": "pass",
+        "failures": "0",
+        "entry_points": "8",
+        "reaching_data": "6",
+        "enriched_edges": "67"
+      },
+      "log": "logs/LL-ACCEPT/20261109T212417284537Z-graph-source.log"
+    },
+    {
+      "name": "graph-target",
+      "command": [
+        "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python",
+        "/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/graph_gate.py",
+        "--side",
+        "target",
+        "--require-graph",
+        "--enforce-ownership"
+      ],
+      "status": "failed",
+      "started_at": "2026-11-09T21:24:17+00:00",
+      "exit": 1,
+      "finished_at": "2026-11-09T21:24:17+00:00",
+      "record": {
+        "ts": "2026-11-09T21:24:17+00:00",
+        "ticket": "LL-ACCEPT",
+        "name": "graph-target",
+        "command": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/graph_gate.py --side target --require-graph --enforce-ownership",
+        "exit": 1,
+        "seconds": 0.12,
+        "log": ".migration/runs/acceptance-42701574649-1/logs/LL-ACCEPT/20261109T212417442814Z-graph-target.log",
+        "lines": 85,
+        "bytes": 8739
+      },
+      "result": {
+        "gate": "graph",
+        "side": "target",
+        "verdict": "fail",
+        "failures": "11",
+        "entry_points": "7",
+        "reaching_data": "3",
+        "enriched_edges": "20"
+      },
+      "log": "logs/LL-ACCEPT/20261109T212417442814Z-graph-target.log"
+    }
+  ],
+  "target_graph": {
+    "dir": "graph/target/full",
+    "commit": "008507cf59e92b055c00daf6cdd426d8aca4674a",
+    "trees": {
+      "src": "4e5319104dc4b07b3ecf6ff5b91d220b56e7d6b7",
+      "templates": "c7bee2d26ae6043b6437290dc24cb4db0a97314f"
+    },
+    "run": "https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42701574649"
+  },
+  "files": {
+    "graph/target/full/SNAPSHOT.txt": "9660c8e6ce12db0d08e120c576e63b881520d662fada27fbdc02ec8961482352",
+    "graph/target/full/domain-graph.json": "024ba6ee2c64d5d234834f0908e254d7fa579913b575f22a2af238a24f6cbd4d",
+    "graph/target/full/graph-check.md": "97f762b1e7b95e0f935ca4d6d0502095418dda81a543d86ef1d692599a690ba0",
+    "graph/target/full/knowledge-graph.json": "01f5f29c796324b6b03ddb0cdeea4ce1ee0923790ceda1e3a4892f0c9880cf94",
+    "graph/target/full/run.md": "090c53ad94d18521d03dd1f29df38055dbe89c637e954f7c48d4a42cada5b5e4",
+    "inputs/installed.json": "54624326ddebf6622ed1ccfaaebd8e3a4081fb2fda9f37fa4f967fe7592af6b1",
+    "inputs/profile.yaml": "1f1a92610e5f5b6fa389dfb6f57c41d3030a390d4af9b0454da26b3af085371d",
+    "inputs/source.lock": "a5f481c3a3715e8a11ce182599bdf580b67613edd337c3f2ed8dbdf119ba4411",
+    "journals/LL-ACCEPT.md": "b321d4ebd2fe2f88bb9650dc51e2febcfba43e188c479e543b763e560ec05a01",
+    "logs/LL-ACCEPT/20261109T212416890080Z-runtime.log": "96436ba39c5ef6653b6482ee294a3709116a40e144a88af41348da3313e65dcc",
+    "logs/LL-ACCEPT/20261109T212416965451Z-harness-integrity.log": "34ef99eb01daa8a310697402fa469d0079c99292d99ca8a1689b649641ea6d3f",
+    "logs/LL-ACCEPT/20261109T212417055138Z-services.log": "274667623a15642621d774e6e3ee9ac622ab1d605fb23f90cff77d18f467b64a",
+    "logs/LL-ACCEPT/20261109T212417201814Z-graph-freshness.log": "f33b82c4d90f49ecebef45b13cb1d2eb9da9a0472d159ec22190ec1a7495af4f",
+    "logs/LL-ACCEPT/20261109T212417284537Z-graph-source.log": "dde05b7ab64808ca8e5aeac763a29bc4fea9782c73ef8fefdfaf96dc2c09f886",
+    "logs/LL-ACCEPT/20261109T212417442814Z-graph-target.log": "d665b39cb5d214ac416527d004277253f91085d2525a346bd7851c661b877ff0",
+    "logs/LL-ACCEPT/runs.jsonl": "3cf06fe114170a52ab10c39b536efd0cca4245772ace8db875b61aedccff13f6"
+  },
+  "finished_at": "2026-11-09T21:24:17+00:00",
+  "exit": 1
+}
