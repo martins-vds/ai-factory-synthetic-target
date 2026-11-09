@@ -21,6 +21,7 @@ graph:
   enrich:
     source: [java-ee]
     target: [django]
+  target_paths: [src, templates]                       # ADR-0023: the target graph analyses these (templates hold pages)
   require:
     source:
       nodes: [table, page, endpoint]
