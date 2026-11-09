@@ -14,4 +14,4 @@ target:
 status: migrated
 verification: differential
 characterization_tier: A
-evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records]
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records, tests/loans/test_catalog.py::test_list_endpoint_orders_all_records_by_id]

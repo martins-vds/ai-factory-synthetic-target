@@ -13,5 +13,5 @@ status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records]
-notes: "Seed reload and reset-on-restart behavior are raised in martins-vds/ai-factory-synthetic-target#42."
+notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 seeds fresh databases only; subsequent startup does not overwrite existing loans."
 quirks: [martins-vds/ai-factory-synthetic-target#42]

@@ -4,15 +4,12 @@ from .models import Loan
 
 
 class LoanRepository:
-    @staticmethod
-    def all():
+    def all(self):
         return Loan.objects.all()
 
-    @staticmethod
-    def find(loan_id):
+    def find(self, loan_id):
         return Loan.objects.filter(pk=loan_id).first()
 
-    @staticmethod
     @transaction.atomic
-    def create(**fields):
+    def create(self, **fields):
         return Loan.objects.create(**fields)

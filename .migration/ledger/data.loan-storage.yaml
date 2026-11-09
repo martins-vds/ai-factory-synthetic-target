@@ -13,5 +13,5 @@ status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/edge-cases.json, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_saved_catalog_record_is_available_to_a_later_request]
-notes: "persistence.xml uses drop-and-create on startup; the reset-on-restart question is in martins-vds/ai-factory-synthetic-target#42."
+notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 replaces the source's reset-on-restart behavior with persistent PostgreSQL storage."
 quirks: [martins-vds/ai-factory-synthetic-target#42]

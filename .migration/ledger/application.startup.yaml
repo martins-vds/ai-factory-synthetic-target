@@ -9,10 +9,10 @@ source:
 boundary: "PORT selects the listening port (default 8080); startup creates the library persistence unit, wires four HTTP resources, binds Grizzly to 0.0.0.0, and shutdown closes the server and EntityManagerFactory."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 target:
-  components: [src.loans.apps.LoansConfig, src.loans.migrations.0001_initial, config.urls]
+  components: [config.settings, config.urls, src.loans.migrations.0001_initial]
 status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_migration_startup_does_not_replace_persisted_records]
-notes: "Restart reset behavior is raised in martins-vds/ai-factory-synthetic-target#42."
+notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 keeps PostgreSQL records and avoids reseeding persisted loans."
 quirks: [martins-vds/ai-factory-synthetic-target#42]

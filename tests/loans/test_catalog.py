@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import IntegrityError
 
@@ -95,9 +96,78 @@ def test_detail_export_quotes_delimiters_quotes_and_line_breaks(client):
 
 
 @pytest.mark.django_db
+def test_model_enforces_required_fields_and_source_string_limits():
+    with pytest.raises(ValidationError) as missing_fields:
+        Loan(id='L9', member='', isbn='', lent_on=date(2026, 3, 1)).full_clean()
+
+    assert set(missing_fields.value.message_dict) == {'member', 'isbn'}
+
+    valid_maximum = Loan(
+        id='I' * 255,
+        member='M' * 255,
+        isbn='B' * 255,
+        lent_on=date(2026, 3, 1),
+    )
+    valid_maximum.full_clean()
+
+    for field in ('id', 'member', 'isbn'):
+        values = {'id': 'L9', 'member': 'reader', 'isbn': '123'}
+        values[field] = 'x' * 256
+        loan = Loan(**values, lent_on=date(2026, 3, 1))
+        with pytest.raises(ValidationError) as long_field:
+            loan.full_clean()
+        assert field in long_field.value.message_dict
+
+
+@pytest.mark.django_db
+def test_unreturned_loan_is_valid():
+    loan = Loan(id='L9', member='reader', isbn='123', lent_on=date(2026, 3, 1))
+
+    loan.full_clean()
+    assert loan.returned_on is None
+
+
+@pytest.mark.django_db
+def test_list_endpoint_orders_all_records_by_id(client):
+    Loan.objects.create(
+        id='L10',
+        member='reader',
+        isbn='123',
+        lent_on=date(2026, 3, 1),
+    )
+    Loan.objects.create(
+        id='L0',
+        member='reader',
+        isbn='456',
+        lent_on=date(2026, 3, 1),
+    )
+
+    response = client.get('/loans')
+
+    assert response.status_code == 200
+    assert [line.split(';', 1)[0] for line in response.content.decode().splitlines()] == [
+        'L0',
+        'L1',
+        'L10',
+        'L2',
+        'L3',
+    ]
+
+
+@pytest.mark.django_db
+def test_browser_detail_page_shows_loan_dates(client):
+    response = client.get('/ui/loans/L1/')
+
+    assert response.status_code == 200
+    assert b'Loan record \xc2\xb7 L1' in response.content
+    assert b'Jan 2, 2026' in response.content
+    assert b'Jan 16, 2026' in response.content
+
+
+@pytest.mark.django_db
 def test_repository_write_rolls_back_failed_transaction():
     with pytest.raises(IntegrityError):
-        LoanRepository.create(
+        LoanRepository().create(
             id='L1',
             member='duplicate',
             isbn='123',

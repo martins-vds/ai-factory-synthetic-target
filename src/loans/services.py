@@ -21,9 +21,9 @@ def loan_line(loan):
 
 
 def list_loans_text():
-    return ''.join(loan_line(loan) for loan in LoanRepository.all())
+    return ''.join(loan_line(loan) for loan in LoanRepository().all())
 
 
 def get_loan_text(loan_id):
-    loan = LoanRepository.find(loan_id)
+    loan = LoanRepository().find(loan_id)
     return loan_line(loan) if loan else None
