@@ -3,8 +3,9 @@ data_paths:
   source:
     - endpoint=GET /loans
     - endpoint=GET /loans/{id}
+  # Target anchors name LL-01's Django routes exactly (no HTTP method: the views declare none).
   target:
-    - endpoint=GET /loans
-    - endpoint=GET /loans/{id}
-    - endpoint=GET /ui/loans/
-    - endpoint=GET /ui/loans/{id}/
+    - endpoint=/loans
+    - endpoint=/loans/<str:loan_id>
+    - endpoint=/ui/loans/
+    - endpoint=/ui/loans/<str:loan_id>/
