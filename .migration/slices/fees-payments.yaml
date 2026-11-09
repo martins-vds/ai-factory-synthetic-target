@@ -1,3 +1,4 @@
+epic: 62
 data_paths:
   source:
     - endpoint=GET /fees/{id}
