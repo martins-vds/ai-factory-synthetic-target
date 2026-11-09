@@ -1,7 +1,7 @@
 {
   "harness_version": "0.2.0",
-  "harness_commit": "db3586a43acfbcc887524130b1fb18bb2c21f667",
-  "installed_at": "2026-11-08T21:37:19Z",
+  "harness_commit": "1ddc6ac51c31959462bc6f5f75d7ed1c541b992e",
+  "installed_at": "2026-11-09T03:53:55Z",
   "entries": [
     {
       "path": ".github/agents/afs-analyst.agent.md",
@@ -49,14 +49,14 @@
       "path": ".github/agents/afs-program-orchestrator.agent.md",
       "kind": "agent",
       "files": {
-        ".github/agents/afs-program-orchestrator.agent.md": "d4255e8f981595beb9ea7cf945e0fad671ace7560ba60bad2dca29cce07fa0a6"
+        ".github/agents/afs-program-orchestrator.agent.md": "7c2b55af542a0dcd83cbff37e1f841260cfbf5ac74d4d4311ce095f1ffc873b0"
       }
     },
     {
       "path": ".github/agents/afs-slice-coordinator.agent.md",
       "kind": "agent",
       "files": {
-        ".github/agents/afs-slice-coordinator.agent.md": "5cd70f51a5137297b0c6d91904bc61cecb218f1978a9f22795cbf3ec64066406"
+        ".github/agents/afs-slice-coordinator.agent.md": "02011e927d32dc80fa3a19f0c83603b40897333cd948efcd090af49527f2ac70"
       }
     },
     {
@@ -1146,7 +1146,7 @@
         ".migration/harness/tools/locks/graphify.lock": "839bca8d206e908492e43d3fddee58e8aec44dc7a2c24a5c687fdb57a839852f",
         ".migration/harness/tools/preserve_graph.py": "04d033c67e7fcdf56122a8016aaad99a998769d38e26dc2d9252a40dc529581f",
         ".migration/harness/tools/stack_refresh.py": "951d8317454d118dba78f27e0dd355d09fd39ece7cf51af4123dc0a4f012e7b1",
-        ".migration/harness/tools/ticket_guard.py": "f7f1636bbc8d1723d8754804cdf289adb2f87172aac0805a4a7f800288bd133c",
+        ".migration/harness/tools/ticket_guard.py": "1b7643877b8298467e1d6185004997cf968878dcc09c411b10f0e259b784c0d3",
         ".migration/harness/tools/understand.py": "6e8f4b43e15f323829c34f2e6932d8a1a306937f4b069a541e518d2f1c68e315",
         ".migration/harness/tools/validate.py": "f6ae232f7ec5fb9b0e5e84325d647573b59a5f63b7dcdfc8c96faf4039fc612f"
       }
