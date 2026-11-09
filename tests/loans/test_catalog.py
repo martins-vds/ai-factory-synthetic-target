@@ -1,4 +1,6 @@
+import json
 from datetime import date, timedelta
+from pathlib import Path
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -9,27 +11,36 @@ from django.utils import timezone
 from src.loans.models import Loan
 from src.loans.repository import LoanRepository
 
+HTTP_GOLDEN_PATH = (
+    Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
+)
+HTTP_GOLDENS = json.loads(
+    (
+        HTTP_GOLDEN_PATH
+        if HTTP_GOLDEN_PATH.exists()
+        else Path(__file__).parent / 'fixtures/http.json'
+    ).read_text(encoding='utf-8')
+)
+
 
 @pytest.mark.django_db
 def test_list_endpoint_returns_seeded_records(client):
     response = client.get('/loans')
+    expected = HTTP_GOLDENS['GET /loans']['response']
 
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'text/plain'
-    assert response.content.decode() == (
-        'L1;ana;9780134685991;2026-01-02;2026-01-16;\n'
-        'L2;bo;9780596007126;2026-01-10;2026-01-24;2026-01-20\n'
-        'L3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\n'
-    )
+    assert response.status_code == expected['status']
+    assert response['Content-Type'] == expected['content_type']
+    assert response.content.decode() == expected['body']
 
 
 @pytest.mark.django_db
 def test_detail_endpoint_returns_one_formatted_loan(client):
     response = client.get('/loans/L1')
+    expected = HTTP_GOLDENS['GET /loans/{id}']['response']
 
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'text/plain'
-    assert response.content.decode() == 'L1;ana;9780134685991;2026-01-02;2026-01-16;\n'
+    assert response.status_code == expected['status']
+    assert response['Content-Type'] == expected['content_type']
+    assert response.content.decode() == expected['body']
 
 
 @pytest.mark.django_db
