@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import IntegrityError
 from django.utils import timezone
+from playwright.sync_api import sync_playwright
 
 from src.loans.models import Loan
 from src.loans.repository import LoanRepository
@@ -375,6 +376,33 @@ def test_browser_regular_return_redirects_to_the_updated_loan(client):
     assert response.status_code == 302
     assert response['Location'] == '/ui/loans/L1/'
     assert Loan.objects.get(pk='L1').returned_on == timezone.localdate()
+
+
+@pytest.mark.django_db
+def test_real_browser_can_lend_and_return_a_book(live_server):
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        try:
+            page = browser.new_page()
+            page.goto(f'{live_server.url}/ui/loans/new/')
+            htmx_available = page.evaluate("typeof window.htmx !== 'undefined'")
+            page.get_by_label('Member').fill('reader')
+            page.get_by_label('ISBN').fill('123')
+            page.get_by_role('button', name='Lend book').click()
+
+            if htmx_available:
+                page.get_by_role('status').wait_for()
+                assert page.get_by_role('status').inner_text() == 'Loan L4 is ready.'
+                page.get_by_role('link', name='View loan').click()
+            else:
+                page.wait_for_url('**/ui/loans/L4/')
+
+            page.get_by_role('button', name='Return book').click()
+            page.locator('#return-status [role="status"]').wait_for()
+            returned_on = timezone.localdate().isoformat()
+            assert page.locator('#return-status').inner_text() == f'Returned on {returned_on}'
+        finally:
+            browser.close()
 
 
 @pytest.mark.django_db
