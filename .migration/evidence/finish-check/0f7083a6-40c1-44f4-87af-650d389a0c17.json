@@ -1,0 +1,32 @@
+[
+  {
+    "at": "2026-11-09T00:19:28Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 69810,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "SY-07",
+    "role": "afs-program-orchestrator",
+    "changed": [
+      ".migration/costs/0f7083a6-40c1-44f4-87af-650d389a0c17.json",
+      ".migration/evidence/runs/SY-07.md",
+      ".migration/returns/SY-07.afs-program-orchestrator.yaml",
+      "config/urls.py",
+      "src/prototype_library.py",
+      "templates/prototype_library.html"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
