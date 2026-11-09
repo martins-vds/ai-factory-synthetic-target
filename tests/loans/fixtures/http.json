@@ -22,5 +22,32 @@
       "content_type": "text/plain",
       "status": 200
     }
+  },
+  "POST /loans": {
+    "request": {
+      "form": {
+        "isbn": "123",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L4;dee;123;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /loans/{id}/return": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/loans/L1/return"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;2026-11-08\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
   }
 }

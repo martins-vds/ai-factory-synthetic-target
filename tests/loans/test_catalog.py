@@ -56,14 +56,21 @@ def test_detail_endpoint_returns_not_found_for_unknown_loan(client):
 def test_lend_endpoint_creates_a_loan_with_fourteen_day_due_date(client):
     lent_on = timezone.localdate()
     due_on = lent_on + timedelta(days=14)
+    golden = HTTP_GOLDENS['POST /loans']
+    source_fields = golden['response']['body'].rstrip('\n').split(';')
 
-    response = client.post('/loans', {'member': 'dee', 'isbn': '123'})
+    response = client.post(golden['request']['path'], golden['request']['form'])
+    target_fields = response.content.decode().rstrip('\n').split(';')
 
-    assert response.status_code == 201
-    assert response['Content-Type'] == 'text/plain'
-    assert response.content.decode() == (
-        f'L4;dee;123;{lent_on.isoformat()};{due_on.isoformat()};\n'
-    )
+    assert response.status_code == golden['response']['status']
+    assert response['Content-Type'] == golden['response']['content_type']
+    assert response.content.decode().endswith('\n')
+    assert target_fields[:3] == source_fields[:3]
+    assert target_fields[3:] == [
+        lent_on.isoformat(),
+        due_on.isoformat(),
+        source_fields[5],
+    ]
     loan = Loan.objects.get(pk='L4')
     assert loan.member == 'dee'
     assert loan.isbn == '123'
@@ -119,14 +126,16 @@ def test_lend_endpoint_returns_field_errors_for_missing_values(client):
 @pytest.mark.django_db
 def test_return_endpoint_records_the_return_date(client):
     returned_on = timezone.localdate()
+    golden = HTTP_GOLDENS['POST /loans/{id}/return']
+    source_fields = golden['response']['body'].rstrip('\n').split(';')
 
-    response = client.post('/loans/L1/return')
+    response = client.post(golden['request']['path'])
+    target_fields = response.content.decode().rstrip('\n').split(';')
 
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'text/plain'
-    assert response.content.decode() == (
-        f'L1;ana;9780134685991;2026-01-02;2026-01-16;{returned_on.isoformat()}\n'
-    )
+    assert response.status_code == golden['response']['status']
+    assert response['Content-Type'] == golden['response']['content_type']
+    assert response.content.decode().endswith('\n')
+    assert target_fields == source_fields[:5] + [returned_on.isoformat()]
     assert Loan.objects.get(pk='L1').returned_on == returned_on
 
 
