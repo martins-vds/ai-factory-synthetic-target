@@ -5,3 +5,5 @@ data_paths:
   target:
     - endpoint=GET /fees/{id}
     - endpoint=POST /payments/{id}
+    - endpoint=GET /ui/fees/{id}/
+    - endpoint=POST /ui/payments/{id}/

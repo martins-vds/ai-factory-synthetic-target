@@ -2,17 +2,17 @@
 
 ## What this slice delivers
 
-The public about page remains available at `/about`, with its opening hours, lending policy, and contact information, refreshed to the approved Tailwind/daisyUI and htmx UI direction.
+The characterized `/about` response remains unchanged, including its opening hours, lending policy, and contact information. The modernized browser page is served separately at `/ui/about/` using the Tailwind/daisyUI and pinned htmx assets introduced in `LL-01`.
 
 ## Anchors
 
 - Source: `GET /about` serves a static page and intentionally has no path to a table; this is a non-data flow, not a graph-enricher gap.
-- Target: `GET /about` is owned by this slice and likewise does not access a table.
+- Target: preserve the characterized `GET /about` response exactly and serve the modernized page at `GET /ui/about/`; neither route accesses a table.
 
 ## Acceptance
 
 - All characterized about-page information remains present and usable.
-- The page follows the approved UI direction and dependency-delivery pattern.
+- The `/ui/about/` page follows the approved UI and asset-delivery pattern.
 - Browser tests pass through `afs-run`.
 
 ## Ticket

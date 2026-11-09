@@ -1,6 +1,5 @@
-# The source retains a tier-C specification, not an executable entry point.
+# The source retains a tier-C specification, not an executable entry point. The target command is run externally.
 data_paths:
   source: []
   target:
-    # Proposed command; scheduling and month-boundary time zone remain open.
     - command=monthly_report

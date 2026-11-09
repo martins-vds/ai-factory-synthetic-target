@@ -12,7 +12,7 @@ tickets:
       - .migration/evidence/runs/LL-05.md
       - .migration/returns/LL-05.afs-migrator.yaml
     capabilities: [reports.monthly-spec]
-    blocked_by: [LL-03]
+    blocked_by: [LL-04]
 cross_slice:
   - file: config/settings.py
     slices: [loan-catalog, monthly-report]

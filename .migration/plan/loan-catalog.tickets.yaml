@@ -1,7 +1,7 @@
 slice: loan-catalog
 tickets:
   - id: LL-01
-    title: Build the persistent loan catalog
+    title: Build the persistent loan catalog and UI assets
     role: afs-migrator
     specialty: null
     files:
@@ -11,7 +11,8 @@ tickets:
       - tests/loans/
       - templates/base.html
       - templates/loans/
-      - static/
+      - Makefile
+      - static/css/tailwind.css
       - .migration/ledger/application.build.yaml
       - .migration/ledger/application.startup.yaml
       - .migration/ledger/data.loan-storage.yaml
