@@ -109,6 +109,7 @@ def test_model_enforces_required_fields_and_source_string_limits():
         lent_on=date(2026, 3, 1),
     )
     valid_maximum.full_clean()
+    assert valid_maximum.due_on == date(2026, 3, 15)
 
     for field in ('id', 'member', 'isbn'):
         values = {'id': 'L9', 'member': 'reader', 'isbn': '123'}
@@ -125,6 +126,7 @@ def test_unreturned_loan_is_valid():
 
     loan.full_clean()
     assert loan.returned_on is None
+    assert loan.due_on == date(2026, 3, 15)
 
 
 @pytest.mark.django_db
