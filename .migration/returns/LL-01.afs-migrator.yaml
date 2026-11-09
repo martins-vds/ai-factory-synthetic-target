@@ -1,0 +1,17 @@
+role: afs-migrator
+ticket: LL-01
+issue: martins-vds/ai-factory-synthetic-target#59
+pr: null
+gates:
+  build: null
+  behavior: null
+  idiom: null
+  crap: null
+  mutation_changed: null
+  regression: null
+evidence_logs:
+  - .migration/evidence/runs/LL-01.md
+ledger_updated: []
+quirk_tickets: []
+new_tickets: []
+handoff: .migration/handoffs/LL-01.md
