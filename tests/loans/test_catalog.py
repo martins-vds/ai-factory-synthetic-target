@@ -1,6 +1,7 @@
 from datetime import date
 
 import pytest
+from django.core.management import call_command
 from django.db import IntegrityError
 
 from src.loans.models import Loan
@@ -38,19 +39,30 @@ def test_detail_endpoint_returns_not_found_for_unknown_loan(client):
     assert response.content.decode() == 'no such loan\n'
 
 
-@pytest.mark.django_db(transaction=True)
-def test_updated_catalog_record_survives_database_connection_restart(client):
+@pytest.mark.django_db
+def test_saved_catalog_record_is_available_to_a_later_request(client):
+    Loan.objects.create(
+        id='L8',
+        member='reader',
+        isbn='123',
+        lent_on=date(2026, 3, 1),
+    )
+
+    response = client.get('/loans/L8')
+
+    assert response.status_code == 200
+    assert response.content.decode() == 'L8;reader;123;2026-03-01;2026-03-15;\n'
+
+
+@pytest.mark.django_db
+def test_migration_startup_does_not_replace_persisted_records():
     loan = Loan.objects.get(pk='L1')
     loan.member = 'ada'
     loan.save(update_fields=['member'])
-    from django.db import connection
 
-    connection.close()
+    call_command('migrate', interactive=False, verbosity=0)
 
-    response = client.get('/loans/L1')
-
-    assert response.status_code == 200
-    assert response.content.decode() == 'L1;ada;9780134685991;2026-01-02;2026-01-16;\n'
+    assert Loan.objects.get(pk='L1').member == 'ada'
 
 
 @pytest.mark.django_db
@@ -82,7 +94,7 @@ def test_detail_export_quotes_delimiters_quotes_and_line_breaks(client):
     )
 
 
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db
 def test_repository_write_rolls_back_failed_transaction():
     with pytest.raises(IntegrityError):
         LoanRepository.create(

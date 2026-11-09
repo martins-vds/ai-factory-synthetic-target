@@ -7,8 +7,11 @@ source:
   location: legacy/run.sh:1-6
 boundary: "The packaged Java 17 application is built with Maven, dependency jars are copied at package time, and run.sh launches lib.App."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
-status: pending
+target:
+  components: [config.settings, config.urls, src.loans.migrations.0001_initial]
+status: migrated
 verification: differential
 characterization_tier: A
-evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md]
+evidence: [.migration/evidence/runs/LL-01.md, tests/test_ui_smoke.py::test_loan_catalog_renders_in_browser_and_admin_is_removed]
+notes: "The Django admin application and route are intentionally omitted."
 notes: "The source has no src/test tree or legacy test suite."
