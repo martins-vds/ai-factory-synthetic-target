@@ -1,23 +1,59 @@
 import csv
+from collections.abc import Iterable
+from datetime import date
 from io import StringIO
-
-from django.utils import timezone
-
-from .repository import LoanRepository
+from typing import Protocol
 
 
-def lend_loan(member, isbn):
-    repository = LoanRepository()
-    return repository.create(
-        id=f'L{repository.all().count() + 1}',
-        member=member,
-        isbn=isbn,
-        lent_on=timezone.localdate(),
-    )
+class LoanRecord(Protocol):
+    id: str
+    member: str
+    isbn: str
+    lent_on: date
+    due_on: date
+    returned_on: date | None
 
 
-def return_loan(loan_id):
-    return LoanRepository().mark_returned(loan_id, timezone.localdate())
+class Clock(Protocol):
+    def today(self) -> date: ...
+
+
+class LoanRepository(Protocol):
+    def all(self) -> Iterable[LoanRecord]: ...
+
+    def find(self, loan_id: str) -> LoanRecord | None: ...
+
+    def next_id(self) -> str: ...
+
+    def create(self, *, id: str, member: str, isbn: str, lent_on: date) -> LoanRecord: ...
+
+    def mark_returned(
+        self, loan_id: str, returned_on: date
+    ) -> tuple[LoanRecord | None, bool]: ...
+
+
+class LoanApplication:
+    def __init__(self, repository: LoanRepository, clock: Clock):
+        self.repository = repository
+        self.clock = clock
+
+    def lend(self, member: str, isbn: str) -> LoanRecord:
+        return self.repository.create(
+            id=self.repository.next_id(),
+            member=member,
+            isbn=isbn,
+            lent_on=self.clock.today(),
+        )
+
+    def return_loan(self, loan_id: str) -> tuple[LoanRecord | None, bool]:
+        return self.repository.mark_returned(loan_id, self.clock.today())
+
+    def list_loans_text(self) -> str:
+        return ''.join(loan_line(loan) for loan in self.repository.all())
+
+    def get_loan_text(self, loan_id: str) -> str | None:
+        loan = self.repository.find(loan_id)
+        return loan_line(loan) if loan else None
 
 
 def loan_line(loan):
@@ -34,12 +70,3 @@ def loan_line(loan):
         ]
     )
     return output.getvalue()
-
-
-def list_loans_text():
-    return ''.join(loan_line(loan) for loan in LoanRepository().all())
-
-
-def get_loan_text(loan_id):
-    loan = LoanRepository().find(loan_id)
-    return loan_line(loan) if loan else None

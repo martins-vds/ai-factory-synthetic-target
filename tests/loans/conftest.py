@@ -5,7 +5,7 @@ from django.apps import apps
 from django.db import connection
 
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope='module')
 def restore_seed_loans(django_db_blocker):
     yield
     with django_db_blocker.unblock():

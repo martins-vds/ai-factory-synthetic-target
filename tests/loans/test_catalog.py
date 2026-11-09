@@ -10,7 +10,7 @@ from django.utils import timezone
 from playwright.sync_api import sync_playwright
 
 from src.loans.models import Loan
-from src.loans.repository import LoanRepository
+from src.loans.repository import DjangoLoanRepository
 
 HTTP_GOLDEN_PATH = (
     Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
@@ -391,6 +391,7 @@ def test_browser_return_page_returns_not_found_for_unknown_loan(client):
 
 
 @pytest.mark.django_db
+@pytest.mark.usefixtures('restore_seed_loans')
 def test_real_browser_can_lend_and_return_a_book(live_server):
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
@@ -461,7 +462,7 @@ def test_loan_write_routes_reject_unsupported_methods(client, path, method):
 @pytest.mark.django_db
 def test_repository_write_rolls_back_failed_transaction():
     with pytest.raises(IntegrityError):
-        LoanRepository().create(
+        DjangoLoanRepository().create(
             id='L1',
             member='duplicate',
             isbn='123',
