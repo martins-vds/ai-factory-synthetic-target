@@ -1,0 +1,15 @@
+role: afs-program-orchestrator
+ticket: SY-07
+issue: martins-vds/ai-factory-synthetic-target#54
+phase: 4
+decisions:
+  - "https://github.com/martins-vds/ai-factory-synthetic-target/issues/38: use Django templates with Tailwind, daisyUI, and htmx."
+  - "https://github.com/martins-vds/ai-factory-synthetic-target/issues/39: reject blank member and ISBN values."
+  - "https://github.com/martins-vds/ai-factory-synthetic-target/issues/41: reject repeated returns and retain the original date."
+dispatched:
+  - agent: loan-ui-prototype (general-purpose implementation helper)
+    ticket: martins-vds/ai-factory-synthetic-target#50
+    status: returned
+awaiting_human:
+  - "https://github.com/martins-vds/ai-factory-synthetic-target/issues/50: operator to choose a variant or mix and record the verdict."
+next_step: "Operator reviews the variants; after the verdict, the dispatcher closes PR #55 unmerged and records its link on #50."

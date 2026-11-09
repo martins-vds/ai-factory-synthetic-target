@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prototype — Lending Library</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <style>
+    :root { color-scheme: light; }
+    body { min-height: 100vh; padding-bottom: 7rem; }
+    .variant-reading-room { --ink:#2f3428; --paper:#f5f0e5; --accent:#a94e37; --line:#d8cdbb; --surface:#fffdf7; font-family: Georgia, "Times New Roman", serif; background:var(--paper); color:var(--ink); }
+    .variant-desk { --ink:#f2f6f1; --paper:#101b1a; --accent:#c5f36a; --line:#344440; --surface:#192725; font-family: ui-sans-serif, system-ui, sans-serif; background:var(--paper); color:var(--ink); }
+    .variant-ledger { --ink:#111827; --paper:#f6f7fb; --accent:#2446d8; --line:#aab2c3; --surface:#fff; font-family: ui-sans-serif, system-ui, sans-serif; background:var(--paper); color:var(--ink); }
+    .prototype-shell { max-width: 76rem; margin: auto; padding: 1.5rem; }
+    .prototype-surface { background:var(--surface); border:1px solid var(--line); }
+    .prototype-accent { background:var(--accent); color:var(--paper); }
+    .variant-reading-room .prototype-accent { color:white; }
+    .variant-desk .prototype-accent { color:#101b1a; }
+    .prototype-ink { color:var(--ink); }
+    .prototype-muted { color:color-mix(in srgb, var(--ink) 70%, transparent); }
+    .prototype-border { border-color:var(--line); }
+    .prototype-control { color:var(--ink); background:var(--surface); border:1px solid var(--line); }
+    .prototype-control:focus-visible, a:focus-visible, button:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+    .variant-reading-room .loan-row { border-bottom:1px solid var(--line); padding:1.2rem 0; }
+    .variant-desk .loan-row { border:1px solid var(--line); border-radius:.75rem; padding:1rem; }
+    .variant-ledger .loan-row { border:2px solid var(--ink); box-shadow:4px 4px 0 var(--ink); padding:1rem; }
+    .variant-ledger .prototype-surface { border:2px solid var(--ink); box-shadow:5px 5px 0 var(--ink); }
+    .variant-ledger .prototype-accent { color:white; }
+    @media (max-width:640px) { .prototype-shell { padding:1rem; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; transition:none !important; } }
+  </style>
+</head>
+<body class="variant-{{ variant }}">
+  <div class="bg-amber-300 text-stone-950 text-center font-bold tracking-widest text-xs py-2">
+    THROWAWAY PROTOTYPE · SAMPLE DATA · NO DATABASE · DO NOT SHIP
+  </div>
+
+  {% if variant == 'reading-room' %}
+    <header class="prototype-shell pb-3">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b prototype-border pb-5">
+        <a class="text-2xl font-bold tracking-tight prototype-ink" href="?variant={{ variant }}&screen=loans">The Lending Library <span class="text-sm font-normal">/ a neighborhood collection</span></a>
+        <nav aria-label="Library pages" class="flex gap-2 text-sm">
+          <a class="btn btn-ghost btn-sm prototype-ink" href="?variant={{ variant }}&screen=loans">Loans</a>
+          <a class="btn btn-ghost btn-sm prototype-ink" href="?variant={{ variant }}&screen=fees">Late fees</a>
+          <a class="btn btn-ghost btn-sm prototype-ink" href="?variant={{ variant }}&screen=about">About</a>
+        </nav>
+      </div>
+    </header>
+    <main class="prototype-shell pt-2">
+      {% if screen == 'loans' %}
+        <div class="grid lg:grid-cols-[1fr_19rem] gap-12">
+          <section>
+            <p class="uppercase tracking-[.2em] text-xs prototype-muted">The collection · {{ loan_count }} loans in view</p>
+            <h1 class="text-5xl md:text-6xl mt-3 mb-4">Books in good company.</h1>
+            <p class="prototype-muted mb-8">A quiet ledger of what is out, who has it, and when it comes home.</p>
+            {% if feedback %}<div class="alert prototype-surface mb-5" role="status">{{ feedback }}</div>{% endif %}
+            {% for loan in loans %}
+              <article class="loan-row grid sm:grid-cols-[1fr_auto] gap-4">
+                <div><p class="text-xl font-semibold">{{ loan.title }}</p><p class="prototype-muted">{{ loan.member }} · ISBN {{ loan.isbn }}</p></div>
+                <div class="sm:text-right"><p>Due {{ loan.due|date:"M j, Y" }}</p>
+                  {% if loan.returned_on %}<p class="text-sm prototype-muted">Returned {{ loan.returned_on|date:"M j, Y" }}</p>
+                  {% else %}<form method="post" hx-boost="true" hx-target="body" hx-swap="innerHTML" hx-push-url="true" action="?variant={{ variant }}&screen=loans">{% csrf_token %}<input type="hidden" name="action" value="return"><input type="hidden" name="loan_id" value="{{ loan.id }}"><button class="btn btn-sm prototype-accent mt-2">Return {{ loan.id }}</button></form>{% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </section>
+          <aside class="prototype-surface p-6 h-fit">
+            <p class="uppercase tracking-widest text-xs prototype-muted">At the desk</p><h2 class="text-2xl mt-2 mb-5">Lend a book</h2>
+            <form method="post" hx-boost="true" hx-target="body" hx-swap="innerHTML" hx-push-url="true" action="?variant={{ variant }}&screen=loans" class="space-y-4">
+              {% csrf_token %}<input type="hidden" name="action" value="lend">
+              <label class="form-control"><span class="label-text prototype-ink mb-1">Member name</span><input name="member" value="{{ form_values.member }}" class="input input-bordered prototype-control" autocomplete="name" aria-invalid="{% if errors.member %}true{% else %}false{% endif %}">{% if errors.member %}<span class="text-red-700 text-sm" role="alert">{{ errors.member }}</span>{% endif %}</label>
+              <label class="form-control"><span class="label-text prototype-ink mb-1">ISBN</span><input name="isbn" value="{{ form_values.isbn }}" class="input input-bordered prototype-control" aria-invalid="{% if errors.isbn %}true{% else %}false{% endif %}">{% if errors.isbn %}<span class="text-red-700 text-sm" role="alert">{{ errors.isbn }}</span>{% endif %}</label>
+              <button class="btn prototype-accent w-full">Create 14-day loan</button>
+            </form>
+          </aside>
+        </div>
+      {% elif screen == 'fees' %}
+        <section class="max-w-3xl mx-auto">
+          <p class="uppercase tracking-[.2em] text-xs prototype-muted">A small nudge, never a surprise</p><h1 class="text-5xl mt-3 mb-8">Late fees</h1>
+          <div class="grid md:grid-cols-[1fr_18rem] gap-8">
+            <article class="prototype-surface p-7"><p class="prototype-muted">{{ selected_fee.loan.member }} · {{ selected_fee.loan.id }}</p><h2 class="text-3xl mt-2">{{ selected_fee.loan.title }}</h2><p class="mt-5">Due {{ selected_fee.loan.due|date:"M j, Y" }}{% if selected_fee.loan.returned_on %} · returned {{ selected_fee.loan.returned_on|date:"M j, Y" }}{% endif %}</p><p class="mt-2">{{ selected_fee.late_days }} late days · first two days waived</p><p class="text-6xl mt-7 font-bold">{{ selected_fee.amount }}</p><p class="prototype-muted mt-2">25¢ per day after the grace period, capped at $10.00.</p></article>
+            <nav aria-label="Choose a loan fee" class="space-y-2">{% for fee in fees %}<a class="block prototype-surface p-3 prototype-ink" href="?variant={{ variant }}&screen=fees&loan={{ fee.loan.id }}"><strong>{{ fee.loan.id }}</strong> · {{ fee.loan.member }}<br><span class="prototype-muted">{{ fee.amount }}</span></a>{% endfor %}</nav>
+          </div>
+        </section>
+      {% else %}
+        <section class="max-w-3xl mx-auto py-8"><p class="uppercase tracking-[.2em] text-xs prototype-muted">A place for curious readers</p><h1 class="text-6xl mt-3 mb-8">About the Lending Library</h1><p class="text-2xl leading-relaxed">A neighborhood collection, kept in motion by the people who read it.</p><div class="prototype-surface p-7 mt-8 space-y-3"><p>Open Monday to Saturday, 9:00 to 18:00.</p><p>Books are lent for 14 days.</p><p>Contact: <a class="underline" href="mailto:desk@lending-library.invalid">desk@lending-library.invalid</a></p></div></section>
+      {% endif %}
+    </main>
+  {% elif variant == 'desk' %}
+    <div class="prototype-shell grid lg:grid-cols-[14rem_1fr] gap-8">
+      <aside class="lg:min-h-[calc(100vh-9rem)] border-r prototype-border pr-5">
+        <div class="text-xl font-black border-b prototype-border pb-5 mb-6">LL<span class="text-xs font-normal block prototype-muted">CIRCULATION DESK</span></div>
+        <nav aria-label="Library pages" class="menu p-0 gap-2">
+          <a class="prototype-ink" href="?variant={{ variant }}&screen=loans">▤ &nbsp; Loan queue</a>
+          <a class="prototype-ink" href="?variant={{ variant }}&screen=fees">◷ &nbsp; Fee review</a>
+          <a class="prototype-ink" href="?variant={{ variant }}&screen=about">ⓘ &nbsp; Library profile</a>
+        </nav>
+        <div class="prototype-surface rounded-xl p-4 mt-8"><span class="text-xs prototype-muted">TODAY’S DESK</span><p class="text-3xl font-bold mt-2">{{ loan_count }}</p><p class="text-sm prototype-muted">active records</p></div>
+      </aside>
+      <main class="min-w-0">
+        <div class="flex flex-wrap justify-between gap-3 items-center mb-8"><div><p class="uppercase tracking-widest text-xs prototype-muted">Operations / {{ screen }}</p><h1 class="text-4xl font-bold mt-1">{% if screen == 'loans' %}Loan queue{% elif screen == 'fees' %}Fee review{% else %}Library profile{% endif %}</h1></div><div class="badge badge-lg prototype-accent">LIVE · IN MEMORY</div></div>
+        {% if screen == 'loans' %}
+          {% if feedback %}<div class="alert prototype-surface mb-5" role="status">{{ feedback }}</div>{% endif %}
+          <div class="grid md:grid-cols-3 gap-3 mb-6"><div class="stat prototype-surface rounded-xl"><div class="stat-title prototype-muted">On record</div><div class="stat-value prototype-ink">{{ loan_count }}</div></div><div class="stat prototype-surface rounded-xl"><div class="stat-title prototype-muted">Overdue & out</div><div class="stat-value text-amber-600">{{ overdue_count }}</div></div><div class="stat prototype-surface rounded-xl"><div class="stat-title prototype-muted">Return policy</div><div class="stat-value text-2xl prototype-ink">14 days</div></div></div>
+          <div class="grid xl:grid-cols-[1fr_20rem] gap-5">
+            <section class="space-y-3" aria-label="Loan queue">{% for loan in loans %}<article class="loan-row grid grid-cols-[1fr_auto] gap-3 items-center"><div><p class="font-bold">{{ loan.title }}</p><p class="text-sm prototype-muted">{{ loan.id }} · {{ loan.member }} · ISBN {{ loan.isbn }}</p><p class="text-sm mt-1">Due {{ loan.due|date:"M j, Y" }}{% if loan.returned_on %} · returned {{ loan.returned_on|date:"M j, Y" }}{% endif %}</p></div>{% if loan.returned_on %}<span class="badge">Returned</span>{% else %}<form method="post" hx-boost="true" hx-target="body" hx-swap="innerHTML" hx-push-url="true" action="?variant={{ variant }}&screen=loans">{% csrf_token %}<input type="hidden" name="action" value="return"><input type="hidden" name="loan_id" value="{{ loan.id }}"><button class="btn btn-sm prototype-accent">Return</button></form>{% endif %}</article>{% endfor %}</section>
+            <section class="prototype-surface rounded-xl p-5 h-fit"><h2 class="text-xl font-bold mb-4">Check out a title</h2><form method="post" hx-boost="true" hx-target="body" hx-swap="innerHTML" hx-push-url="true" action="?variant={{ variant }}&screen=loans" class="space-y-3">{% csrf_token %}<input type="hidden" name="action" value="lend"><label class="form-control"><span class="label-text prototype-ink mb-1">Member name</span><input name="member" value="{{ form_values.member }}" class="input input-bordered prototype-control" autocomplete="name" aria-invalid="{% if errors.member %}true{% else %}false{% endif %}">{% if errors.member %}<span class="text-red-700 text-sm" role="alert">{{ errors.member }}</span>{% endif %}</label><label class="form-control"><span class="label-text prototype-ink mb-1">ISBN</span><input name="isbn" value="{{ form_values.isbn }}" class="input input-bordered prototype-control" aria-invalid="{% if errors.isbn %}true{% else %}false{% endif %}">{% if errors.isbn %}<span class="text-red-700 text-sm" role="alert">{{ errors.isbn }}</span>{% endif %}</label><button class="btn prototype-accent w-full">Lend · 14 days</button></form></section>
+          </div>
+        {% elif screen == 'fees' %}
+          <div class="grid md:grid-cols-[1.4fr_1fr] gap-5"><section class="prototype-surface rounded-xl p-6"><p class="prototype-muted">{{ selected_fee.loan.id }} · {{ selected_fee.loan.member }}</p><h2 class="text-2xl font-bold mt-2">{{ selected_fee.loan.title }}</h2><div class="divider prototype-border"></div><div class="flex justify-between"><span>Due date</span><strong>{{ selected_fee.loan.due|date:"M j, Y" }}</strong></div><div class="flex justify-between mt-3"><span>Late days</span><strong>{{ selected_fee.late_days }}{% if selected_fee.late_days <= 2 %} · waived{% endif %}</strong></div><div class="flex justify-between mt-6 text-xl"><span>Fee due</span><strong>{{ selected_fee.amount }}</strong></div><p class="prototype-muted text-sm mt-3">25¢ per day after two waived days, capped at $10.00.</p></section><section class="space-y-2">{% for fee in fees %}<a class="flex justify-between gap-3 prototype-surface rounded-lg p-4 prototype-ink" href="?variant={{ variant }}&screen=fees&loan={{ fee.loan.id }}"><span><strong>{{ fee.loan.id }}</strong> · {{ fee.loan.member }}<small class="block prototype-muted">{{ fee.loan.title }}</small></span><strong>{{ fee.amount }}</strong></a>{% endfor %}</section></div>
+        {% else %}
+          <div class="grid md:grid-cols-[1fr_17rem] gap-6"><section class="prototype-surface rounded-2xl p-8"><p class="uppercase tracking-widest text-xs prototype-muted">Service profile</p><h2 class="text-3xl font-bold mt-2">The Lending Library</h2><p class="mt-5 leading-relaxed prototype-muted">A neighborhood collection for readers and curious minds. Check a book out at the circulation desk and bring it back when you’re done.</p></section><section class="prototype-surface rounded-2xl p-6"><h2 class="font-bold text-lg">Visitor information</h2><p class="mt-4">Monday to Saturday<br>9:00 to 18:00</p><p class="mt-4">14-day lending period</p><a class="link mt-4 inline-block" href="mailto:desk@lending-library.invalid">desk@lending-library.invalid</a></section></div>
+        {% endif %}
+      </main>
+    </div>
+  {% else %}
+    <header class="prototype-shell flex flex-wrap items-center justify-between gap-4">
+      <a href="?variant={{ variant }}&screen=loans" class="font-black text-xl prototype-ink">LIBRARY<span class="text-blue-700">/</span>LOCAL</a>
+      <nav aria-label="Library pages" class="join border-2 border-slate-900">
+        <a class="btn btn-sm join-item prototype-ink" href="?variant={{ variant }}&screen=loans">Loans</a><a class="btn btn-sm join-item prototype-ink" href="?variant={{ variant }}&screen=fees">Fees</a><a class="btn btn-sm join-item prototype-ink" href="?variant={{ variant }}&screen=about">About</a>
+      </nav>
+    </header>
+    <main class="prototype-shell pt-0">
+      {% if screen == 'loans' %}
+        <div class="border-y-2 border-slate-900 py-2 flex justify-between uppercase text-xs font-bold tracking-widest"><span>Issue desk / 2026</span><span>{{ loan_count }} records</span></div>
+        <div class="grid lg:grid-cols-[1fr_20rem] gap-8 mt-8"><section><h1 class="text-5xl md:text-7xl font-black uppercase leading-[.9]">Out in<br>the world<span class="text-blue-700">.</span></h1><p class="mt-4 mb-7 max-w-lg">Loans are due after 14 days. Returned loans keep their original return date.</p>{% if feedback %}<div class="alert prototype-surface mb-4" role="status">{{ feedback }}</div>{% endif %}<div class="grid md:grid-cols-2 gap-4">{% for loan in loans %}<article class="loan-row prototype-surface"><div class="flex justify-between font-mono text-xs"><span>{{ loan.id }}</span>{% if loan.returned_on %}<span>RETURNED</span>{% else %}<span>ON LOAN</span>{% endif %}</div><h2 class="text-xl font-black mt-4">{{ loan.title }}</h2><p class="mt-2">{{ loan.member }}</p><p class="font-mono text-xs mt-1">ISBN {{ loan.isbn }}</p><div class="border-t-2 border-slate-900 mt-4 pt-3 flex justify-between items-center"><span class="text-sm">Due {{ loan.due|date:"M j" }}</span>{% if not loan.returned_on %}<form method="post" hx-boost="true" hx-target="body" hx-swap="innerHTML" hx-push-url="true" action="?variant={{ variant }}&screen=loans">{% csrf_token %}<input type="hidden" name="action" value="return"><input type="hidden" name="loan_id" value="{{ loan.id }}"><button class="btn btn-sm prototype-accent">Return</button></form>{% endif %}</div></article>{% endfor %}</div></section>
+        <aside class="prototype-surface p-5 h-fit"><span class="font-mono text-xs font-bold">NEW RECORD / 01</span><h2 class="text-2xl font-black uppercase mt-2">Lend a book</h2><form method="post" hx-boost="true" hx-target="body" hx-swap="innerHTML" hx-push-url="true" action="?variant={{ variant }}&screen=loans" class="space-y-4 mt-5">{% csrf_token %}<input type="hidden" name="action" value="lend"><label class="form-control"><span class="label-text prototype-ink font-bold mb-1">Member name</span><input name="member" value="{{ form_values.member }}" class="input input-bordered prototype-control" autocomplete="name" aria-invalid="{% if errors.member %}true{% else %}false{% endif %}">{% if errors.member %}<span class="text-red-700 text-sm" role="alert">{{ errors.member }}</span>{% endif %}</label><label class="form-control"><span class="label-text prototype-ink font-bold mb-1">ISBN</span><input name="isbn" value="{{ form_values.isbn }}" class="input input-bordered prototype-control" aria-invalid="{% if errors.isbn %}true{% else %}false{% endif %}">{% if errors.isbn %}<span class="text-red-700 text-sm" role="alert">{{ errors.isbn }}</span>{% endif %}</label><button class="btn prototype-accent w-full">Add loan +</button></form><p class="text-xs mt-4">Required fields · 14-day term</p></aside>
+        </div>
+      {% elif screen == 'fees' %}
+        <div class="border-y-2 border-slate-900 py-2 flex justify-between uppercase text-xs font-bold tracking-widest"><span>Fee ledger / 02</span><span>Waiver: first 2 days</span></div><div class="grid lg:grid-cols-[.8fr_1.2fr] gap-8 mt-8"><section><p class="font-mono text-xs">SELECTED LOAN · {{ selected_fee.loan.id }}</p><h1 class="text-5xl font-black mt-3">{{ selected_fee.amount }}</h1><p class="mt-3">{{ selected_fee.loan.title }}<br>{{ selected_fee.loan.member }}</p><div class="prototype-surface p-4 mt-6"><p>Due {{ selected_fee.loan.due|date:"M j, Y" }}</p><p class="mt-2">{{ selected_fee.late_days }} late days</p><p class="mt-3 text-sm">25¢ per day after the grace period. Maximum charge: $10.00.</p></div></section><section class="space-y-3">{% for fee in fees %}<a href="?variant={{ variant }}&screen=fees&loan={{ fee.loan.id }}" class="block prototype-surface p-4 prototype-ink"><div class="flex justify-between font-mono text-xs"><span>{{ fee.loan.id }} / {{ fee.loan.member }}</span><strong>{{ fee.amount }}</strong></div><p class="font-bold mt-2">{{ fee.loan.title }}</p><p class="text-sm prototype-muted">{{ fee.late_days }} late days · due {{ fee.loan.due|date:"M j, Y" }}</p></a>{% endfor %}</section></div>
+      {% else %}
+        <div class="border-y-2 border-slate-900 py-2 flex justify-between uppercase text-xs font-bold tracking-widest"><span>Reference / 03</span><span>Since always</span></div><section class="max-w-4xl mx-auto py-12"><p class="font-mono uppercase text-sm">For people who read</p><h1 class="text-6xl md:text-8xl font-black uppercase leading-[.85] mt-5">About<br>the Library<span class="text-blue-700">.</span></h1><div class="grid md:grid-cols-2 gap-8 mt-10"><p class="text-xl leading-relaxed">A neighborhood collection. Find your next book, share it with a reader, and return it for the next person.</p><div class="prototype-surface p-5"><p class="font-mono text-xs uppercase">Hours / Monday—Saturday</p><p class="text-2xl font-black mt-2">09:00 — 18:00</p><p class="mt-5 font-mono text-xs uppercase">Loan period</p><p class="text-xl font-bold mt-2">14 days</p><p class="mt-5 font-mono text-xs uppercase">Contact</p><a class="underline break-all" href="mailto:desk@lending-library.invalid">desk@lending-library.invalid</a></div></div></section>
+      {% endif %}
+    </main>
+  {% endif %}
+
+  <nav class="fixed z-50 bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-slate-950 text-white shadow-2xl border border-white/20 px-2 py-2 flex items-center gap-2" aria-label="Prototype variant switcher">
+    <a class="btn btn-circle btn-sm btn-ghost text-white" aria-label="Previous variant" href="?variant={% if variant == 'reading-room' %}ledger{% elif variant == 'desk' %}reading-room{% else %}desk{% endif %}&screen={{ screen }}">←</a>
+    <span class="px-2 text-xs sm:text-sm whitespace-nowrap"><strong>THROWAWAY</strong> · {% for item in variants %}{% if item.key == variant %}{{ item.name }}{% endif %}{% endfor %}</span>
+    <a class="btn btn-circle btn-sm btn-ghost text-white" aria-label="Next variant" href="?variant={% if variant == 'reading-room' %}desk{% elif variant == 'desk' %}ledger{% else %}reading-room{% endif %}&screen={{ screen }}">→</a>
+  </nav>
+  <script>
+    (() => {
+      const variants = ["reading-room", "desk", "ledger"];
+      document.addEventListener("keydown", (event) => {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        if (!["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+        if (event.target.closest("input, textarea, select, button, [contenteditable='true']")) return;
+        const url = new URL(window.location.href);
+        const current = variants.indexOf(url.searchParams.get("variant") || variants[0]);
+        const step = event.key === "ArrowRight" ? 1 : -1;
+        url.searchParams.set("variant", variants[(current + step + variants.length) % variants.length]);
+        event.preventDefault();
+        window.location.assign(url);
+      });
+    })();
+  </script>
+</body>
+</html>

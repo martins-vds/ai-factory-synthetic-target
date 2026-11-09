@@ -1,0 +1,27 @@
+[
+  {
+    "at": "2026-11-09T00:16:04Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 0,
+    "prompt_from": "none",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": null,
+    "role": null,
+    "changed": [
+      "config/urls.py",
+      "src/prototype_library.py",
+      "templates/prototype_library.html"
+    ],
+    "decision": "allow",
+    "why": "no ticket/role for this session"
+  }
+]

@@ -15,9 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+import os
+
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
+
+if settings.DEBUG or os.environ.get('ENABLE_UI_PROTOTYPE') == '1':
+    from src.prototype_library import prototype_library
+
+    urlpatterns.append(path('prototype/library/', prototype_library, name='prototype_library'))
