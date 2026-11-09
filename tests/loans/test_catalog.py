@@ -4,6 +4,7 @@ import pytest
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import IntegrityError
+from django.utils import timezone
 
 from src.loans.models import Loan
 from src.loans.repository import LoanRepository
@@ -34,6 +35,77 @@ def test_detail_endpoint_returns_one_formatted_loan(client):
 @pytest.mark.django_db
 def test_detail_endpoint_returns_not_found_for_unknown_loan(client):
     response = client.get('/loans/unknown')
+
+    assert response.status_code == 404
+    assert response['Content-Type'] == 'text/plain'
+    assert response.content.decode() == 'no such loan\n'
+
+
+@pytest.mark.django_db
+def test_lend_endpoint_creates_a_loan_with_fourteen_day_due_date(client):
+    lent_on = timezone.localdate()
+    due_on = lent_on + date.resolution * 14
+
+    response = client.post('/loans', {'member': 'dee', 'isbn': '123'})
+
+    assert response.status_code == 201
+    assert response['Content-Type'] == 'text/plain'
+    assert response.content.decode() == (
+        f'L4;dee;123;{lent_on.isoformat()};{due_on.isoformat()};\n'
+    )
+    loan = Loan.objects.get(pk='L4')
+    assert loan.member == 'dee'
+    assert loan.isbn == '123'
+    assert loan.lent_on == lent_on
+    assert loan.due_on == due_on
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ('payload', 'field'),
+    [
+        ({}, 'member'),
+        ({'member': 'dee'}, 'isbn'),
+        ({'member': ' ', 'isbn': '123'}, 'member'),
+        ({'member': 'dee', 'isbn': ' '}, 'isbn'),
+    ],
+)
+def test_lend_endpoint_rejects_missing_or_blank_fields(client, payload, field):
+    response = client.post('/loans', payload)
+
+    assert response.status_code == 400
+    assert field.encode() in response.content
+    assert Loan.objects.count() == 3
+
+
+@pytest.mark.django_db
+def test_return_endpoint_records_the_return_date(client):
+    returned_on = timezone.localdate()
+
+    response = client.post('/loans/L1/return')
+
+    assert response.status_code == 200
+    assert response['Content-Type'] == 'text/plain'
+    assert response.content.decode() == (
+        f'L1;ana;9780134685991;2026-01-02;2026-01-16;{returned_on.isoformat()}\n'
+    )
+    assert Loan.objects.get(pk='L1').returned_on == returned_on
+
+
+@pytest.mark.django_db
+def test_return_endpoint_rejects_repeated_return_without_replacing_date(client):
+    original_return_date = date(2026, 1, 20)
+
+    response = client.post('/loans/L2/return')
+
+    assert response.status_code == 409
+    assert response.content.decode() == 'already returned\n'
+    assert Loan.objects.get(pk='L2').returned_on == original_return_date
+
+
+@pytest.mark.django_db
+def test_return_endpoint_returns_not_found_for_unknown_loan(client):
+    response = client.post('/loans/unknown/return')
 
     assert response.status_code == 404
     assert response['Content-Type'] == 'text/plain'
