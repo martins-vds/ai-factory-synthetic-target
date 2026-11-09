@@ -1,0 +1,570 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "analyze",
+    "languages": [
+      "html",
+      "python"
+    ],
+    "frameworks": [
+      "Django"
+    ],
+    "description": "Django-based library loan tracking app with loans models, repository, services, views and HTML templates.",
+    "analyzedAt": "2026-11-09T22:50:00.000Z",
+    "gitCommitHash": "88605f51a9b919dd3aba3aad04bbaa307b2f24d2",
+    "analyzedCommit": "6aabaf1cb8e6bdb654d90ec7e863e948a9aa2086"
+  },
+  "nodes": [
+    {
+      "id": "domain:loan-management",
+      "type": "domain",
+      "name": "Loan Management",
+      "summary": "Tracks library book loans (member, ISBN, lent/due/returned dates) and exposes them as machine-readable text and a browsable catalog.",
+      "tags": [
+        "loans",
+        "library"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Member",
+          "ISBN"
+        ],
+        "businessRules": [
+          "Due date is 14 days after the lent date",
+          "A loan is identified by a string id",
+          "Unknown loan ids return 404"
+        ],
+        "crossDomainInteractions": [
+          "Relies on Platform Infrastructure for persistence and seeded data"
+        ]
+      }
+    },
+    {
+      "id": "domain:platform-infrastructure",
+      "type": "domain",
+      "name": "Platform Infrastructure",
+      "summary": "Supports the loan application with database connectivity checks and initial data seeding.",
+      "tags": [
+        "infrastructure",
+        "database"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "Database connection",
+          "Seed loans"
+        ],
+        "businessRules": [
+          "Initial migration seeds sample loans L1-L3"
+        ],
+        "crossDomainInteractions": [
+          "Provides the Loan table and data to Loan Management"
+        ]
+      }
+    },
+    {
+      "id": "flow:export-loans-as-text",
+      "type": "flow",
+      "name": "Export Loans as Text",
+      "summary": "Returns every loan as semicolon-delimited CSV lines in a plain-text response.",
+      "tags": [
+        "export",
+        "csv"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:export-loans-as-text:route-request",
+      "type": "step",
+      "name": "Route request",
+      "summary": "URL config maps /loans to loan_list.",
+      "tags": [
+        "export"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/urls.py",
+      "lineRange": [
+        6,
+        6
+      ]
+    },
+    {
+      "id": "step:export-loans-as-text:fetch-all-loans",
+      "type": "step",
+      "name": "Fetch all loans",
+      "summary": "LoanRepository.all() queries every Loan.",
+      "tags": [
+        "export"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        71,
+        72
+      ]
+    },
+    {
+      "id": "step:export-loans-as-text:serialize-loans-to-csv",
+      "type": "step",
+      "name": "Serialize loans to CSV",
+      "summary": "loan_line formats each loan with ';' delimiter incl. computed due date.",
+      "tags": [
+        "export"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        42,
+        55
+      ]
+    },
+    {
+      "id": "step:export-loans-as-text:return-text-response",
+      "type": "step",
+      "name": "Return text response",
+      "summary": "Concatenated lines returned as text/plain.",
+      "tags": [
+        "export"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        27,
+        28
+      ]
+    },
+    {
+      "id": "flow:view-loan-as-text",
+      "type": "flow",
+      "name": "View Loan as Text",
+      "summary": "Returns a single loan as a CSV line or a 404 'no such loan' message.",
+      "tags": [
+        "lookup",
+        "csv"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans/<loan_id>",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:view-loan-as-text:route-request",
+      "type": "step",
+      "name": "Route request",
+      "summary": "URL config maps /loans/<loan_id> to loan_detail.",
+      "tags": [
+        "lookup"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/urls.py",
+      "lineRange": [
+        7,
+        7
+      ]
+    },
+    {
+      "id": "step:view-loan-as-text:find-loan-by-id",
+      "type": "step",
+      "name": "Find loan by id",
+      "summary": "LoanRepository.find() returns the loan or None.",
+      "tags": [
+        "lookup"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        74,
+        75
+      ]
+    },
+    {
+      "id": "step:view-loan-as-text:serialize-loan-to-csv",
+      "type": "step",
+      "name": "Serialize loan to CSV",
+      "summary": "loan_line formats the loan.",
+      "tags": [
+        "lookup"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        62,
+        64
+      ]
+    },
+    {
+      "id": "step:view-loan-as-text:respond-or-404",
+      "type": "step",
+      "name": "Respond or 404",
+      "summary": "Returns text body, or 404 when the loan does not exist.",
+      "tags": [
+        "lookup"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        31,
+        35
+      ]
+    },
+    {
+      "id": "flow:browse-loan-catalog",
+      "type": "flow",
+      "name": "Browse Loan Catalog",
+      "summary": "Renders an HTML catalog listing all loans with member, ISBN, due and return status.",
+      "tags": [
+        "ui",
+        "catalog"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /ui/loans/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:browse-loan-catalog:route-request",
+      "type": "step",
+      "name": "Route request",
+      "summary": "URL config maps ui/loans/ to loan_catalog.",
+      "tags": [
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/urls.py",
+      "lineRange": [
+        8,
+        8
+      ]
+    },
+    {
+      "id": "step:browse-loan-catalog:query-loans",
+      "type": "step",
+      "name": "Query loans",
+      "summary": "Loan.objects.all() loads all loans.",
+      "tags": [
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        18,
+        19
+      ]
+    },
+    {
+      "id": "step:browse-loan-catalog:render-list-page",
+      "type": "step",
+      "name": "Render list page",
+      "summary": "loans/list.html extends base layout and lists loans.",
+      "tags": [
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "templates/loans/list.html"
+    },
+    {
+      "id": "flow:view-loan-details-page",
+      "type": "flow",
+      "name": "View Loan Details Page",
+      "summary": "Renders an HTML detail page for one loan, 404 if missing.",
+      "tags": [
+        "ui",
+        "detail"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /ui/loans/<loan_id>/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:view-loan-details-page:route-request",
+      "type": "step",
+      "name": "Route request",
+      "summary": "URL config maps ui/loans/<id>/ to loan_catalog_detail.",
+      "tags": [
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/urls.py",
+      "lineRange": [
+        9,
+        9
+      ]
+    },
+    {
+      "id": "step:view-loan-details-page:load-loan-or-404",
+      "type": "step",
+      "name": "Load loan or 404",
+      "summary": "get_object_or_404 fetches the Loan.",
+      "tags": [
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        22,
+        23
+      ]
+    },
+    {
+      "id": "step:view-loan-details-page:render-detail-page",
+      "type": "step",
+      "name": "Render detail page",
+      "summary": "loans/detail.html shows member, ISBN, lent, due, returned dates.",
+      "tags": [
+        "ui"
+      ],
+      "complexity": "simple",
+      "filePath": "templates/loans/detail.html"
+    },
+    {
+      "id": "flow:seed-initial-loans",
+      "type": "flow",
+      "name": "Seed Initial Loans",
+      "summary": "Initial migration creates the Loan table and bulk-creates sample loans.",
+      "tags": [
+        "migration",
+        "seed"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "manage.py migrate",
+        "entryType": "cli"
+      }
+    },
+    {
+      "id": "step:seed-initial-loans:create-loan-table",
+      "type": "step",
+      "name": "Create Loan table",
+      "summary": "CreateModel builds the Loan schema.",
+      "tags": [
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/migrations/0001_initial.py"
+    },
+    {
+      "id": "step:seed-initial-loans:seed-sample-loans",
+      "type": "step",
+      "name": "Seed sample loans",
+      "summary": "seed_loans inserts loans L1-L3.",
+      "tags": [
+        "migration"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/migrations/0001_initial.py"
+    },
+    {
+      "id": "flow:check-database-connectivity",
+      "type": "flow",
+      "name": "Check Database Connectivity",
+      "summary": "Verifies the database is reachable by running SELECT 1.",
+      "tags": [
+        "health",
+        "database"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "database_probe()",
+        "entryType": "manual"
+      }
+    },
+    {
+      "id": "step:check-database-connectivity:run-select-1-probe",
+      "type": "step",
+      "name": "Run SELECT 1 probe",
+      "summary": "Executes SELECT 1 on the default connection and returns the result.",
+      "tags": [
+        "health"
+      ],
+      "complexity": "simple",
+      "filePath": "src/core/database.py",
+      "lineRange": [
+        83,
+        86
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:loan-management",
+      "target": "flow:export-loans-as-text",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:export-loans-as-text",
+      "target": "step:export-loans-as-text:route-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:export-loans-as-text",
+      "target": "step:export-loans-as-text:fetch-all-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:export-loans-as-text",
+      "target": "step:export-loans-as-text:serialize-loans-to-csv",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:export-loans-as-text",
+      "target": "step:export-loans-as-text:return-text-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:view-loan-as-text",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:view-loan-as-text",
+      "target": "step:view-loan-as-text:route-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:view-loan-as-text",
+      "target": "step:view-loan-as-text:find-loan-by-id",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-loan-as-text",
+      "target": "step:view-loan-as-text:serialize-loan-to-csv",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:view-loan-as-text",
+      "target": "step:view-loan-as-text:respond-or-404",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:browse-loan-catalog",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:browse-loan-catalog",
+      "target": "step:browse-loan-catalog:route-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:browse-loan-catalog",
+      "target": "step:browse-loan-catalog:query-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "flow:browse-loan-catalog",
+      "target": "step:browse-loan-catalog:render-list-page",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:view-loan-details-page",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:view-loan-details-page",
+      "target": "step:view-loan-details-page:route-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:view-loan-details-page",
+      "target": "step:view-loan-details-page:load-loan-or-404",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "flow:view-loan-details-page",
+      "target": "step:view-loan-details-page:render-detail-page",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:platform-infrastructure",
+      "target": "flow:seed-initial-loans",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:seed-initial-loans",
+      "target": "step:seed-initial-loans:create-loan-table",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:seed-initial-loans",
+      "target": "step:seed-initial-loans:seed-sample-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:platform-infrastructure",
+      "target": "flow:check-database-connectivity",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:check-database-connectivity",
+      "target": "step:check-database-connectivity:run-select-1-probe",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "domain:platform-infrastructure",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Loans are persisted in and seeded via the database layer",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}

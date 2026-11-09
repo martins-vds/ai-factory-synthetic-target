@@ -1,0 +1,7 @@
+AFS-TOOL afs-mutation exit=0
+afs-mutation: ok score=0.932 threshold=0.8 killed=41 survived=3 skipped=0 files=6 jobs=4 base=all
+AFS-RESULT gate=mutation score=0.932 threshold=0.8 killed=41 survived=3 files=6 base=all
+  tests: coverage; runner for src/core/database.py: /opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/afs-mutation --pytest -q -x -p no:cacheprovider --no-cov 'tests/test_database_smoke.py::test_postgresql_connection_executes_query'
+  survived: src/loans/urls.py:7 Mutant #3
+  survived: src/loans/urls.py:8 Mutant #4
+  survived: src/loans/urls.py:9 Mutant #5

@@ -1,0 +1,42 @@
+# Surviving mutants: LL-ACCEPT
+
+Written by `afs-mutation` on its last run (base `all`): score 0.932, threshold 0.8, killed 41, survived 3. Each line is a mutant no test killed: add a test that fails on it, or simplify the code if it is equivalent. The diff under each line is the change mutmut made.
+
+- `src/loans/urls.py:7 Mutant #3`
+
+  ```diff
+  @@ -4,7 +4,7 @@
+   urlpatterns = [
+       path('loans', views.loan_list),
+  -    path('loans/<str:loan_id>', views.loan_detail),
+  +    path('XXloans/<str:loan_id>XX', views.loan_detail),
+       path('ui/loans/', views.loan_catalog),
+       path('ui/loans/<str:loan_id>/', views.loan_catalog_detail),
+   ]
+  ```
+
+- `src/loans/urls.py:8 Mutant #4`
+
+  ```diff
+  @@ -5,7 +5,7 @@
+   urlpatterns = [
+       path('loans', views.loan_list),
+       path('loans/<str:loan_id>', views.loan_detail),
+  -    path('ui/loans/', views.loan_catalog),
+  +    path('XXui/loans/XX', views.loan_catalog),
+       path('ui/loans/<str:loan_id>/', views.loan_catalog_detail),
+   ]
+  ```
+
+- `src/loans/urls.py:9 Mutant #5`
+
+  ```diff
+  @@ -6,6 +6,6 @@
+       path('loans', views.loan_list),
+       path('loans/<str:loan_id>', views.loan_detail),
+       path('ui/loans/', views.loan_catalog),
+  -    path('ui/loans/<str:loan_id>/', views.loan_catalog_detail),
+  +    path('XXui/loans/<str:loan_id>/XX', views.loan_catalog_detail),
+   ]
+  ```
+

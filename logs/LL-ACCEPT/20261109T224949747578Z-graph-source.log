@@ -1,0 +1,36 @@
+AFS-TOOL graph_gate.py exit=0
+# Graph gate: source
+
+- 86 nodes, 119 edges
+- Edges added by harness enrichers: 67
+
+## Required types (profile graph.require)
+
+- node `table`: 2
+- node `page`: 1
+- node `endpoint`: 7
+- edge `reads_from`: 6
+- edge `writes_to`: 3
+- edge `routes`: 8
+- edge `calls`: 24
+
+## Data paths (slice specs data_paths)
+
+- `fees-payments` **endpoint=GET /fees/{id}**: `GET /fees/{id}` →routes `LateFeeView.page` →calls `LoanRepository.find` →reads_from `LOAN`
+- `fees-payments` **endpoint=POST /payments/{id}**: `POST /payments/{id}` →routes `FinePayments.pay` →calls `LoanRepository.find` →reads_from `LOAN`
+- `loan-catalog` **endpoint=GET /loans**: `GET /loans` →routes `LoanResource.list` →calls `LoanRepository.all` →reads_from `LOAN`
+- `loan-catalog` **endpoint=GET /loans/{id}**: `GET /loans/{id}` →routes `LoanResource.one` →calls `LoanRepository.find` →reads_from `LOAN`
+- `loan-circulation` **endpoint=POST /loans**: `POST /loans` →routes `LoanResource.lend` →calls `LoanRepository.lend` →reads_from `LOAN`
+- `loan-circulation` **endpoint=POST /loans/{id}/return**: `POST /loans/{id}/return` →routes `LoanResource.giveBack` →calls `LoanRepository.markReturned` →reads_from `LOAN`
+
+## Entry points reaching data (for review)
+
+- 6 of 8 pages/endpoints
+  - no path: endpoint `GET /about`
+  - no path: page `legacy/src/main/resources/static/about.html`
+
+## Gate
+
+- PASS
+
+AFS-RESULT gate=graph side=source verdict=pass failures=0 entry_points=8 reaching_data=6 enriched_edges=67

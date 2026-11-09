@@ -1,0 +1,25 @@
+AFS-TOOL crap.py exit=0
+# CRAP risk map
+
+- Methods: 13 · coverage input: yes
+- Above 30: **0** (0.0%)
+
+## Top 13
+
+| CRAP | CCN | Cov | Method | File:lines |
+|---:|---:|---:|---|---|
+| 2 | 2 | 100% | `loan_line( loan )` | src/loans/services.py:7-20 |
+| 2 | 2 | 100% | `list_loans_text( )` | src/loans/services.py:23-24 |
+| 2 | 2 | 100% | `get_loan_text( loan_id )` | src/loans/services.py:27-29 |
+| 2 | 2 | 100% | `loan_detail( request , loan_id )` | src/loans/views.py:21-25 |
+| 1 | 1 | 100% | `seed_loans( apps , schema_editor )` | src/loans/migrations/0001_initial.py:6-31 |
+| 1 | 1 | 100% | `due_on( self )` | src/loans/models.py:17-18 |
+| 1 | 1 | 100% | `all( self )` | src/loans/repository.py:7-8 |
+| 1 | 1 | 100% | `find( self , loan_id )` | src/loans/repository.py:10-11 |
+| 1 | 1 | 100% | `create( self , ** fields )` | src/loans/repository.py:14-15 |
+| 1 | 1 | 100% | `loan_catalog( request )` | src/loans/views.py:8-9 |
+| 1 | 1 | 100% | `loan_catalog_detail( request , loan_id )` | src/loans/views.py:12-14 |
+| 1 | 1 | 100% | `loan_list( request )` | src/loans/views.py:17-18 |
+| 1 | 1 | 100% | `database_probe( )` | src/core/database.py:4-7 |
+
+AFS-RESULT gate=crap max=2.0 threshold=30 over=0 methods=13
