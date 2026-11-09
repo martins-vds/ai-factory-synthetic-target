@@ -1,0 +1,24 @@
+role: afs-verifier
+ticket: LL-01
+issue: martins-vds/ai-factory-synthetic-target#59
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/73
+verdict: pass
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 2.0
+  mutation_changed: 0.929
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-01.md
+  - .migration/evidence/mutants/LL-01.md
+findings:
+  - severity: minor
+    where: src/loans/urls.py:7-9
+    what: "Mutants #3-#5 replace required API-detail, catalog, and catalog-detail routes. Existing tests assert all three paths, but the mutation run still reports them as survivors."
+tests_added: []
+ledger_issues: []
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#42
+  - martins-vds/ai-factory-synthetic-target#43
