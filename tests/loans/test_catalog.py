@@ -125,8 +125,11 @@ def test_unreturned_loan_is_valid():
     loan = Loan(id='L9', member='reader', isbn='123', lent_on=date(2026, 3, 1))
 
     loan.full_clean()
+    returned_on = Loan._meta.get_field('returned_on')
     assert loan.returned_on is None
     assert loan.due_on == date(2026, 3, 15)
+    assert returned_on.null
+    assert returned_on.blank
 
 
 @pytest.mark.django_db
