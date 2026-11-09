@@ -1,4 +1,5 @@
 id: data.seed-records
+slice: loan-catalog
 kind: data
 title: Seed the three example loans
 source:
@@ -7,7 +8,7 @@ source:
 boundary: "The persistence unit loads three fixed example loan rows at startup: L1, L2, and L3, with their member, ISBN, and lent/returned dates."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json]
 notes: "Seed reload and reset-on-restart behavior are raised in martins-vds/ai-factory-synthetic-target#42."

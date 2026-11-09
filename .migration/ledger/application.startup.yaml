@@ -1,4 +1,5 @@
 id: application.startup
+slice: loan-catalog
 kind: structural
 title: Start and stop the HTTP application
 source:
@@ -8,7 +9,7 @@ source:
 boundary: "PORT selects the listening port (default 8080); startup creates the library persistence unit, wires four HTTP resources, binds Grizzly to 0.0.0.0, and shutdown closes the server and EntityManagerFactory."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/restart.json]
 notes: "Restart reset behavior is raised in martins-vds/ai-factory-synthetic-target#42."

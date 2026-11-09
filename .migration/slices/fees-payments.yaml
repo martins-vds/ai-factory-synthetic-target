@@ -1,0 +1,9 @@
+data_paths:
+  source:
+    - endpoint=GET /fees/{id}
+    - endpoint=POST /payments/{id}
+  target:
+    - endpoint=GET /fees/{id}
+    - endpoint=POST /payments/{id}
+    - endpoint=GET /ui/fees/{id}/
+    - endpoint=POST /ui/payments/{id}/

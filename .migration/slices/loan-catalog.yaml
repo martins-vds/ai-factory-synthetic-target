@@ -1,0 +1,9 @@
+data_paths:
+  source:
+    - endpoint=GET /loans
+    - endpoint=GET /loans/{id}
+  target:
+    - endpoint=GET /loans
+    - endpoint=GET /loans/{id}
+    - endpoint=GET /ui/loans/
+    - endpoint=GET /ui/loans/{id}/

@@ -1,0 +1,5 @@
+# The source retains a tier-C specification, not an executable entry point. The target command is run externally.
+data_paths:
+  source: []
+  target:
+    - command=monthly_report

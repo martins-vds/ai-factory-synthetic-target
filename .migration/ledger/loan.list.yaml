@@ -1,4 +1,5 @@
 id: loan.list
+slice: loan-catalog
 kind: behavioral
 title: List all loans
 source:
@@ -9,6 +10,6 @@ source:
 boundary: "GET /loans returns every loan ordered by id as one semicolon-separated text line per record, with a trailing newline."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]

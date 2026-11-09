@@ -1,0 +1,29 @@
+role: afs-planner
+ticket: SY-06
+issue: martins-vds/ai-factory-synthetic-target#48
+plan: .migration/plan
+slices:
+  - name: loan-catalog
+    anchor: GET /loans; GET /loans/{id}; UI pages under /ui/loans/
+    tickets: 1
+    blocked_by: []
+  - name: loan-circulation
+    anchor: POST /loans; POST /loans/{id}/return; UI actions under /ui/loans/
+    tickets: 1
+    blocked_by: [loan-catalog]
+  - name: fees-payments
+    anchor: GET /fees/{id}; POST /payments/{id}; UI page/action under /ui/fees/ and /ui/payments/
+    tickets: 1
+    blocked_by: [loan-circulation]
+  - name: library-info
+    anchor: GET /about unchanged; modernized UI at /ui/about/ (non-data flow)
+    tickets: 1
+    blocked_by: [fees-payments]
+  - name: monthly-report
+    anchor: tier-C monthly report specification; Django management command=monthly_report, invoked externally
+    tickets: 1
+    blocked_by: [library-info]
+design_tickets: []
+data_slices: []
+unmapped_capabilities: []
+open_questions: []

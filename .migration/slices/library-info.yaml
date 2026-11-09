@@ -1,0 +1,8 @@
+# Static public information does not access a table in the source or target.
+data_paths:
+  source: []
+  target: []
+entry_points:
+  target:
+    - endpoint=GET /about
+    - endpoint=GET /ui/about/

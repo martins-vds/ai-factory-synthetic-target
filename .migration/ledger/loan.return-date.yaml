@@ -1,4 +1,5 @@
 id: loan.return-date
+slice: loan-circulation
 kind: behavioral
 title: Record the loan return date
 source:
@@ -9,7 +10,7 @@ source:
 boundary: "A successful return assigns the supplied date to returnedOn and persists the changed loan; the source does not reject or preserve an earlier return date."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json]
 notes: "The human decision on overwriting an existing return date is in martins-vds/ai-factory-synthetic-target#41."

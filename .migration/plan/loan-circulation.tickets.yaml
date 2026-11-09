@@ -1,0 +1,31 @@
+slice: loan-circulation
+tickets:
+  - id: LL-02
+    title: Lend and return books
+    role: afs-migrator
+    specialty: null
+    files:
+      - config/urls.py
+      - src/loans/
+      - tests/loans/
+      - templates/loans/
+      - .migration/ledger/loan.lend.yaml
+      - .migration/ledger/loan.return-date.yaml
+      - .migration/ledger/loan.return.yaml
+      - .migration/evidence/runs/LL-02.md
+      - .migration/returns/LL-02.afs-migrator.yaml
+    capabilities: [loan.lend, loan.return-date, loan.return]
+    blocked_by: [LL-01]
+cross_slice:
+  - file: config/urls.py
+    slices: [loan-catalog, loan-circulation, fees-payments, library-info]
+    note: Later web slices extend root route composition in dependency order.
+  - file: src/loans/
+    slices: [loan-catalog, loan-circulation]
+    note: This slice extends the model and repository introduced by the catalog.
+  - file: templates/loans/
+    slices: [loan-catalog, loan-circulation]
+    note: This slice extends the catalog browser flow.
+  - file: tests/loans/
+    slices: [loan-catalog, loan-circulation]
+    note: This slice extends tests in the loans context.

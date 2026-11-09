@@ -1,0 +1,20 @@
+slice: library-info
+tickets:
+  - id: LL-04
+    title: Modernize the library information page
+    role: afs-migrator
+    specialty: null
+    files:
+      - config/urls.py
+      - src/library_info/
+      - tests/library_info/
+      - templates/library_info/
+      - .migration/ledger/about.page.yaml
+      - .migration/evidence/runs/LL-04.md
+      - .migration/returns/LL-04.afs-migrator.yaml
+    capabilities: [about.page]
+    blocked_by: [LL-03]
+cross_slice:
+  - file: config/urls.py
+    slices: [loan-catalog, loan-circulation, fees-payments, library-info]
+    note: This slice extends root route composition after the preceding web slices.
