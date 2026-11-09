@@ -90,8 +90,19 @@ def test_lend_endpoint_rejects_missing_or_blank_fields(client, payload, field):
     response = client.post('/loans', payload)
 
     assert response.status_code == 400
+    assert response['Content-Type'] == 'text/plain'
     assert field.encode() in response.content
     assert Loan.objects.count() == 3
+
+
+@pytest.mark.django_db
+def test_lend_endpoint_returns_field_errors_for_missing_values(client):
+    response = client.post('/loans', {})
+
+    assert response.status_code == 400
+    assert response.content.decode() == (
+        'member: This field is required.\nisbn: This field is required.'
+    )
 
 
 @pytest.mark.django_db
@@ -115,6 +126,7 @@ def test_return_endpoint_rejects_repeated_return_without_replacing_date(client):
     response = client.post('/loans/L2/return')
 
     assert response.status_code == 409
+    assert response['Content-Type'] == 'text/plain'
     assert response.content.decode() == 'already returned\n'
     assert Loan.objects.get(pk='L2').returned_on == original_return_date
 
@@ -337,12 +349,22 @@ def test_browser_can_return_a_loan_with_htmx(client):
 
 
 @pytest.mark.django_db
+def test_browser_regular_return_redirects_to_the_updated_loan(client):
+    response = client.post('/ui/loans/L1/return/')
+
+    assert response.status_code == 302
+    assert response['Location'] == '/ui/loans/L1/'
+    assert Loan.objects.get(pk='L1').returned_on == timezone.localdate()
+
+
+@pytest.mark.django_db
 def test_browser_repeat_return_keeps_original_date(client):
     original_return_date = date(2026, 1, 20)
 
     response = client.post('/ui/loans/L2/return/', HTTP_HX_REQUEST='true')
 
-    assert response.status_code == 409
+    assert response.status_code == 200
+    assert b'role="alert"' in response.content
     assert f'already returned on {original_return_date.isoformat()}'.encode() in response.content
     assert Loan.objects.get(pk='L2').returned_on == original_return_date
 
@@ -355,6 +377,23 @@ def test_browser_regular_repeat_return_shows_an_error(client):
     assert b'role="alert"' in response.content
     assert b'already been returned' in response.content
     assert Loan.objects.get(pk='L2').returned_on == date(2026, 1, 20)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ('path', 'method'),
+    [
+        ('/loans', 'put'),
+        ('/ui/loans/new/', 'put'),
+        ('/loans/L1/return', 'get'),
+        ('/ui/loans/L1/return/', 'get'),
+    ],
+)
+def test_loan_write_routes_reject_unsupported_methods(client, path, method):
+    response = getattr(client, method)(path)
+
+    assert response.status_code == 405
+    assert Loan.objects.get(pk='L1').returned_on is None
 
 
 @pytest.mark.django_db

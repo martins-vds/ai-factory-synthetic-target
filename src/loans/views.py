@@ -81,12 +81,10 @@ def loan_return_page(request, loan_id):
         return HttpResponse('no such loan\n', status=404, content_type='text/plain')
 
     if request.headers.get('HX-Request') == 'true':
-        status = 200 if updated else 409
         return render(
             request,
             'loans/return-status.html',
             {'loan': loan, 'updated': updated},
-            status=status,
         )
     if not updated:
         return render(
