@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 from django.core.exceptions import ValidationError
@@ -44,7 +44,7 @@ def test_detail_endpoint_returns_not_found_for_unknown_loan(client):
 @pytest.mark.django_db
 def test_lend_endpoint_creates_a_loan_with_fourteen_day_due_date(client):
     lent_on = timezone.localdate()
-    due_on = lent_on + date.resolution * 14
+    due_on = lent_on + timedelta(days=14)
 
     response = client.post('/loans', {'member': 'dee', 'isbn': '123'})
 
@@ -58,6 +58,22 @@ def test_lend_endpoint_creates_a_loan_with_fourteen_day_due_date(client):
     assert loan.isbn == '123'
     assert loan.lent_on == lent_on
     assert loan.due_on == due_on
+
+
+@pytest.mark.django_db
+def test_lend_endpoint_escapes_delimiters_in_loan_fields(client):
+    lent_on = timezone.localdate()
+    due_on = lent_on + timedelta(days=14)
+
+    response = client.post(
+        '/loans',
+        {'member': 'reader; one', 'isbn': '978"abc'},
+    )
+
+    assert response.status_code == 201
+    assert response.content.decode() == (
+        f'L4;"reader; one";"978""abc";{lent_on.isoformat()};{due_on.isoformat()};\n'
+    )
 
 
 @pytest.mark.django_db
@@ -239,6 +255,106 @@ def test_browser_detail_page_shows_loan_dates(client):
     assert b'Loan record \xc2\xb7 L1' in response.content
     assert b'Jan 2, 2026' in response.content
     assert b'Jan 16, 2026' in response.content
+
+
+@pytest.mark.django_db
+def test_browser_can_create_a_loan_from_the_new_loan_page(client):
+    lent_on = timezone.localdate()
+    due_on = lent_on + date.resolution * 14
+
+    form_response = client.get('/ui/loans/new/')
+
+    assert form_response.status_code == 200
+    assert b'name="member"' in form_response.content
+    assert b'name="isbn"' in form_response.content
+
+    response = client.post(
+        '/ui/loans/new/',
+        {'member': 'reader', 'isbn': '123'},
+    )
+
+    assert response.status_code == 302
+    assert response['Location'] == '/ui/loans/L4/'
+    loan = Loan.objects.get(pk='L4')
+    assert loan.lent_on == lent_on
+    assert loan.due_on == due_on
+
+
+@pytest.mark.django_db
+def test_browser_lending_page_shows_errors_for_blank_fields(client):
+    response = client.post('/ui/loans/new/')
+
+    assert response.status_code == 200
+    assert response.content.count(b'This field is required.') == 2
+    assert Loan.objects.count() == 3
+
+
+@pytest.mark.django_db
+def test_browser_can_lend_a_book_with_htmx(client):
+    form_response = client.get('/ui/loans/new/')
+
+    assert b'hx-post="/ui/loans/new/"' in form_response.content
+
+    response = client.post(
+        '/ui/loans/new/',
+        {'member': 'reader', 'isbn': '123'},
+        HTTP_HX_REQUEST='true',
+    )
+
+    assert response.status_code == 200
+    assert b'Loan L4 is ready.' in response.content
+    assert b'href="/ui/loans/L4/"' in response.content
+    assert Loan.objects.filter(pk='L4').exists()
+
+
+@pytest.mark.django_db
+def test_htmx_lending_errors_replace_only_the_form(client):
+    response = client.post(
+        '/ui/loans/new/',
+        {'member': '', 'isbn': ''},
+        HTTP_HX_REQUEST='true',
+    )
+
+    assert response.status_code == 200
+    assert b'<!doctype html>' not in response.content
+    assert b'id="loan-form"' in response.content
+    assert response.content.count(b'This field is required.') == 2
+
+
+@pytest.mark.django_db
+def test_browser_can_return_a_loan_with_htmx(client):
+    returned_on = timezone.localdate()
+    detail = client.get('/ui/loans/L1/')
+
+    assert detail.status_code == 200
+    assert b'hx-post="/ui/loans/L1/return/"' in detail.content
+
+    response = client.post('/ui/loans/L1/return/', HTTP_HX_REQUEST='true')
+
+    assert response.status_code == 200
+    assert f'Returned on {returned_on.isoformat()}'.encode() in response.content
+    assert Loan.objects.get(pk='L1').returned_on == returned_on
+
+
+@pytest.mark.django_db
+def test_browser_repeat_return_keeps_original_date(client):
+    original_return_date = date(2026, 1, 20)
+
+    response = client.post('/ui/loans/L2/return/', HTTP_HX_REQUEST='true')
+
+    assert response.status_code == 409
+    assert f'already returned on {original_return_date.isoformat()}'.encode() in response.content
+    assert Loan.objects.get(pk='L2').returned_on == original_return_date
+
+
+@pytest.mark.django_db
+def test_browser_regular_repeat_return_shows_an_error(client):
+    response = client.post('/ui/loans/L2/return/')
+
+    assert response.status_code == 409
+    assert b'role="alert"' in response.content
+    assert b'already been returned' in response.content
+    assert Loan.objects.get(pk='L2').returned_on == date(2026, 1, 20)
 
 
 @pytest.mark.django_db

@@ -15,6 +15,19 @@
         <div><dt class="text-sm text-[#66705b]">Due</dt><dd>{{ loan.due_on|date:"M j, Y" }}</dd></div>
         <div><dt class="text-sm text-[#66705b]">Returned</dt><dd>{% if loan.returned_on %}{{ loan.returned_on|date:"M j, Y" }}{% else %}Not yet returned{% endif %}</dd></div>
       </dl>
+      <div id="return-status" class="mt-6">
+        {% if return_error %}
+        <p role="alert">This loan has already been returned.</p>
+        {% elif loan.returned_on %}
+        <p role="status">Returned on {{ loan.returned_on|date:"Y-m-d" }}</p>
+        {% else %}
+        <form method="post" action="/ui/loans/{{ loan.id }}/return/"
+              hx-post="/ui/loans/{{ loan.id }}/return/" hx-target="#return-status" hx-swap="outerHTML">
+          {% csrf_token %}
+          <button class="btn bg-[#a94e37] text-white hover:bg-[#873b2a]" type="submit">Return book</button>
+        </form>
+        {% endif %}
+      </div>
     </div>
   </article>
 </section>

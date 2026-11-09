@@ -1,0 +1,19 @@
+<div id="loan-form" class="card border border-[#d8cdbb] bg-[#fffdf7] shadow-sm">
+  <form class="card-body gap-5" method="post" action="/ui/loans/new/"
+        hx-post="/ui/loans/new/" hx-target="#loan-form" hx-swap="outerHTML">
+    {% csrf_token %}
+    <div>
+      <label class="label" for="{{ form.member.id_for_label }}"><span class="label-text">Member</span></label>
+      <input class="input input-bordered w-full" id="{{ form.member.id_for_label }}"
+             name="{{ form.member.html_name }}" value="{{ form.member.value|default_if_none:'' }}" required>
+      {% for error in form.member.errors %}<p class="mt-1 text-sm text-error" role="alert">{{ error }}</p>{% endfor %}
+    </div>
+    <div>
+      <label class="label" for="{{ form.isbn.id_for_label }}"><span class="label-text">ISBN</span></label>
+      <input class="input input-bordered w-full" id="{{ form.isbn.id_for_label }}"
+             name="{{ form.isbn.html_name }}" value="{{ form.isbn.value|default_if_none:'' }}" required>
+      {% for error in form.isbn.errors %}<p class="mt-1 text-sm text-error" role="alert">{{ error }}</p>{% endfor %}
+    </div>
+    <button class="btn bg-[#a94e37] text-white hover:bg-[#873b2a]" type="submit">Lend book</button>
+  </form>
+</div>
