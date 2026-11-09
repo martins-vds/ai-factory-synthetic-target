@@ -6,8 +6,8 @@ gates:
   build: 0
   behavior: 0
   idiom: 0
-  crap: 7.0
-  mutation_changed: 0.855
+  crap: "n/a: not rerun during the bounded verifier remediation"
+  mutation_changed: "n/a: verifier identified a module-level mutation harness issue; survivor remediation is deferred"
   regression: 0
 evidence_logs:
   - .migration/evidence/runs/LL-02.md

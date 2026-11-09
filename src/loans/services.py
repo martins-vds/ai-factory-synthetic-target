@@ -27,9 +27,7 @@ class LoanRepository(Protocol):
 
     def create(self, *, id: str, member: str, isbn: str, lent_on: date) -> LoanRecord: ...
 
-    def mark_returned(
-        self, loan_id: str, returned_on: date
-    ) -> tuple[LoanRecord | None, bool]: ...
+    def mark_returned(self, loan_id: str, returned_on: date) -> tuple[LoanRecord | None, bool]: ...
 
 
 class LoanApplication:
