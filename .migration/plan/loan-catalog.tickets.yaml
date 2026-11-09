@@ -9,6 +9,7 @@ tickets:
       - config/urls.py
       - src/loans/
       - tests/loans/
+      - tests/test_ui_smoke.py
       - templates/base.html
       - templates/loans/
       - Makefile
