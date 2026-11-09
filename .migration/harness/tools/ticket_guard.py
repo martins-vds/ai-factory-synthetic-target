@@ -143,6 +143,10 @@ def _return_at_head(path, repo, issue_number, cited_prs=None):
         if relevant:
             detail = f": {'; '.join(continuation_problems)}" if continuation_problems else ""
             raise ValueError(f"parent-ticket continuation for issue #{issue_number} is not verified{detail}")
+    snapshot = _continuation_snapshot(repo, issue_number, path, cited_prs) if cited_prs else None
+    if snapshot is not None:
+        # The continuation's evidence is the return it landed; later same-path rewrites don't erase it.
+        return snapshot, [f"{path}: attributed to issue #{issue_number} by its landed snapshot of the parent return"]
     try:
         from check_slice_returns import superseded_attribution
         attributed, diagnostics = superseded_attribution(
@@ -153,6 +157,54 @@ def _return_at_head(path, repo, issue_number, cited_prs=None):
         raise ValueError(f"return evidence {path} does not attribute to issue #{issue_number} "
                          "directly or through same-path ticket/role history")
     return doc, diagnostics
+
+
+def _continuation_snapshot(repo, issue_number, path, cited_prs):
+    """A continuation (child issue C of ticket P) is evidenced by one of C's own cited landing PRs that closes C,
+    changed the return file, where the return in that PR's landed commit names P and passes. Planner, Auditor and
+    Coordinator returns carry no `pr:` field, so the parent-ticket rule could not find their owning PR (pilot
+    BK-RECON: restarts #262 and #276 of the Planner's BK-04, re-audit #477 of the Auditor's BK-05J)."""
+    try:
+        parent = _parent_issue_number(repo, issue_number)
+    except (OSError, ValueError, subprocess.SubprocessError, SystemExit):
+        return None
+    if parent is None:
+        return None
+    for number in cited_prs:
+        if type(number) is not int:
+            continue
+        try:
+            if not _pull_closes_issue(_pull(repo, number), repo, issue_number):
+                continue
+            commit = _landed_pull(repo, number)
+            if not _pull_changes_return_file(repo, number, path):
+                continue
+            snapshot = _valid_return(git("show", f"{commit}:{path}"), path)
+        except (OSError, ValueError, subprocess.SubprocessError, SystemExit):
+            continue
+        if not snapshot or _role_outcome_problem(snapshot):
+            continue
+        if str(snapshot.get("issue", "")).strip() == _issue_ref(repo, parent):
+            return snapshot
+    return None
+
+
+def _handed_off(repo, path, failed_pull):
+    """ADR-0030 amendment: a session that stopped and handed off is evidenced by the handoff its closed,
+    unmerged PR committed (pilot BK-ACCEPT #470/#471: blocked by Copilot's firewall, restarted as #473)."""
+    path = str(path or "")
+    if not re.fullmatch(r"\.migration/handoffs/[A-Za-z0-9][A-Za-z0-9_.-]*\.md", path):
+        raise ValueError(f"failure.handoff must name a `.migration/handoffs/<ticket>.md` file, not {path!r}")
+    if not _pull_changes_return_file(repo, failed_pull["number"], path):
+        raise ValueError(f"failure PR #{failed_pull['number']} doesn't change {path}")
+    head = (failed_pull.get("head") or {}).get("sha")
+    content = gh(f"repos/{repo}/contents/{quote(path, safe='/')}?ref={head}")
+    try:
+        text = base64.b64decode(content["content"], validate=False).decode("utf-8")
+    except (KeyError, TypeError, ValueError, UnicodeError) as exc:
+        raise ValueError(f"handoff {path} at PR #{failed_pull['number']} is unreadable: {exc}") from exc
+    if not re.search(r"(?m)^## Handoff\b", text) or not re.search(r"(?mi)^### Blockers", text):
+        raise ValueError(f"{path} at PR #{failed_pull['number']} is not a handoff with blockers")
 
 
 def _parent_issue_number(repo, issue_number):
@@ -539,6 +591,41 @@ def _failed_role_return(repo, issue_number, pull_number, path, pull):
         raise ValueError(f"{path} does not identify failed PR #{pull_number} as its owning PR")
 
 
+def completed_evidence_problems(repo, number, item, notice=print):
+    """Problems with one `completed` disposition's evidence: its landing PRs and the role returns they landed.
+    The single attribution rule for a completed ticket, shared by the reconciliation check (ADR-0030) and the
+    epic's return-file check (ADR-0024), so the two can't disagree about what counts as a ticket's return."""
+    prs = item.get("pull_requests")
+    returns = item.get("returns")
+    if not isinstance(prs, list) or not prs:
+        return ["completed disposition needs verified landing PR(s)"]
+    if not isinstance(returns, list) or not returns:
+        return ["completed disposition needs relevant role return(s)"]
+    problems, landed = [], {}
+    for pr_number in prs:
+        try:
+            landed[pr_number] = _landed_pull(repo, pr_number)
+        except (ValueError, OSError, subprocess.SubprocessError) as exc:
+            problems.append(str(exc))
+    for return_path in returns:
+        try:
+            doc, diagnostics = _return_at_head(return_path, repo, number, set(landed))
+            for diagnostic in diagnostics:
+                notice(f"::notice::{diagnostic}")
+            outcome_problem = _role_outcome_problem(doc)
+            if outcome_problem:
+                raise ValueError(outcome_problem)
+            owner_pr = _return_pr_number(doc, repo, return_path=return_path)
+            if owner_pr is not None and owner_pr not in landed:
+                raise ValueError(f"owning PR #{owner_pr} is missing from completed evidence")
+            candidates = [landed[owner_pr]] if owner_pr is not None else list(landed.values())
+            if not any(_return_in_commit(_return_path(return_path), doc, commit) for commit in candidates):
+                raise ValueError("no cited landed PR contains this role return")
+        except (ValueError, OSError, subprocess.SubprocessError) as exc:
+            problems.append(str(exc))
+    return problems
+
+
 def reconciliation_problems(repo, epic_number, epic, report_path=None):
     """Validate a committed, explicit disposition for every non-decision descendant of a slice epic."""
     from fog_rewalk import is_slice_epic
@@ -610,37 +697,7 @@ def reconciliation_problems(repo, epic_number, epic, report_path=None):
                 if issue.get("state") != "closed" or issue.get("state_reason") != "completed":
                     problems.append(f"#{number}: completed disposition requires an issue closed as completed")
                     continue
-                prs = item.get("pull_requests")
-                returns = item.get("returns")
-                if not isinstance(prs, list) or not prs:
-                    problems.append(f"#{number}: completed disposition needs verified landing PR(s)")
-                    continue
-                if not isinstance(returns, list) or not returns:
-                    problems.append(f"#{number}: completed disposition needs relevant role return(s)")
-                    continue
-                landed = {}
-                for pr_number in prs:
-                    try:
-                        landed[pr_number] = _landed_pull(repo, pr_number)
-                    except (ValueError, OSError, subprocess.SubprocessError) as exc:
-                        problems.append(f"#{number}: {exc}")
-                for return_path in returns:
-                    try:
-                        doc, diagnostics = _return_at_head(return_path, repo, number, set(landed))
-                        for diagnostic in diagnostics:
-                            print(f"::notice::{diagnostic}")
-                        outcome_problem = _role_outcome_problem(doc)
-                        if outcome_problem:
-                            raise ValueError(outcome_problem)
-                        owner_pr = _return_pr_number(doc, repo, return_path=return_path)
-                        if owner_pr is not None and owner_pr not in landed:
-                            raise ValueError(f"owning PR #{owner_pr} is missing from completed evidence")
-                        candidates = [landed[owner_pr]] if owner_pr is not None else list(landed.values())
-                        if not any(_return_in_commit(_return_path(return_path), doc, commit)
-                                   for commit in candidates):
-                            raise ValueError(f"no cited landed PR contains this role return")
-                    except (ValueError, OSError, subprocess.SubprocessError) as exc:
-                        problems.append(f"#{number}: {exc}")
+                problems.extend(f"#{number}: {problem}" for problem in completed_evidence_problems(repo, number, item))
             elif disposition == "superseded":
                 if issue.get("state") != "closed" or issue.get("state_reason") != "not_planned":
                     problems.append(f"#{number}: superseded disposition requires closure as not planned")
@@ -672,6 +729,8 @@ def reconciliation_problems(repo, epic_number, epic, report_path=None):
                         raise ValueError(f"failure PR #{failure['pull_request']} must be closed unmerged")
                     if failure.get("session_run") is not None:
                         _killed_session(repo, failure["session_run"], failed_pull)
+                    elif failure.get("handoff") is not None:
+                        _handed_off(repo, failure["handoff"], failed_pull)
                     else:
                         _failed_role_return(repo, number, failure["pull_request"], failure.get("return"), failed_pull)
                 except (ValueError, OSError, subprocess.SubprocessError) as exc:
