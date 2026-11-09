@@ -1,3 +1,4 @@
+epic: 58
 data_paths:
   source:
     - endpoint=GET /loans

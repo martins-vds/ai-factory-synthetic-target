@@ -1,3 +1,4 @@
+epic: 64
 # Static public information does not access a table in the source or target.
 data_paths:
   source: []
