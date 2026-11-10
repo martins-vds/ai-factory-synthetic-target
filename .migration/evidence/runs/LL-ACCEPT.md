@@ -23,3 +23,4 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 
 Acceptance rows above were copied unchanged from the independently verified `.migration/evidence/runs/LL-AUDIT.md` record for run 42714661632, attempt 1. The coordinator did not rerun acceptance gates. The verified result is committed at `.migration/evidence/acceptance-runs/42714661632-1.json`; see `.migration/evidence/loan-catalog/acceptance.md` for the summary.
 | 2026-11-10T03:59:39+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
+| 2026-11-10T04:00:15+00:00 | finish-check-issues-drill | 0 | 1.69 | `python .migration/harness/tools/afs-finish-check --ticket LL-ACCEPT --role afs-slice-coordinator` | `ee836a7d810f8805` |  | gate=finish-check ticket=LL-ACCEPT role=afs-slice-coordinator findings=0 |

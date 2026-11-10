@@ -12,8 +12,9 @@ acceptance:
   gates: all-green
   mutation_score: 0.932
   coverage_gaps: 0
-human_check: requested
-human_check_issues: []
+human_check: issues
+human_check_issues:
+  - "DRILL (operator-requested, 2026-11-09): exercise the human_check: issues path for the /ui/loans/ pages; no mismatch was observed."
 quirk_tickets:
   - martins-vds/ai-factory-synthetic-target#42
   - martins-vds/ai-factory-synthetic-target#43

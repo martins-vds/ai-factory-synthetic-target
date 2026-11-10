@@ -47,7 +47,11 @@ All nine catalog entries have status `migrated`; each is backed by LL-01 evidenc
 
 ## Human side-by-side check
 
-`human_check: requested`. Compare legacy behavior directly against the target, side by side:
+The side-by-side comparison remains outstanding. The operator-requested drill is recorded as:
+
+`DRILL (operator-requested, 2026-11-09): exercise the human_check: issues path for the /ui/loans/ pages; no mismatch was observed.`
+
+This is a drill, not an observed UI mismatch or human sign-off. The comparison still needs to compare legacy behavior directly against the target, side by side:
 
 - The API loan list and lookup, including ordering, exact formatted output, trailing newline, and found/not-found responses.
 - The three seed records (L1, L2, L3), including member, ISBN, and lent/returned dates.
@@ -55,4 +59,4 @@ All nine catalog entries have status `migrated`; each is backed by LL-01 evidenc
 - The semicolon-delimited export, including field order, empty returned-date field, and quoting of delimiters, quotes, and line breaks.
 - The `/ui/loans/` catalog and each `/ui/loans/<id>/` detail page, including displayed loan dates.
 
-This request is not a human sign-off. The slice remains pending that comparison; no `passed` decision or approval is recorded here.
+The slice remains pending that comparison; no `passed` decision or approval is recorded here.
