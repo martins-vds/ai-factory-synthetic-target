@@ -19,6 +19,11 @@ def test_about_endpoint_matches_characterized_response(client):
     assert response.content.decode() == expected['body']
 
 
+def test_about_routes_reject_non_get_requests(client):
+    assert client.post('/about').status_code == 405
+    assert client.post('/ui/about/').status_code == 405
+
+
 @pytest.mark.django_db
 def test_modern_about_page_shows_library_information_in_browser(live_server):
     with sync_playwright() as playwright:
