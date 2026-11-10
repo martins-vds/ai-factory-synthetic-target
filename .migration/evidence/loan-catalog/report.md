@@ -6,7 +6,7 @@
 
 ## A. Graph refresh and acceptance evidence
 
-The pinned source SHA is `563c316ed51462b08fd6e58f3781a3c8b2890453`. In this audit, source graph freshness and `graph_gate.py --side source` both passed; the source graph reports the two slice anchors, `GET /loans` and `GET /loans/{id}`, reaching `LOAN`. The run's target graph was independently verified for commit `88605f51a9b919dd3aba3aad04bbaa307b2f24d2`; its target tree hashes are recorded in the verified `result.json`. The reviewed source, ledger, plan, test and target-code paths are unchanged between that commit and this audit checkout.
+The pinned source SHA is `563c316ed51462b08fd6e58f3781a3c8b2890453`. In this audit, source graph freshness and `graph_gate.py --side source` both passed; the source graph reports the two slice anchors, `GET /loans` and `GET /loans/{id}`, reaching `LOAN`. The run's target graph was independently verified for commit `88605f51a9b919dd3aba3aad04bbaa307b2f24d2`; its target tree hashes are recorded in the verified `result.json`. On this continuation, the artifact was fetched again and re-verified in a detached worktree at that exact commit because the audit branch now contains post-run audit outputs outside the execution-input allowlist. The accepted source and target execution inputs match the reviewed run.
 
 GitHub confirms the run is in `martins-vds/ai-factory-synthetic-target`, on `main`, attempt 1, for the specified commit, with successful graph, acceptance and publish jobs. The workflow at that commit is `.github/workflows/afs-acceptance.yml`; its acceptance job runs the profile gates, uploads evidence with 30-day retention, and its publish job creates `afs/acceptance/42714661632-1`. Fetch and `afs-acceptance verify` both succeeded.
 
@@ -21,7 +21,7 @@ GitHub confirms the run is in `martins-vds/ai-factory-synthetic-target`, on `mai
 | CRAP | Coverage + Lizard + `crap.py --max 30` | 0 | Maximum CRAP 2.0; none over threshold. |
 | Full mutation | `afs-mutation --all` | 0 | Score 0.932 (threshold 0.8), 41 killed, 3 survived. |
 
-These are the fetched run's verified results; this audit did not rerun build, tests, CRAP or mutation. Acceptance journal data rows were appended unchanged to `/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/evidence/runs/LL-AUDIT.md`.
+These are the fetched run's verified results; this audit did not rerun build, tests, CRAP or mutation. Acceptance journal data rows were appended unchanged to `/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/evidence/runs/LL-AUDIT.md`. The verified `result.json` was copied byte-for-byte to `.migration/evidence/acceptance-runs/42714661632-1.json` (SHA-256 `a7c8444ae0248d7802bd55fd0ceadb99c5c9988d621f9e7bf24184633ca75f4a`).
 
 The target graph paths in `.migration/slices/loan-catalog.yaml` match the generated graph:
 
@@ -69,8 +69,9 @@ No capability gap was found, so no new capability ticket was created. No issue w
 ## F. Final gap list
 
 - Missing capability, misplaced responsibility, broken flow, missing integration, or untested capability: none found among the nine LL-01 ledger entries.
-- Acceptance evidence archive: `.migration/evidence/acceptance-runs/42714661632-1.json` was not present on `main` at audit time. The issue permits touching only this report, the return, the LL-AUDIT journal, and the fetched run; I therefore did not add the reserved archive file. The verified run remains available at `/home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/runs/acceptance-42714661632-1/result.json`. This prevents a `complete` verdict under ADR-0035 until an authorized change archives it.
+- The verified acceptance result is now archived at `.migration/evidence/acceptance-runs/42714661632-1.json`; the return cites this committed path, satisfying the ADR-0035 evidence requirement.
+- Human flow sign-off under ADR-0031 remains outstanding. This audit does not set that sign-off or approve acceptance; the auditor verdict therefore remains `gaps-remain` pending the required human check.
 
 ## G. Assessment
 
-The loan-catalog implementation has passing capability evidence for all 9/9 planned ledger entries, with no catalog graph or functional gap identified. The audit verdict remains `gaps-remain` solely because the verified result is not committed in the reserved acceptance archive and the ticket's touch-only scope forbids adding it here. Operator side-by-side sign-off remains outstanding under ADR-0031; this audit neither performs nor grants it.
+The loan-catalog implementation has passing capability evidence for all 9/9 planned ledger entries, with no catalog graph or functional gap identified. The acceptance result is archived and the technical audit is complete; slice acceptance remains pending operator side-by-side sign-off under ADR-0031. This audit neither performs nor grants that sign-off.

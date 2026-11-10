@@ -24,3 +24,5 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 | 2026-11-09T22:50:35+00:00 | mutation_full-0 | 0 | 38.19 | `bash -c 'python .migration/harness/tools/afs-mutation --all'` | `6af2a8d441674a94` |  | gate=mutation score=0.932 threshold=0.8 killed=41 survived=3 files=6 base=all |
 | 2026-11-09T23:22:35+00:00 | output-validation | 0 | 0.29 | `python .migration/harness/tools/validate.py .migration` | `e7a125a5375e1ef0` |  |  |
 | 2026-11-10T00:14:39+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
+| 2026-11-10T00:16:40+00:00 | finish-check | 0 | 1.55 | `python .migration/harness/tools/afs-finish-check --ticket LL-AUDIT --role afs-auditor` | `d78a7b66ff0dd0e0` |  | gate=finish-check ticket=LL-AUDIT role=afs-auditor findings=0 |
+| 2026-11-10T00:16:43+00:00 | output-validation-final | 0 | 0.27 | `python .migration/harness/tools/validate.py .migration` | `e7a125a5375e1ef0` |  |  |
