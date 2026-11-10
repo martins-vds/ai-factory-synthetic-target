@@ -1,0 +1,17 @@
+role: afs-auditor
+ticket: LC-AUDIT
+issue: martins-vds/ai-factory-synthetic-target#94
+scope: loan-circulation
+report: .migration/evidence/loan-circulation/report.md
+capabilities_checked: 3
+gaps:
+  - class: misplaced
+    ledger_id: loan.lend
+    ticket: null
+  - class: misplaced
+    ledger_id: loan.return-date
+    ticket: null
+graph_inconsistencies:
+  - "The target graph maps POST /loans through loan_collection to LoanApplication.list_loans_text and reads_from loans_loan; inspected code branches POST to loan_lend and behavior tests verify creation. This path is under-described by the graph, not a capability gap."
+verdict: gaps-remain
+acceptance_run: .migration/evidence/acceptance-runs/42752283868-1.json
