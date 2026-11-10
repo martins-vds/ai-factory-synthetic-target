@@ -1,0 +1,28 @@
+epic: 62
+scope: slice-epic-descendants
+issues:
+  - number: 63
+    disposition: completed
+    pull_requests: [88]
+    returns:
+      - .migration/returns/LL-03.afs-migrator.yaml
+  - number: 90
+    disposition: completed
+    pull_requests: [91, 97]
+    returns:
+      - .migration/returns/LL-03.afs-verifier.yaml
+  - number: 96
+    disposition: completed
+    pull_requests: [97]
+    returns:
+      - .migration/returns/LL-03.afs-verifier.yaml
+  - number: 114
+    disposition: completed
+    pull_requests: [116]
+    returns:
+      - .migration/returns/LF-AUDIT.afs-auditor.yaml
+  - number: 117
+    disposition: completed
+    pull_requests: [118]
+    returns:
+      - .migration/returns/LF-ACCEPT.afs-slice-coordinator.yaml
