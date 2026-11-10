@@ -1,0 +1,46 @@
+[
+  {
+    "at": "2026-11-09T19:09:42Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 0,
+    "prompt_from": "none",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LL-02",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/costs/4a917dde-f2fe-47d8-9b44-c72b9c749c20.json",
+      ".migration/evidence/mutants/LL-02.md",
+      ".migration/evidence/runs/LL-02.md",
+      ".migration/ledger/loan.lend.yaml",
+      ".migration/ledger/loan.return-date.yaml",
+      ".migration/ledger/loan.return.yaml",
+      "src/loans/forms.py",
+      "src/loans/repository.py",
+      "src/loans/services.py",
+      "src/loans/urls.py",
+      "src/loans/views.py",
+      "templates/loans/detail.html",
+      "templates/loans/list.html",
+      "templates/loans/loan-created.html",
+      "templates/loans/loan-form.html",
+      "templates/loans/new.html",
+      "templates/loans/return-status.html",
+      "tests/loans/test_catalog.py"
+    ],
+    "findings": [
+      "[mechanical] No return file. Write and commit `.migration/returns/LL-02.afs-migrator.yaml` with `role: afs-migrator`, `ticket: LL-02`, `issue:` this ticket's issue, `pr:` this PR, and every gate copied from your `afs-run` journal (`.migration/evidence/runs/LL-02.md`). See afs-migration-contract \u2192 Return files."
+    ],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "self_heal.enabled is off; would have blocked"
+  }
+]

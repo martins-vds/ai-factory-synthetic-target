@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Lend a book · The Lending Library{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-2xl">
+  <a class="link link-hover text-[#a94e37]" href="/ui/loans/">← Back to the collection</a>
+  <h1 class="mb-6 mt-4 text-4xl">Lend a book</h1>
+  {% include "loans/loan-form.html" %}
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+role: afs-verifier
+ticket: LL-02
+issue: martins-vds/ai-factory-synthetic-target#84
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/85
+verdict: pass
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 7.0
+  mutation_changed: 0.908
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-02.md
+findings:
+  - severity: minor
+    where: .migration/evidence/mutants/LL-02.md:5
+    what: "The ports finding is resolved: LoanApplication depends only on application-owned Clock and LoanRepository ports, with adapters wired once and in-memory-fake unit tests. The 11 route, method-guard, and LoanForm.Meta.model survivors reflect the known module-level harness test-selection bug; focused and full behavior tests pass, including the first verifier's four tests."
+tests_added:
+  - tests/loans/test_catalog.py::test_lend_endpoint_rejects_missing_or_blank_fields
+  - tests/loans/test_catalog.py::test_browser_lending_page_shows_errors_for_blank_fields
+  - tests/loans/test_catalog.py::test_browser_regular_repeat_return_shows_an_error
+  - tests/loans/test_catalog.py::test_browser_return_page_returns_not_found_for_unknown_loan
+ledger_issues: []
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#39
+  - martins-vds/ai-factory-synthetic-target#41
+  - martins-vds/ai-factory-synthetic-target#43
+  - martins-vds/ai-factory-synthetic-target#42

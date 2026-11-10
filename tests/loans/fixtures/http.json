@@ -1,0 +1,53 @@
+{
+  "GET /loans": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\nL2;bo;9780596007126;2026-01-10;2026-01-24;2026-01-20\nL3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /loans/{id}": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/loans/L1"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /loans": {
+    "request": {
+      "form": {
+        "isbn": "123",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/loans"
+    },
+    "response": {
+      "body": "L4;dee;123;2026-11-08;2026-11-22;\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /loans/{id}/return": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/loans/L1/return"
+    },
+    "response": {
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;2026-11-08\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  }
+}

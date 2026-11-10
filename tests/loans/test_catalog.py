@@ -1,39 +1,162 @@
-from datetime import date
+import json
+from datetime import date, timedelta
+from pathlib import Path
 
 import pytest
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import IntegrityError
+from django.utils import timezone
+from playwright.sync_api import sync_playwright
 
 from src.loans.models import Loan
-from src.loans.repository import LoanRepository
+from src.loans.repository import DjangoLoanRepository
+
+HTTP_GOLDEN_PATH = (
+    Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
+)
+HTTP_GOLDENS = json.loads(
+    (
+        HTTP_GOLDEN_PATH
+        if HTTP_GOLDEN_PATH.exists()
+        else Path(__file__).parent / 'fixtures/http.json'
+    ).read_text(encoding='utf-8')
+)
 
 
 @pytest.mark.django_db
 def test_list_endpoint_returns_seeded_records(client):
     response = client.get('/loans')
+    expected = HTTP_GOLDENS['GET /loans']['response']
 
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'text/plain'
-    assert response.content.decode() == (
-        'L1;ana;9780134685991;2026-01-02;2026-01-16;\n'
-        'L2;bo;9780596007126;2026-01-10;2026-01-24;2026-01-20\n'
-        'L3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\n'
-    )
+    assert response.status_code == expected['status']
+    assert response['Content-Type'] == expected['content_type']
+    assert response.content.decode() == expected['body']
 
 
 @pytest.mark.django_db
 def test_detail_endpoint_returns_one_formatted_loan(client):
     response = client.get('/loans/L1')
+    expected = HTTP_GOLDENS['GET /loans/{id}']['response']
 
-    assert response.status_code == 200
-    assert response['Content-Type'] == 'text/plain'
-    assert response.content.decode() == 'L1;ana;9780134685991;2026-01-02;2026-01-16;\n'
+    assert response.status_code == expected['status']
+    assert response['Content-Type'] == expected['content_type']
+    assert response.content.decode() == expected['body']
 
 
 @pytest.mark.django_db
 def test_detail_endpoint_returns_not_found_for_unknown_loan(client):
     response = client.get('/loans/unknown')
+
+    assert response.status_code == 404
+    assert response['Content-Type'] == 'text/plain'
+    assert response.content.decode() == 'no such loan\n'
+
+
+@pytest.mark.django_db
+def test_lend_endpoint_creates_a_loan_with_fourteen_day_due_date(client):
+    lent_on = timezone.localdate()
+    due_on = lent_on + timedelta(days=14)
+    golden = HTTP_GOLDENS['POST /loans']
+    source_fields = golden['response']['body'].rstrip('\n').split(';')
+
+    response = client.post(golden['request']['path'], golden['request']['form'])
+    target_fields = response.content.decode().rstrip('\n').split(';')
+
+    assert response.status_code == golden['response']['status']
+    assert response['Content-Type'] == golden['response']['content_type']
+    assert response.content.decode().endswith('\n')
+    assert target_fields[:3] == source_fields[:3]
+    assert target_fields[3:] == [
+        lent_on.isoformat(),
+        due_on.isoformat(),
+        source_fields[5],
+    ]
+    loan = Loan.objects.get(pk='L4')
+    assert loan.member == 'dee'
+    assert loan.isbn == '123'
+    assert loan.lent_on == lent_on
+    assert loan.due_on == due_on
+
+
+@pytest.mark.django_db
+def test_lend_endpoint_escapes_delimiters_in_loan_fields(client):
+    lent_on = timezone.localdate()
+    due_on = lent_on + timedelta(days=14)
+
+    response = client.post(
+        '/loans',
+        {'member': 'reader; one', 'isbn': '978"abc'},
+    )
+
+    assert response.status_code == 201
+    assert response.content.decode() == (
+        f'L4;"reader; one";"978""abc";{lent_on.isoformat()};{due_on.isoformat()};\n'
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ('payload', 'field'),
+    [
+        ({}, 'member'),
+        ({'member': 'dee'}, 'isbn'),
+        ({'member': '', 'isbn': '123'}, 'member'),
+        ({'member': 'dee', 'isbn': ''}, 'isbn'),
+        ({'member': ' ', 'isbn': '123'}, 'member'),
+        ({'member': 'dee', 'isbn': ' '}, 'isbn'),
+    ],
+)
+def test_lend_endpoint_rejects_missing_or_blank_fields(client, payload, field):
+    response = client.post('/loans', payload)
+
+    assert response.status_code == 400
+    assert response['Content-Type'] == 'text/plain'
+    assert field.encode() in response.content
+    assert Loan.objects.count() == 3
+
+
+@pytest.mark.django_db
+def test_lend_endpoint_returns_field_errors_for_missing_values(client):
+    response = client.post('/loans', {})
+
+    assert response.status_code == 400
+    assert response.content.decode() == (
+        'member: This field is required.\nisbn: This field is required.'
+    )
+
+
+@pytest.mark.django_db
+def test_return_endpoint_records_the_return_date(client):
+    returned_on = timezone.localdate()
+    golden = HTTP_GOLDENS['POST /loans/{id}/return']
+    source_fields = golden['response']['body'].rstrip('\n').split(';')
+
+    response = client.post(golden['request']['path'])
+    target_fields = response.content.decode().rstrip('\n').split(';')
+
+    assert response.status_code == golden['response']['status']
+    assert response['Content-Type'] == golden['response']['content_type']
+    assert response.content.decode().endswith('\n')
+    assert target_fields == source_fields[:5] + [returned_on.isoformat()]
+    assert Loan.objects.get(pk='L1').returned_on == returned_on
+
+
+@pytest.mark.django_db
+def test_return_endpoint_rejects_repeated_return_without_replacing_date(client):
+    original_return_date = date(2026, 1, 20)
+
+    response = client.post('/loans/L2/return')
+
+    assert response.status_code == 409
+    assert response['Content-Type'] == 'text/plain'
+    assert response.content.decode() == 'already returned\n'
+    assert Loan.objects.get(pk='L2').returned_on == original_return_date
+
+
+@pytest.mark.django_db
+def test_return_endpoint_returns_not_found_for_unknown_loan(client):
+    response = client.post('/loans/unknown/return')
 
     assert response.status_code == 404
     assert response['Content-Type'] == 'text/plain'
@@ -170,9 +293,176 @@ def test_browser_detail_page_shows_loan_dates(client):
 
 
 @pytest.mark.django_db
+def test_browser_can_create_a_loan_from_the_new_loan_page(client):
+    lent_on = timezone.localdate()
+    due_on = lent_on + date.resolution * 14
+
+    form_response = client.get('/ui/loans/new/')
+
+    assert form_response.status_code == 200
+    assert b'name="member"' in form_response.content
+    assert b'name="isbn"' in form_response.content
+
+    response = client.post(
+        '/ui/loans/new/',
+        {'member': 'reader', 'isbn': '123'},
+    )
+
+    assert response.status_code == 302
+    assert response['Location'] == '/ui/loans/L4/'
+    loan = Loan.objects.get(pk='L4')
+    assert loan.lent_on == lent_on
+    assert loan.due_on == due_on
+
+
+@pytest.mark.django_db
+def test_browser_lending_page_shows_errors_for_blank_fields(client):
+    response = client.post('/ui/loans/new/')
+
+    assert response.status_code == 200
+    assert b'<!doctype html>' in response.content
+    assert response.content.count(b'This field is required.') == 2
+    assert Loan.objects.count() == 3
+
+
+@pytest.mark.django_db
+def test_browser_can_lend_a_book_with_htmx(client):
+    form_response = client.get('/ui/loans/new/')
+
+    assert b'hx-post="/ui/loans/new/"' in form_response.content
+
+    response = client.post(
+        '/ui/loans/new/',
+        {'member': 'reader', 'isbn': '123'},
+        HTTP_HX_REQUEST='true',
+    )
+
+    assert response.status_code == 200
+    assert b'Loan L4 is ready.' in response.content
+    assert b'href="/ui/loans/L4/"' in response.content
+    assert Loan.objects.filter(pk='L4').exists()
+
+
+@pytest.mark.django_db
+def test_htmx_lending_errors_replace_only_the_form(client):
+    response = client.post(
+        '/ui/loans/new/',
+        {'member': '', 'isbn': ''},
+        HTTP_HX_REQUEST='true',
+    )
+
+    assert response.status_code == 200
+    assert b'<!doctype html>' not in response.content
+    assert b'id="loan-form"' in response.content
+    assert response.content.count(b'This field is required.') == 2
+
+
+@pytest.mark.django_db
+def test_browser_can_return_a_loan_with_htmx(client):
+    returned_on = timezone.localdate()
+    detail = client.get('/ui/loans/L1/')
+
+    assert detail.status_code == 200
+    assert b'hx-post="/ui/loans/L1/return/"' in detail.content
+
+    response = client.post('/ui/loans/L1/return/', HTTP_HX_REQUEST='true')
+
+    assert response.status_code == 200
+    assert f'Returned on {returned_on.isoformat()}'.encode() in response.content
+    assert Loan.objects.get(pk='L1').returned_on == returned_on
+
+
+@pytest.mark.django_db
+def test_browser_regular_return_redirects_to_the_updated_loan(client):
+    response = client.post('/ui/loans/L1/return/')
+
+    assert response.status_code == 302
+    assert response['Location'] == '/ui/loans/L1/'
+    assert Loan.objects.get(pk='L1').returned_on == timezone.localdate()
+
+
+@pytest.mark.django_db
+def test_browser_return_page_returns_not_found_for_unknown_loan(client):
+    response = client.post('/ui/loans/unknown/return/')
+
+    assert response.status_code == 404
+    assert response['Content-Type'] == 'text/plain'
+    assert response.content == b'no such loan\n'
+
+
+@pytest.mark.django_db
+@pytest.mark.usefixtures('restore_seed_loans')
+def test_real_browser_can_lend_and_return_a_book(live_server):
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        try:
+            page = browser.new_page()
+            page.goto(f'{live_server.url}/ui/loans/new/')
+            htmx_available = page.evaluate("typeof window.htmx !== 'undefined'")
+            page.get_by_label('Member').fill('reader')
+            page.get_by_label('ISBN').fill('123')
+            page.get_by_role('button', name='Lend book').click()
+
+            if htmx_available:
+                page.get_by_role('status').wait_for()
+                assert page.get_by_role('status').inner_text() == 'Loan L4 is ready.'
+                page.get_by_role('link', name='View loan').click()
+            else:
+                page.wait_for_url('**/ui/loans/L4/')
+
+            page.get_by_role('button', name='Return book').click()
+            page.locator('#return-status [role="status"]').wait_for()
+            returned_on = timezone.localdate().isoformat()
+            assert page.locator('#return-status').inner_text() == f'Returned on {returned_on}'
+        finally:
+            browser.close()
+
+
+@pytest.mark.django_db
+def test_browser_repeat_return_keeps_original_date(client):
+    original_return_date = date(2026, 1, 20)
+
+    response = client.post('/ui/loans/L2/return/', HTTP_HX_REQUEST='true')
+
+    assert response.status_code == 200
+    assert b'role="alert"' in response.content
+    assert f'already returned on {original_return_date.isoformat()}'.encode() in response.content
+    assert Loan.objects.get(pk='L2').returned_on == original_return_date
+
+
+@pytest.mark.django_db
+def test_browser_regular_repeat_return_shows_an_error(client):
+    response = client.post('/ui/loans/L2/return/')
+
+    assert response.status_code == 409
+    assert b'role="alert"' in response.content
+    assert b'already been returned' in response.content
+    assert b'Loan record \xc2\xb7 L2' in response.content
+    assert b'Jan 20, 2026' in response.content
+    assert Loan.objects.get(pk='L2').returned_on == date(2026, 1, 20)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ('path', 'method'),
+    [
+        ('/loans', 'put'),
+        ('/ui/loans/new/', 'put'),
+        ('/loans/L1/return', 'get'),
+        ('/ui/loans/L1/return/', 'get'),
+    ],
+)
+def test_loan_write_routes_reject_unsupported_methods(client, path, method):
+    response = getattr(client, method)(path)
+
+    assert response.status_code == 405
+    assert Loan.objects.get(pk='L1').returned_on is None
+
+
+@pytest.mark.django_db
 def test_repository_write_rolls_back_failed_transaction():
     with pytest.raises(IntegrityError):
-        LoanRepository().create(
+        DjangoLoanRepository().create(
             id='L1',
             member='duplicate',
             isbn='123',

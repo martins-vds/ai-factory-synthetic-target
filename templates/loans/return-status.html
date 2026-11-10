@@ -1,0 +1,7 @@
+<div id="return-status" class="mt-6">
+  {% if updated %}
+  <p role="status">Returned on {{ loan.returned_on|date:"Y-m-d" }}</p>
+  {% else %}
+  <p role="alert">This loan was already returned on {{ loan.returned_on|date:"Y-m-d" }}.</p>
+  {% endif %}
+</div>

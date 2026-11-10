@@ -1,0 +1,81 @@
+[
+  {
+    "at": "2026-11-09T19:43:24Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 69778,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LL-02",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/costs/4a917dde-f2fe-47d8-9b44-c72b9c749c20.json",
+      ".migration/evidence/mutants/LL-02.md",
+      ".migration/evidence/runs/LL-02.md",
+      ".migration/ledger/loan.lend.yaml",
+      ".migration/ledger/loan.return-date.yaml",
+      ".migration/ledger/loan.return.yaml",
+      ".migration/returns/LL-02.afs-migrator.yaml",
+      "src/loans/forms.py",
+      "src/loans/repository.py",
+      "src/loans/services.py",
+      "src/loans/urls.py",
+      "src/loans/views.py",
+      "templates/loans/detail.html",
+      "templates/loans/list.html",
+      "templates/loans/loan-created.html",
+      "templates/loans/loan-form.html",
+      "templates/loans/new.html",
+      "templates/loans/return-status.html",
+      "tests/loans/conftest.py",
+      "tests/loans/fixtures/http.json",
+      "tests/loans/test_catalog.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  },
+  {
+    "at": "2026-11-09T23:38:59Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 112125,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LL-02",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/evidence/runs/LL-02.md",
+      ".migration/returns/LL-02.afs-migrator.yaml",
+      "src/loans/clock.py",
+      "src/loans/composition.py",
+      "src/loans/repository.py",
+      "src/loans/services.py",
+      "src/loans/views.py",
+      "tests/loans/conftest.py",
+      "tests/loans/test_catalog.py",
+      "tests/loans/test_services.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
