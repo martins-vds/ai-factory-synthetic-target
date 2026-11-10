@@ -1,0 +1,9 @@
+{
+  "GET /fees/{id}": {
+    "response": {
+      "body": "<h1>Late fee for L3</h1><p>Due 2025-12-15, 19 day(s) late.</p><p class=\"fee\">Fee: $4.75</p>",
+      "content_type": "text/html",
+      "status": 200
+    }
+  }
+}

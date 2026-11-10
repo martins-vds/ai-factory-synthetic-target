@@ -10,8 +10,8 @@ boundary: "GET /fees/{id} renders an HTML heading, due/late-day text, and a two-
 tickets: [martins-vds/ai-factory-synthetic-target#35, martins-vds/ai-factory-synthetic-target#63]
 target:
   components: [src.fees.views.fee_detail, src.fees.views.fee_page, src.fees.urls, templates/fees/detail.html]
-status: in-progress
+status: migrated
 verification: differential
 characterization_tier: A
-evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/characterization/source/goldens/browser.json, .migration/evidence/runs/LL-03.md, tests/fees/test_endpoints.py::test_fee_endpoint_matches_characterized_html, tests/fees/test_endpoints.py::test_fee_endpoint_returns_characterized_not_found_response, tests/fees/test_endpoints.py::test_fee_page_shows_late_fee_and_posts_payment_to_ui_route, tests/fees/test_endpoints.py::test_real_browser_can_pay_a_late_fee]
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/characterization/source/goldens/browser.json, .migration/evidence/runs/LL-03.md, tests/fees/test_endpoints.py::test_fee_endpoint_matches_characterized_html, tests/fees/test_endpoints.py::test_fee_endpoint_returns_characterized_not_found_response, tests/fees/test_endpoints.py::test_fee_page_shows_late_fee_and_posts_payment_to_ui_route, tests/fees/test_endpoints.py::test_real_browser_can_pay_a_late_fee, tests/fees/test_seed_restoration.py::test_seed_loans_remain_available_after_fee_browser_test]
 notes: "The fee formula and date edge cases are inventoried separately in fees.calculation."

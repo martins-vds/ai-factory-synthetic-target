@@ -11,7 +11,7 @@ boundary: "Late days are max(0, days from due date to returnedOn or today); up t
 tickets: [martins-vds/ai-factory-synthetic-target#35, martins-vds/ai-factory-synthetic-target#63]
 target:
   components: [src.fees.services.FeeApplication.fee_for, src.fees.views.fee_detail, src.fees.views.fee_page]
-status: in-progress
+status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/evidence/runs/LL-03.md, tests/fees/test_fee_calculation.py::test_fee_calculates_unreturned_loan_with_grace_period_and_cap, tests/fees/test_fee_calculation.py::test_fee_for_returned_loan_uses_return_date_instead_of_today]

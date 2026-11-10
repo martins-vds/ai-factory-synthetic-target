@@ -7,15 +7,24 @@ from playwright.sync_api import sync_playwright
 from src.fees.gateway import HttpPaymentGateway
 from src.fees.services import PaymentGatewayFailure
 
+HTTP_GOLDEN_PATH = (
+    Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
+)
+GATEWAY_GOLDEN_PATH = (
+    Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/gateway.json'
+)
 HTTP_GOLDENS = json.loads(
     (
-        Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
+        HTTP_GOLDEN_PATH
+        if HTTP_GOLDEN_PATH.exists()
+        else Path(__file__).parent / 'fixtures/http.json'
     ).read_text(encoding='utf-8')
 )
 GATEWAY_GOLDENS = json.loads(
     (
-        Path(__file__).resolve().parents[2]
-        / '.migration/characterization/source/goldens/gateway.json'
+        GATEWAY_GOLDEN_PATH
+        if GATEWAY_GOLDEN_PATH.exists()
+        else Path(__file__).parent / 'fixtures/gateway.json'
     ).read_text(encoding='utf-8')
 )
 
@@ -187,7 +196,8 @@ def test_io_failure_returns_gateway_failure(monkeypatch, client):
     assert response.content == b'payment gateway unavailable\n'
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True, serialized_rollback=True)
+@pytest.mark.usefixtures('restore_seed_loans_after_fee_browser_test')
 def test_real_browser_can_pay_a_late_fee(live_server, payment_gateway):
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()

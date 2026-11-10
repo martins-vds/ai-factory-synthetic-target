@@ -11,7 +11,7 @@ boundary: "POST /payments/{id} first requires an existing loan, then POSTs /char
 tickets: [martins-vds/ai-factory-synthetic-target#35, martins-vds/ai-factory-synthetic-target#63]
 target:
   components: [src.fees.services.FeeApplication.pay, src.fees.gateway.HttpPaymentGateway, src.fees.repository.DjangoFeeLoanRepository, src.fees.views.payment, src.fees.views.payment_page]
-status: in-progress
+status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/gateway.json, .migration/evidence/runs/LL-03.md, tests/fees/test_endpoints.py::test_payment_endpoint_forwards_the_characterized_gateway_request, tests/fees/test_endpoints.py::test_payment_endpoint_maps_gateway_failure_to_bad_gateway, tests/fees/test_endpoints.py::test_payment_endpoint_rejects_unknown_loan_without_calling_gateway, tests/fees/test_endpoints.py::test_interrupted_gateway_call_is_preserved_as_the_gateway_failure_cause, tests/fees/test_endpoints.py::test_interrupted_payment_request_returns_gateway_failure]
