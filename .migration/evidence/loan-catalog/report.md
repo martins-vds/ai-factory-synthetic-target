@@ -70,8 +70,8 @@ No capability gap was found, so no new capability ticket was created. No issue w
 
 - Missing capability, misplaced responsibility, broken flow, missing integration, or untested capability: none found among the nine LL-01 ledger entries.
 - The verified acceptance result is now archived at `.migration/evidence/acceptance-runs/42714661632-1.json`; the return cites this committed path, satisfying the ADR-0035 evidence requirement.
-- Human flow sign-off under ADR-0031 remains outstanding. This audit does not set that sign-off or approve acceptance; the auditor verdict therefore remains `gaps-remain` pending the required human check.
+- Human flow sign-off under ADR-0031 remains outstanding as the slice coordinator's next step; it is not an audit gap or part of the auditor's verdict.
 
 ## G. Assessment
 
-The loan-catalog implementation has passing capability evidence for all 9/9 planned ledger entries, with no catalog graph or functional gap identified. The acceptance result is archived and the technical audit is complete; slice acceptance remains pending operator side-by-side sign-off under ADR-0031. This audit neither performs nor grants that sign-off.
+The loan-catalog audit is complete: all 9/9 planned ledger capabilities have passing evidence, no catalog graph or functional gaps were found, and the verified acceptance result is archived. The auditor verdict is `complete`. Slice acceptance remains pending the operator side-by-side sign-off requested by the slice coordinator under ADR-0031; this audit neither performs nor grants that sign-off.

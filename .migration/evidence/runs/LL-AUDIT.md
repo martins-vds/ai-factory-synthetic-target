@@ -27,3 +27,7 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 | 2026-11-10T00:16:40+00:00 | finish-check | 0 | 1.55 | `python .migration/harness/tools/afs-finish-check --ticket LL-AUDIT --role afs-auditor` | `d78a7b66ff0dd0e0` |  | gate=finish-check ticket=LL-AUDIT role=afs-auditor findings=0 |
 | 2026-11-10T00:16:43+00:00 | output-validation-final | 0 | 0.27 | `python .migration/harness/tools/validate.py .migration` | `e7a125a5375e1ef0` |  |  |
 | 2026-11-10T00:43:43+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
+| 2026-11-10T00:44:06+00:00 | finish-check-complete | 0 | 1.82 | `python .migration/harness/tools/afs-finish-check --ticket LL-AUDIT --role afs-auditor` | `d78a7b66ff0dd0e0` |  | gate=finish-check ticket=LL-AUDIT role=afs-auditor findings=0 |
+| 2026-11-10T00:44:09+00:00 | output-validation-complete | 0 | 0.29 | `python .migration/harness/tools/validate.py .migration` | `e7a125a5375e1ef0` |  |  |
+| 2026-11-10T00:44:15+00:00 | acceptance-binding | 0 | 0.05 | `python .migration/harness/tools/check_graph_fresh.py --acceptance-since origin/main` | `66d78736780b70bc` |  |  |
+| 2026-11-10T00:44:20+00:00 | output-validation-final | 0 | 0.29 | `python .migration/harness/tools/validate.py .migration` | `e7a125a5375e1ef0` |  |  |

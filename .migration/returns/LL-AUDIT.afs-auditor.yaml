@@ -6,5 +6,5 @@ report: .migration/evidence/loan-catalog/report.md
 capabilities_checked: 9
 gaps: []
 graph_inconsistencies: []
-verdict: gaps-remain
+verdict: complete
 acceptance_run: .migration/evidence/acceptance-runs/42714661632-1.json
