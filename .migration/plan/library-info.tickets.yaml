@@ -8,6 +8,7 @@ tickets:
       - config/urls.py
       - src/library_info/
       - tests/library_info/
+      - tests/conftest.py
       - templates/library_info/
       - .migration/ledger/about.page.yaml
       - .migration/evidence/runs/LL-04.md

@@ -1,0 +1,58 @@
+[
+  {
+    "at": "2026-11-10T14:44:30Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 27773,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LC-REAUDIT",
+    "role": "afs-auditor",
+    "changed": [
+      ".migration/evidence/runs/LC-REAUDIT.md"
+    ],
+    "findings": [
+      "[mechanical] No return file. Write and commit `.migration/returns/LC-REAUDIT.afs-auditor.yaml` with `role: afs-auditor`, `ticket: LC-REAUDIT`, `issue:` this ticket's issue, `pr:` this PR, and every gate copied from your `afs-run` journal (`.migration/evidence/runs/LC-REAUDIT.md`). See afs-migration-contract \u2192 Return files."
+    ],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "self_heal.enabled is off; would have blocked"
+  },
+  {
+    "at": "2026-11-10T15:40:50Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 66520,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LC-AUDIT",
+    "role": "afs-auditor",
+    "changed": [
+      ".migration/costs/01cf56e1-73b1-4111-9a83-b3900b5a845a.json",
+      ".migration/evidence/loan-circulation/report.md",
+      ".migration/evidence/runs/LC-AUDIT.md",
+      ".migration/evidence/runs/LC-REAUDIT.md",
+      ".migration/returns/LC-AUDIT.afs-auditor.yaml"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
