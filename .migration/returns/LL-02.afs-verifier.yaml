@@ -1,24 +1,21 @@
 role: afs-verifier
 ticket: LL-02
-issue: martins-vds/ai-factory-synthetic-target#61
-pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/79
-verdict: changes-required
+issue: martins-vds/ai-factory-synthetic-target#84
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/85
+verdict: pass
 gates:
   build: 0
   behavior: 0
   idiom: 0
   crap: 7.0
-  mutation_changed: 0.906
+  mutation_changed: 0.908
   regression: 0
 evidence_logs:
   - .migration/evidence/runs/LL-02.md
 findings:
-  - severity: major
-    where: src/loans/services.py:4
-    what: Use cases depend directly on Django's clock and concrete ORM repository; the application policy is coupled to framework and persistence details.
   - severity: minor
     where: .migration/evidence/mutants/LL-02.md:5
-    what: 11 survivors alter HTTP method guards, API/UI route literals, or LoanForm.Meta.model; these break required flows. The forms mutant's narrowed runner is only the unrelated list-endpoint test, so the passing aggregate score does not independently verify every survivor.
+    what: "The ports finding is resolved: LoanApplication depends only on application-owned Clock and LoanRepository ports, with adapters wired once and in-memory-fake unit tests. The 11 route, method-guard, and LoanForm.Meta.model survivors reflect the known module-level harness test-selection bug; focused and full behavior tests pass, including the first verifier's four tests."
 tests_added:
   - tests/loans/test_catalog.py::test_lend_endpoint_rejects_missing_or_blank_fields
   - tests/loans/test_catalog.py::test_browser_lending_page_shows_errors_for_blank_fields
