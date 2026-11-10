@@ -22,3 +22,4 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 | 2026-11-10T01:58:48+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
 
 Acceptance rows above were copied unchanged from the independently verified `.migration/evidence/runs/LL-AUDIT.md` record for run 42714661632, attempt 1. The coordinator did not rerun acceptance gates. The verified result is committed at `.migration/evidence/acceptance-runs/42714661632-1.json`; see `.migration/evidence/loan-catalog/acceptance.md` for the summary.
+| 2026-11-10T03:59:39+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
