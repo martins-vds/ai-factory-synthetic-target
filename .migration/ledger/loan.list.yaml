@@ -10,7 +10,7 @@ source:
 boundary: "GET /loans returns every loan ordered by id as one semicolon-separated text line per record, with a trailing newline."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 target:
-  components: [src.loans.views.loan_list, src.loans.services.list_loans_text]
+  components: [src.loans.views.loan_collection, src.loans.services.LoanApplication.list_loans_text]
 status: migrated
 verification: differential
 characterization_tier: A

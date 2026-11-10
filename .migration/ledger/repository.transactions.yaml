@@ -9,7 +9,7 @@ source:
 boundary: "Each repository read closes its EntityManager; each write begins and commits a transaction, rolls back if still active after failure, and closes the EntityManager."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 target:
-  components: [src.loans.repository.LoanRepository.create]
+  components: [src.loans.repository.DjangoLoanRepository.create]
 status: migrated
 verification: differential
 characterization_tier: A

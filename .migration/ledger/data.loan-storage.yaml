@@ -8,7 +8,7 @@ source:
 boundary: "The LOAN table stores id, member, ISBN, lentOn, and nullable returnedOn; JPA accesses it through the repository using the in-memory H2 library persistence unit."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 target:
-  components: [src.loans.models.Loan, src.loans.repository.LoanRepository]
+  components: [src.loans.models.Loan, src.loans.repository.DjangoLoanRepository]
 status: migrated
 verification: differential
 characterization_tier: A
