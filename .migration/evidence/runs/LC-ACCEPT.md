@@ -22,3 +22,4 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 | 2026-11-10T17:22:40+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
 
 Acceptance rows above were imported unchanged from the verified artifact for [Actions run 42752283868, attempt 1](https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42752283868). Its result is archived at `.migration/evidence/acceptance-runs/42752283868-1.json`; artifact retention runs through 2026-12-10.
+| 2026-11-10T22:13:59+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
