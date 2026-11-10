@@ -25,3 +25,5 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 | 2026-11-10T04:28:45+00:00 | validate | 0 | 0.57 | `python .migration/harness/tools/validate.py .migration` | `b48a2b618b15293f` |  |  |
 
 Acceptance evidence imported unchanged from [Actions run 42752283868](https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42752283868), artifact `afs-acceptance-70fef8e7bc822092770b04b1bf9b5288e04d8bb6-42752283868-1`. The verified result is archived at `.migration/evidence/acceptance-runs/42752283868-1.json` (artifact retention through 2026-12-10).
+| 2026-11-10T15:39:24+00:00 | validate | 0 | 0.64 | `python .migration/harness/tools/validate.py .migration` | `04e73a90269465b7` |  |  |
+| 2026-11-10T15:39:34+00:00 | finish-check | 0 | 1.95 | `python .migration/harness/tools/afs-finish-check --ticket LC-AUDIT --role afs-auditor` | `0e7cd632e7e81783` |  | gate=finish-check ticket=LC-AUDIT role=afs-auditor findings=0 |
