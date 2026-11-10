@@ -1,0 +1,532 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "analyze",
+    "languages": [
+      "python",
+      "html"
+    ],
+    "frameworks": [
+      "Django"
+    ],
+    "description": "Loan lending system: lending books to members, returning them, and browsing loans via text API and HTMX UI.",
+    "analyzedAt": "2026-11-10T03:56:00.000Z",
+    "gitCommitHash": "70fef8e7bc822092770b04b1bf9b5288e04d8bb6",
+    "analyzedCommit": "046989ad2f82b008d9b85acc4a800ae761815902"
+  },
+  "nodes": [
+    {
+      "id": "domain:loan-lending",
+      "type": "domain",
+      "name": "Loan Lending",
+      "summary": "Handles lending books to members and recording when they are returned, including due-date calculation and return rules. Business logic lives in a framework-independent LoanApplication.",
+      "tags": [
+        "loans",
+        "lending",
+        "core-domain"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Member",
+          "ISBN",
+          "Due date"
+        ],
+        "businessRules": [
+          "A loan is due 14 days after lent_on",
+          "A loan can only be returned once (second return yields 409)",
+          "Loan IDs are generated sequentially by the repository",
+          "Dates come from an injected Clock"
+        ],
+        "crossDomainInteractions": [
+          "Reads loan data through Loan Catalog views",
+          "Relies on Platform Infrastructure for persistence and time"
+        ]
+      }
+    },
+    {
+      "id": "domain:loan-catalog",
+      "type": "domain",
+      "name": "Loan Catalog",
+      "summary": "Read-only browsing of loans as plain text and HTML pages, including detail lookup with 404 handling.",
+      "tags": [
+        "loans",
+        "query",
+        "ui"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Loan line (CSV text)"
+        ],
+        "businessRules": [
+          "Unknown loan IDs return 404",
+          "Text output is semicolon-delimited with ISO dates"
+        ],
+        "crossDomainInteractions": [
+          "Queries loans created by Loan Lending"
+        ]
+      }
+    },
+    {
+      "id": "domain:platform-infrastructure",
+      "type": "domain",
+      "name": "Platform Infrastructure",
+      "summary": "Technical foundation: composition root, ORM repository, system clock, schema migration with seed data and database probe.",
+      "tags": [
+        "infrastructure",
+        "persistence"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "LoanRepository",
+          "Clock",
+          "Migration seed"
+        ],
+        "businessRules": [
+          "Create and return run in atomic transactions with row locking",
+          "Seed loans L1-L3 loaded by initial migration"
+        ],
+        "crossDomainInteractions": [
+          "Supplies repository and clock to Loan Lending"
+        ]
+      }
+    },
+    {
+      "id": "flow:lend-book",
+      "type": "flow",
+      "name": "Lend a Book",
+      "summary": "Creates a new loan for a member and ISBN via the text API or HTML form.",
+      "tags": [
+        "lend",
+        "create"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "POST /loans, /ui/loans/new/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:lend-book:validate-lend-form",
+      "type": "step",
+      "name": "Validate lend form",
+      "summary": "Validate member and isbn with LoanForm; return 400 with errors on failure.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        27,
+        38
+      ]
+    },
+    {
+      "id": "step:lend-book:generate-loan-id",
+      "type": "step",
+      "name": "Generate loan ID",
+      "summary": "Repository allocates the next sequential loan ID.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        13,
+        16
+      ]
+    },
+    {
+      "id": "step:lend-book:stamp-lent-date",
+      "type": "step",
+      "name": "Stamp lent date",
+      "summary": "Application reads today from the injected Clock.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        38,
+        45
+      ]
+    },
+    {
+      "id": "step:lend-book:persist-loan",
+      "type": "step",
+      "name": "Persist loan",
+      "summary": "Create the Loan row in an atomic transaction.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        17,
+        20
+      ]
+    },
+    {
+      "id": "step:lend-book:respond-with-loan",
+      "type": "step",
+      "name": "Respond with loan",
+      "summary": "Return 201 with the loan line, or an HTMX fragment/redirect in the UI.",
+      "tags": [
+        "lend-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        40,
+        54
+      ]
+    },
+    {
+      "id": "flow:return-book",
+      "type": "flow",
+      "name": "Return a Book",
+      "summary": "Marks an existing loan as returned, rejecting missing or already-returned loans.",
+      "tags": [
+        "return"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "POST /loans/<id>/return, /ui/loans/<id>/return/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:return-book:receive-return-request",
+      "type": "step",
+      "name": "Receive return request",
+      "summary": "View receives the return POST for a loan ID.",
+      "tags": [
+        "return-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        63,
+        72
+      ]
+    },
+    {
+      "id": "step:return-book:lock-and-mark-returned",
+      "type": "step",
+      "name": "Lock and mark returned",
+      "summary": "Lock loan row and stamp returned_on if not yet returned.",
+      "tags": [
+        "return-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        21,
+        28
+      ]
+    },
+    {
+      "id": "step:return-book:map-outcome-to-response",
+      "type": "step",
+      "name": "Map outcome to response",
+      "summary": "404 if missing, 409 if already returned, otherwise success text/fragment/redirect.",
+      "tags": [
+        "return-book"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        73,
+        91
+      ]
+    },
+    {
+      "id": "flow:browse-loans",
+      "type": "flow",
+      "name": "Browse Loans",
+      "summary": "Lists all loans or shows a single loan as text or HTML.",
+      "tags": [
+        "list",
+        "detail"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans, /loans/<id>, /ui/loans/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:browse-loans:route-request",
+      "type": "step",
+      "name": "Route request",
+      "summary": "URL patterns map text API and UI paths to views.",
+      "tags": [
+        "browse-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/urls.py",
+      "lineRange": [
+        5,
+        12
+      ]
+    },
+    {
+      "id": "step:browse-loans:fetch-loans",
+      "type": "step",
+      "name": "Fetch loans",
+      "summary": "Read all loans or find one by ID.",
+      "tags": [
+        "browse-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        49,
+        56
+      ]
+    },
+    {
+      "id": "step:browse-loans:format-output",
+      "type": "step",
+      "name": "Format output",
+      "summary": "Serialize as CSV-style text or render HTML templates.",
+      "tags": [
+        "browse-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        57,
+        70
+      ]
+    },
+    {
+      "id": "step:browse-loans:handle-not-found",
+      "type": "step",
+      "name": "Handle not found",
+      "summary": "Return 404 when the loan does not exist.",
+      "tags": [
+        "browse-loans"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        15,
+        20
+      ]
+    },
+    {
+      "id": "flow:initialize-loan-data",
+      "type": "flow",
+      "name": "Initialize Loan Data",
+      "summary": "Creates the Loan table and seeds sample loans L1-L3.",
+      "tags": [
+        "migration",
+        "seed"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "manage.py migrate",
+        "entryType": "cli"
+      }
+    },
+    {
+      "id": "step:initialize-loan-data:create-loan-table",
+      "type": "step",
+      "name": "Create Loan table",
+      "summary": "Initial migration builds the Loan schema.",
+      "tags": [
+        "initialize-loan-data"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/migrations/0001_initial.py"
+    },
+    {
+      "id": "step:initialize-loan-data:seed-sample-loans",
+      "type": "step",
+      "name": "Seed sample loans",
+      "summary": "Data migration bulk-creates loans L1-L3.",
+      "tags": [
+        "initialize-loan-data"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/migrations/0001_initial.py"
+    },
+    {
+      "id": "step:initialize-loan-data:wire-dependencies",
+      "type": "step",
+      "name": "Wire dependencies",
+      "summary": "Composition root builds shared LoanApplication with repository and clock.",
+      "tags": [
+        "initialize-loan-data"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/composition.py"
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:loan-lending",
+      "target": "flow:lend-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:validate-lend-form",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:generate-loan-id",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:stamp-lent-date",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:persist-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:respond-with-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-lending",
+      "target": "flow:return-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:receive-return-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:lock-and-mark-returned",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:map-outcome-to-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "domain:loan-catalog",
+      "target": "flow:browse-loans",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:route-request",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:fetch-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:format-output",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:handle-not-found",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "domain:platform-infrastructure",
+      "target": "flow:initialize-loan-data",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:initialize-loan-data",
+      "target": "step:initialize-loan-data:create-loan-table",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.3
+    },
+    {
+      "source": "flow:initialize-loan-data",
+      "target": "step:initialize-loan-data:seed-sample-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:initialize-loan-data",
+      "target": "step:initialize-loan-data:wire-dependencies",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.9
+    },
+    {
+      "source": "domain:loan-lending",
+      "target": "domain:loan-catalog",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Lending creates and updates loans that the catalog displays",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:loan-lending",
+      "target": "domain:platform-infrastructure",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Uses repository, clock and migrations for persistence and time",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:loan-catalog",
+      "target": "domain:platform-infrastructure",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Reads loans via the shared application/repository",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}

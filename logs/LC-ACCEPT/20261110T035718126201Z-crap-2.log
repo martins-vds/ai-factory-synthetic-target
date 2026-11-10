@@ -1,0 +1,32 @@
+AFS-TOOL crap.py exit=0
+# CRAP risk map
+
+- Methods: 23 · coverage input: yes
+- Above 30: **0** (0.0%)
+
+## Top 20
+
+| CRAP | CCN | Cov | Method | File:lines |
+|---:|---:|---:|---|---|
+| 7 | 7 | 100% | `loan_lend_page( request )` | src/loans/views.py:40-52 |
+| 4 | 4 | 100% | `loan_lend( request )` | src/loans/views.py:27-36 |
+| 4 | 4 | 100% | `loan_return_page( request , loan_id )` | src/loans/views.py:73-91 |
+| 3 | 3 | 100% | `mark_returned( self , loan_id , returned_on )` | src/loans/repository.py:21-28 |
+| 3 | 3 | 100% | `loan_return( request , loan_id )` | src/loans/views.py:63-69 |
+| 2 | 2 | 100% | `list_loans_text( self )` | src/loans/services.py:49-50 |
+| 2 | 2 | 100% | `get_loan_text( self , loan_id : str )` | src/loans/services.py:52-54 |
+| 2 | 2 | 100% | `loan_line( loan )` | src/loans/services.py:57-70 |
+| 2 | 2 | 100% | `loan_collection( request )` | src/loans/views.py:21-24 |
+| 2 | 2 | 100% | `loan_detail( request , loan_id )` | src/loans/views.py:55-59 |
+| 1 | 1 | 100% | `seed_loans( apps , schema_editor )` | src/loans/migrations/0001_initial.py:6-31 |
+| 1 | 1 | 100% | `__init__( self , repository : LoanRepository , clock : Clock )` | src/loans/services.py:34-36 |
+| 1 | 1 | 100% | `lend( self , member : str , isbn : str )` | src/loans/services.py:38-44 |
+| 1 | 1 | 100% | `return_loan( self , loan_id : str )` | src/loans/services.py:46-47 |
+| 1 | 1 | 100% | `due_on( self )` | src/loans/models.py:17-18 |
+| 1 | 1 | 100% | `all( self )` | src/loans/repository.py:7-8 |
+| 1 | 1 | 100% | `find( self , loan_id )` | src/loans/repository.py:10-11 |
+| 1 | 1 | 100% | `next_id( self )` | src/loans/repository.py:13-14 |
+| 1 | 1 | 100% | `create( self , * , id , member , isbn , lent_on )` | src/loans/repository.py:17-18 |
+| 1 | 1 | 100% | `loan_catalog( request )` | src/loans/views.py:11-12 |
+
+AFS-RESULT gate=crap max=7.0 threshold=30 over=0 methods=23
