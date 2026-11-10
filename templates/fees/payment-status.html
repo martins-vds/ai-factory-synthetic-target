@@ -1,0 +1,7 @@
+<div id="payment-status" class="mt-6">
+  {% if success %}
+  <p role="status">{{ body }}</p>
+  {% else %}
+  <p role="alert">{{ body }}</p>
+  {% endif %}
+</div>
