@@ -10,7 +10,7 @@ source:
 boundary: "POST /loans rejects missing or blank member and ISBN fields with HTTP 400; valid values create a loan dated today with id L<count+1> and return HTTP 201 with the formatted, escaped record."
 tickets: [martins-vds/ai-factory-synthetic-target#35, martins-vds/ai-factory-synthetic-target#61]
 target:
-  components: [src.loans.forms.LoanForm, src.loans.services.lend_loan, src.loans.views.loan_collection, src.loans.views.loan_lend_page]
+  components: [src.loans.forms.LoanForm, src.loans.services.LoanApplication.lend, src.loans.views.loan_collection, src.loans.views.loan_lend_page]
 status: migrated
 verification: differential
 characterization_tier: A

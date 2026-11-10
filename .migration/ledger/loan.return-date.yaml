@@ -10,7 +10,7 @@ source:
 boundary: "A successful first return assigns today's date and persists the loan; a repeated return is rejected and preserves the original return date, per approved fix ruling #41."
 tickets: [martins-vds/ai-factory-synthetic-target#35, martins-vds/ai-factory-synthetic-target#61]
 target:
-  components: [src.loans.repository.LoanRepository.mark_returned, src.loans.services.return_loan]
+  components: [src.loans.repository.DjangoLoanRepository.mark_returned, src.loans.services.LoanApplication.return_loan]
 status: migrated
 verification: differential
 characterization_tier: A
