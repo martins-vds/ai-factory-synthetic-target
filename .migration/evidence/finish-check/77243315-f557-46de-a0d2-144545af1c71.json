@@ -1,0 +1,82 @@
+[
+  {
+    "at": "2026-11-10T02:11:40Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 42933,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LL-03",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/evidence/runs/LL-03.md",
+      ".migration/handoffs/LL-03.md",
+      ".migration/ledger/fees.calculation.yaml",
+      ".migration/ledger/fees.page.yaml",
+      ".migration/ledger/integration.payment-gateway.yaml",
+      ".migration/returns/LL-03.afs-migrator.yaml",
+      "config/urls.py",
+      "src/fees/__init__.py",
+      "src/fees/composition.py",
+      "src/fees/gateway.py",
+      "src/fees/repository.py",
+      "src/fees/services.py",
+      "src/fees/urls.py",
+      "src/fees/views.py",
+      "templates/fees/detail.html",
+      "templates/fees/payment-form.html",
+      "templates/fees/payment-status.html",
+      "tests/fees/conftest.py",
+      "tests/fees/test_endpoints.py",
+      "tests/fees/test_fee_calculation.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  },
+  {
+    "at": "2026-11-10T05:04:19Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 87591,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LL-03",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/evidence/mutants/LL-03.md",
+      ".migration/evidence/runs/LL-03.md",
+      ".migration/ledger/fees.calculation.yaml",
+      ".migration/ledger/fees.page.yaml",
+      ".migration/ledger/integration.payment-gateway.yaml",
+      ".migration/returns/LL-03.afs-migrator.yaml",
+      "src/fees/views.py",
+      "tests/fees/conftest.py",
+      "tests/fees/fixtures/gateway.json",
+      "tests/fees/fixtures/http.json",
+      "tests/fees/test_endpoints.py",
+      "tests/fees/test_seed_restoration.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]

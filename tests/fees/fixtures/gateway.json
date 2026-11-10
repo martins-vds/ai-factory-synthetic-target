@@ -1,0 +1,25 @@
+{
+  "responses": {
+    "POST /payments/L1 via test gateway": {
+      "response": {
+        "body": "charged\n",
+        "content_type": "text/plain",
+        "status": 200
+      }
+    },
+    "POST /payments/L2 via test gateway": {
+      "response": {
+        "body": "declined\n",
+        "content_type": "text/plain",
+        "status": 502
+      }
+    },
+    "POST /payments/unknown via test gateway": {
+      "response": {
+        "body": "no such loan\n",
+        "content_type": "text/plain",
+        "status": 404
+      }
+    }
+  }
+}

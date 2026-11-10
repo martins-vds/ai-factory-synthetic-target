@@ -1,0 +1,21 @@
+role: afs-migrator
+ticket: LL-03
+issue: martins-vds/ai-factory-synthetic-target#63
+pr: martins-vds/ai-factory-synthetic-target#88
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 7.0
+  mutation_changed: 0.8
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-03.md
+ledger_updated:
+  - .migration/ledger/fees.calculation.yaml
+  - .migration/ledger/fees.page.yaml
+  - .migration/ledger/integration.payment-gateway.yaml
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#40
+new_tickets: []
+handoff: none
