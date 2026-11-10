@@ -1,0 +1,10 @@
+role: afs-auditor
+ticket: LL-AUDIT
+issue: martins-vds/ai-factory-synthetic-target#82
+scope: loan-catalog
+report: .migration/evidence/loan-catalog/report.md
+capabilities_checked: 9
+gaps: []
+graph_inconsistencies: []
+verdict: complete
+acceptance_run: .migration/evidence/acceptance-runs/42714661632-1.json
