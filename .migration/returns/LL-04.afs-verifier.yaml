@@ -1,26 +1,21 @@
 role: afs-verifier
 ticket: LL-04
-issue: martins-vds/ai-factory-synthetic-target#65
-pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/105
-verdict: blocked
+issue: martins-vds/ai-factory-synthetic-target#113
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/115
+verdict: pass
 gates:
   build: 0
   behavior: 0
   idiom: 0
-  crap: "n/a: coverage suite failed before CRAP calculation; see .migration/runs/LL-04/20261110T153851360865Z-crap.log"
-  mutation_changed: "n/a: mutmut failed to collect the browser test; see .migration/runs/LL-04/20261110T153943115317Z-mutation_changed.log"
-  regression: 1
+  crap: 7.0
+  mutation_changed: 1.0
+  regression: 0
 evidence_logs:
   - .migration/evidence/runs/LL-04.md
-handoff: .migration/handoffs/LL-04.md
 findings:
-  - severity: blocker
-    where: tests/loans/test_catalog.py:411
-    what: "Full regression and CRAP repeat the loan-browser navigation timeout (80 passed, 1 failed); it is outside LL-04 and blocks verification."
-  - severity: blocker
-    where: .migration/harness/tools/afs-mutation
-    what: "Changed-code mutation exits 2 without a score because pytest reports no collector for the browser test node."
-tests_added:
-  - tests/library_info/test_about_page.py::test_about_routes_reject_non_get_requests
+  - severity: minor
+    where: tests/library_info/test_about_page.py:7-15
+    what: "Possible duplication: HTTP golden source/fallback loading is also implemented in tests/loans/test_catalog.py; no behavior impact."
+tests_added: []
 ledger_issues: []
 quirk_tickets: []
