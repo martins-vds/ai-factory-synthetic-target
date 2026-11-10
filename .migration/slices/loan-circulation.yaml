@@ -3,11 +3,12 @@ data_paths:
   source:
     - endpoint=POST /loans
     - endpoint=POST /loans/{id}/return
+  # Target anchors name LL-02's Django routes exactly: with the HTTP method where the view declares one.
   target:
     - endpoint=POST /loans
-    - endpoint=POST /loans/{id}/return
-    - endpoint=POST /ui/loans/
-    - endpoint=POST /ui/loans/{id}/return/
+    - endpoint=POST /loans/<str:loan_id>/return
+    - endpoint=POST /ui/loans/new/
+    - endpoint=POST /ui/loans/<str:loan_id>/return/
 entry_points:
   target:
     - endpoint=GET /ui/loans/new/
