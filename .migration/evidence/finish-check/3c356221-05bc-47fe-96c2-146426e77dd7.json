@@ -1,0 +1,30 @@
+[
+  {
+    "at": "2026-11-10T23:33:17Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 36342,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LF-ACCEPT",
+    "role": "afs-slice-coordinator",
+    "changed": [
+      ".migration/evidence/fees-payments/acceptance.md",
+      ".migration/evidence/runs/LF-ACCEPT.md",
+      ".migration/evidence/ticket-reconciliation/62.yaml",
+      ".migration/returns/LF-ACCEPT.afs-slice-coordinator.yaml"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
