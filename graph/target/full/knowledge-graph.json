@@ -1,0 +1,3544 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "analyze",
+    "languages": [
+      "html",
+      "python"
+    ],
+    "frameworks": [
+      "Django"
+    ],
+    "description": "Django-style library loans and fees application with loans and fees modules, repositories, services, views and HTML templates.",
+    "analyzedAt": "2026-11-10T17:04:51.770Z",
+    "gitCommitHash": "4f4bb689a7b8998a352921816dd7bb3c39556582",
+    "afsEnrichment": {
+      "enrichers": [
+        "graphify",
+        "django",
+        "data-mapping"
+      ],
+      "added": {
+        "edge:calls": 34,
+        "edge:contains": 35,
+        "edge:defines_schema": 1,
+        "edge:reads_from": 7,
+        "edge:routes": 28,
+        "edge:writes_to": 1,
+        "node:endpoint": 13,
+        "node:method": 28,
+        "node:page": 10,
+        "node:table": 1
+      },
+      "graphify": {
+        "schema_version": 1,
+        "graphify_version": "0.9.101"
+      }
+    },
+    "analyzedCommit": "1187c15bb1cdb72f280be2164f1314a925710cbd"
+  },
+  "nodes": [
+    {
+      "id": "file:src/fees/composition.py",
+      "type": "file",
+      "name": "composition.py",
+      "filePath": "src/fees/composition.py",
+      "summary": "Composition root that wires the FeeApplication with the Django repository, system clock and HTTP payment gateway into a shared instance.",
+      "tags": [
+        "composition-root",
+        "dependency-injection",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/fees/gateway.py",
+      "type": "file",
+      "name": "gateway.py",
+      "filePath": "src/fees/gateway.py",
+      "summary": "HTTP payment gateway adapter that POSTs charges to a configurable URL without following redirects and maps transport errors to PaymentGatewayFailure.",
+      "tags": [
+        "adapter",
+        "http-client",
+        "payments",
+        "fees"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/fees/repository.py",
+      "type": "file",
+      "name": "repository.py",
+      "filePath": "src/fees/repository.py",
+      "summary": "Django ORM-backed repository that looks up loans by primary key for the fees domain.",
+      "tags": [
+        "repository",
+        "data-access",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/fees/services.py",
+      "type": "file",
+      "name": "services.py",
+      "filePath": "src/fees/services.py",
+      "summary": "Framework-free fee domain: protocols, value objects and FeeApplication, which computes late fees (grace of 2 days, 25 cents/day, capped at 1000) and triggers payments.",
+      "tags": [
+        "domain",
+        "service",
+        "business-logic",
+        "fees"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/fees/urls.py",
+      "type": "file",
+      "name": "urls.py",
+      "filePath": "src/fees/urls.py",
+      "summary": "URL routes for fee and payment JSON/text endpoints and HTML UI pages.",
+      "tags": [
+        "routing",
+        "urls",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/fees/views.py",
+      "type": "file",
+      "name": "views.py",
+      "filePath": "src/fees/views.py",
+      "summary": "Django views rendering late fee details and handling payment requests, in plain HTML/text and template-based UI variants with HTMX support.",
+      "tags": [
+        "views",
+        "api-handler",
+        "django",
+        "html-rendering"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/fees/gateway.py:_NoRedirect",
+      "type": "class",
+      "name": "_NoRedirect",
+      "filePath": "src/fees/gateway.py",
+      "lineRange": [
+        10,
+        13
+      ],
+      "summary": "Redirect handler that refuses to follow redirects.",
+      "tags": [
+        "http",
+        "security",
+        "handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/gateway.py:_open",
+      "type": "function",
+      "name": "_open",
+      "filePath": "src/fees/gateway.py",
+      "lineRange": [
+        15,
+        16
+      ],
+      "summary": "Opens a request with an opener that disables redirects.",
+      "tags": [
+        "http",
+        "helper"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/gateway.py:HttpPaymentGateway",
+      "type": "class",
+      "name": "HttpPaymentGateway",
+      "filePath": "src/fees/gateway.py",
+      "lineRange": [
+        19,
+        35
+      ],
+      "summary": "Charges a loan via POST to the payment gateway and returns a GatewayResponse or raises PaymentGatewayFailure.",
+      "tags": [
+        "gateway",
+        "http-client",
+        "payments"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/fees/repository.py:DjangoFeeLoanRepository",
+      "type": "class",
+      "name": "DjangoFeeLoanRepository",
+      "filePath": "src/fees/repository.py",
+      "lineRange": [
+        4,
+        6
+      ],
+      "summary": "Finds a Loan by id via the Django ORM, returning None when absent.",
+      "tags": [
+        "repository",
+        "django",
+        "data-access"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:LoanRecord",
+      "type": "class",
+      "name": "LoanRecord",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        6,
+        9
+      ],
+      "summary": "Protocol describing the loan fields needed for fee calculation.",
+      "tags": [
+        "protocol",
+        "interface",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:LoanRepository",
+      "type": "class",
+      "name": "LoanRepository",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        12,
+        13
+      ],
+      "summary": "Protocol for finding loans by id.",
+      "tags": [
+        "protocol",
+        "interface",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:Clock",
+      "type": "class",
+      "name": "Clock",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        16,
+        17
+      ],
+      "summary": "Protocol providing today's date.",
+      "tags": [
+        "protocol",
+        "interface",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:PaymentGateway",
+      "type": "class",
+      "name": "PaymentGateway",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        20,
+        21
+      ],
+      "summary": "Protocol for charging a loan payment.",
+      "tags": [
+        "protocol",
+        "interface",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:Fee",
+      "type": "class",
+      "name": "Fee",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        25,
+        29
+      ],
+      "summary": "Immutable value object with due date, days late and amount in cents.",
+      "tags": [
+        "value-object",
+        "dataclass",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:GatewayResponse",
+      "type": "class",
+      "name": "GatewayResponse",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        32,
+        35
+      ],
+      "summary": "Immutable gateway status and body.",
+      "tags": [
+        "value-object",
+        "dataclass",
+        "payments"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:PaymentGatewayFailure",
+      "type": "class",
+      "name": "PaymentGatewayFailure",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        37,
+        41
+      ],
+      "summary": "Exception carrying the response body when the gateway is unavailable.",
+      "tags": [
+        "exception",
+        "payments",
+        "error-handling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/fees/services.py:FeeApplication",
+      "type": "class",
+      "name": "FeeApplication",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        43,
+        62
+      ],
+      "summary": "Application service computing late fees and paying via the gateway.",
+      "tags": [
+        "service",
+        "business-logic",
+        "fees"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/fees/views.py:_fee_amount",
+      "type": "function",
+      "name": "_fee_amount",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        11,
+        12
+      ],
+      "summary": "Formats cents as a dollar string.",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/views.py:_gateway_result",
+      "type": "function",
+      "name": "_gateway_result",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        15,
+        22
+      ],
+      "summary": "Runs payment and maps outcome to a body and HTTP status (404/502/200).",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/views.py:_fee_or_404",
+      "type": "function",
+      "name": "_fee_or_404",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        25,
+        29
+      ],
+      "summary": "Returns the fee or a 404 HttpResponse.",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/views.py:fee_detail",
+      "type": "function",
+      "name": "fee_detail",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        33,
+        44
+      ],
+      "summary": "GET view returning an HTML late fee summary.",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/views.py:payment",
+      "type": "function",
+      "name": "payment",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        47,
+        52
+      ],
+      "summary": "POST view that triggers payment and returns plain text.",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/views.py:fee_page",
+      "type": "function",
+      "name": "fee_page",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        55,
+        65
+      ],
+      "summary": "GET view rendering fees/detail.html.",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/fees/views.py:payment_page",
+      "type": "function",
+      "name": "payment_page",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        68,
+        93
+      ],
+      "summary": "POST view rendering payment status, as an HTMX partial or full detail page.",
+      "tags": [
+        "view",
+        "django",
+        "fees"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/loans/clock.py",
+      "type": "file",
+      "name": "clock.py",
+      "filePath": "src/loans/clock.py",
+      "summary": "Provides a system clock adapter returning today's local date via Django timezone utilities.",
+      "tags": [
+        "clock",
+        "adapter",
+        "time"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/composition.py",
+      "type": "file",
+      "name": "composition.py",
+      "filePath": "src/loans/composition.py",
+      "summary": "Composition root wiring the loan application with the Django repository and system clock into a shared instance.",
+      "tags": [
+        "composition-root",
+        "dependency-injection",
+        "wiring"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/repository.py",
+      "type": "file",
+      "name": "repository.py",
+      "filePath": "src/loans/repository.py",
+      "summary": "Django ORM-backed loan repository with atomic create and row-locked return operations.",
+      "tags": [
+        "repository",
+        "persistence",
+        "django-orm",
+        "transaction"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/services.py",
+      "type": "file",
+      "name": "services.py",
+      "filePath": "src/loans/services.py",
+      "summary": "Application service layer for lending, returning and listing loans, with protocol interfaces and CSV-style loan line formatting.",
+      "tags": [
+        "service",
+        "business-logic",
+        "protocol",
+        "serialization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/loans/clock.py:SystemClock",
+      "type": "class",
+      "name": "SystemClock",
+      "filePath": "src/loans/clock.py",
+      "lineRange": [
+        6,
+        8
+      ],
+      "summary": "Clock implementation returning the current local date.",
+      "tags": [
+        "clock",
+        "adapter"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/loans/repository.py:DjangoLoanRepository",
+      "type": "class",
+      "name": "DjangoLoanRepository",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        6,
+        41
+      ],
+      "summary": "Repository implementing loan queries, ID generation, creation and atomic return marking via the Loan model.",
+      "tags": [
+        "repository",
+        "django-orm",
+        "transaction"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/loans/services.py:LoanRecord",
+      "type": "class",
+      "name": "LoanRecord",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        7,
+        13
+      ],
+      "summary": "Protocol describing the fields of a loan record.",
+      "tags": [
+        "protocol",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/loans/services.py:Clock",
+      "type": "class",
+      "name": "Clock",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        16,
+        17
+      ],
+      "summary": "Protocol for a clock providing today's date.",
+      "tags": [
+        "protocol",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/loans/services.py:LoanRepository",
+      "type": "class",
+      "name": "LoanRepository",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        20,
+        29
+      ],
+      "summary": "Protocol defining the loan persistence interface.",
+      "tags": [
+        "protocol",
+        "repository",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/loans/services.py:LoanApplication",
+      "type": "class",
+      "name": "LoanApplication",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        32,
+        53
+      ],
+      "summary": "Use-case class orchestrating lending, returning and text listing of loans through injected repository and clock.",
+      "tags": [
+        "service",
+        "use-case",
+        "dependency-injection"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/loans/services.py:loan_line",
+      "type": "function",
+      "name": "loan_line",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        56,
+        69
+      ],
+      "summary": "Serializes a loan to a semicolon-delimited CSV line with ISO dates.",
+      "tags": [
+        "serialization",
+        "csv",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/forms.py",
+      "type": "file",
+      "name": "forms.py",
+      "filePath": "src/loans/forms.py",
+      "summary": "Django ModelForm that validates member and ISBN input for creating a loan.",
+      "tags": [
+        "form",
+        "validation",
+        "django",
+        "loans"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/models.py",
+      "type": "file",
+      "name": "models.py",
+      "filePath": "src/loans/models.py",
+      "summary": "Django Loan model storing member, ISBN, lend and return dates, with a computed due date 14 days after lending.",
+      "tags": [
+        "data-model",
+        "django",
+        "loans",
+        "orm"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/urls.py",
+      "type": "file",
+      "name": "urls.py",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL routing for the loans plain-text API and HTML UI pages.",
+      "tags": [
+        "routing",
+        "urls",
+        "django",
+        "api-handler"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/views.py",
+      "type": "file",
+      "name": "views.py",
+      "filePath": "src/loans/views.py",
+      "summary": "Django views for the loans plain-text API and HTMX-aware UI pages, delegating lending and returning to the loan application service.",
+      "tags": [
+        "api-handler",
+        "views",
+        "django",
+        "htmx"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:src/loans/forms.py:LoanForm",
+      "type": "class",
+      "name": "LoanForm",
+      "filePath": "src/loans/forms.py",
+      "lineRange": [
+        6,
+        9
+      ],
+      "summary": "ModelForm exposing the member and isbn fields of Loan.",
+      "tags": [
+        "form",
+        "validation",
+        "django"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/loans/models.py:Loan",
+      "type": "class",
+      "name": "Loan",
+      "filePath": "src/loans/models.py",
+      "lineRange": [
+        6,
+        18
+      ],
+      "summary": "Loan record with string primary key, member, ISBN, lent_on and optional returned_on; due_on is lent_on plus 14 days.",
+      "tags": [
+        "data-model",
+        "django",
+        "orm"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_catalog",
+      "type": "function",
+      "name": "loan_catalog",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        11,
+        12
+      ],
+      "summary": "Renders the list page of all loans.",
+      "tags": [
+        "view",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_catalog_detail",
+      "type": "function",
+      "name": "loan_catalog_detail",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        15,
+        17
+      ],
+      "summary": "Renders a single loan detail page or 404s.",
+      "tags": [
+        "view",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_collection",
+      "type": "function",
+      "name": "loan_collection",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        21,
+        24
+      ],
+      "summary": "Lists loans as text on GET or lends a loan on POST.",
+      "tags": [
+        "api-handler",
+        "view"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_lend",
+      "type": "function",
+      "name": "loan_lend",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        27,
+        36
+      ],
+      "summary": "Validates LoanForm and lends a loan, returning 201 text or 400 with errors.",
+      "tags": [
+        "api-handler",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_lend_page",
+      "type": "function",
+      "name": "loan_lend_page",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        40,
+        52
+      ],
+      "summary": "UI page for lending; supports HTMX partial responses and redirects.",
+      "tags": [
+        "view",
+        "htmx",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_detail",
+      "type": "function",
+      "name": "loan_detail",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        55,
+        59
+      ],
+      "summary": "Returns plain-text loan line or 404.",
+      "tags": [
+        "api-handler",
+        "view"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_return",
+      "type": "function",
+      "name": "loan_return",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        63,
+        69
+      ],
+      "summary": "POST API endpoint returning a loan; 404 if missing, 409 if already returned.",
+      "tags": [
+        "api-handler",
+        "view"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/views.py:loan_return_page",
+      "type": "function",
+      "name": "loan_return_page",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        73,
+        91
+      ],
+      "summary": "UI POST handler for returning a loan with HTMX, error and redirect handling.",
+      "tags": [
+        "view",
+        "htmx",
+        "ui"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/fees/detail.html",
+      "type": "file",
+      "name": "detail.html",
+      "filePath": "templates/fees/detail.html",
+      "summary": "Django template showing a loan's late fee (due date, days late, amount) and either the payment result or the payment form.",
+      "tags": [
+        "template",
+        "fees",
+        "html",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/fees/payment-form.html",
+      "type": "file",
+      "name": "payment-form.html",
+      "filePath": "templates/fees/payment-form.html",
+      "summary": "HTMX-enabled form partial that posts a late-fee payment for a loan and swaps the #payment-status element.",
+      "tags": [
+        "template",
+        "partial",
+        "htmx",
+        "form"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/fees/payment-status.html",
+      "type": "file",
+      "name": "payment-status.html",
+      "filePath": "templates/fees/payment-status.html",
+      "summary": "Partial rendering the payment outcome as a status or alert message inside #payment-status.",
+      "tags": [
+        "template",
+        "partial",
+        "feedback",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/loans/detail.html",
+      "type": "file",
+      "name": "detail.html",
+      "filePath": "templates/loans/detail.html",
+      "summary": "Django template showing a single loan's member, ISBN and dates, with an htmx-enabled return form or return status.",
+      "tags": [
+        "template",
+        "html",
+        "htmx",
+        "detail-view"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/loans/list.html",
+      "type": "file",
+      "name": "list.html",
+      "filePath": "templates/loans/list.html",
+      "summary": "Django template listing all loans with due and return status, an empty state, and a link to lend a new book.",
+      "tags": [
+        "template",
+        "html",
+        "list-view",
+        "django"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:templates/loans/loan-created.html",
+      "type": "file",
+      "name": "loan-created.html",
+      "filePath": "templates/loans/loan-created.html",
+      "summary": "htmx partial confirming a loan was created, with a link to view it.",
+      "tags": [
+        "template",
+        "partial",
+        "htmx",
+        "html"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/loans/loan-form.html",
+      "type": "file",
+      "name": "loan-form.html",
+      "filePath": "templates/loans/loan-form.html",
+      "summary": "Reusable partial form for lending a book (member and ISBN fields with validation errors), posted via htmx.",
+      "tags": [
+        "template",
+        "partial",
+        "form",
+        "htmx"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/loans/new.html",
+      "type": "file",
+      "name": "new.html",
+      "filePath": "templates/loans/new.html",
+      "summary": "Page template for lending a book that includes the loan form partial.",
+      "tags": [
+        "template",
+        "html",
+        "form",
+        "django"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/loans/return-status.html",
+      "type": "file",
+      "name": "return-status.html",
+      "filePath": "templates/loans/return-status.html",
+      "summary": "htmx partial reporting whether a loan return succeeded or the loan was already returned.",
+      "tags": [
+        "template",
+        "partial",
+        "htmx",
+        "html"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/__init__.py",
+      "summary": "Empty package marker file making this directory an importable Python package.",
+      "tags": [
+        "entry-point",
+        "package-marker",
+        "python"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/core/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/core/__init__.py",
+      "summary": "Empty package marker file making this directory an importable Python package.",
+      "tags": [
+        "entry-point",
+        "package-marker",
+        "core"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/core/database.py",
+      "type": "file",
+      "name": "database.py",
+      "filePath": "src/core/database.py",
+      "summary": "Provides a database connectivity probe that runs SELECT 1 through Django's connection.",
+      "tags": [
+        "database",
+        "health-check",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/fees/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/fees/__init__.py",
+      "summary": "Empty package marker file making this directory an importable Python package.",
+      "tags": [
+        "entry-point",
+        "package-marker",
+        "fees"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/loans/__init__.py",
+      "summary": "Empty package marker file making this directory an importable Python package.",
+      "tags": [
+        "entry-point",
+        "package-marker",
+        "loans"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/loans/migrations/0001_initial.py",
+      "type": "file",
+      "name": "0001_initial.py",
+      "filePath": "src/loans/migrations/0001_initial.py",
+      "summary": "Initial Django migration creating the Loan model and seeding three sample loan records.",
+      "tags": [
+        "migration",
+        "database",
+        "data-model",
+        "seed-data"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/loans/migrations/__init__.py",
+      "type": "file",
+      "name": "__init__.py",
+      "filePath": "src/loans/migrations/__init__.py",
+      "summary": "Empty package marker file making this directory an importable Python package.",
+      "tags": [
+        "entry-point",
+        "package-marker",
+        "migration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:templates/base.html",
+      "type": "file",
+      "name": "base.html",
+      "filePath": "templates/base.html",
+      "summary": "Base HTML layout for The Lending Library with DaisyUI, Tailwind and HTMX assets plus title and content blocks.",
+      "tags": [
+        "template",
+        "layout",
+        "html",
+        "htmx"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/core/database.py:database_probe",
+      "type": "function",
+      "name": "database_probe",
+      "filePath": "src/core/database.py",
+      "lineRange": [
+        4,
+        7
+      ],
+      "summary": "Executes SELECT 1 on the default Django connection and returns the result to verify database connectivity.",
+      "tags": [
+        "database",
+        "health-check",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/loans/migrations/0001_initial.py:seed_loans",
+      "type": "function",
+      "name": "seed_loans",
+      "filePath": "src/loans/migrations/0001_initial.py",
+      "lineRange": [
+        6,
+        30
+      ],
+      "summary": "Data migration step that bulk-creates three sample Loan rows.",
+      "tags": [
+        "migration",
+        "seed-data",
+        "database"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:src/loans/migrations/0001_initial.py:Migration",
+      "type": "class",
+      "name": "Migration",
+      "filePath": "src/loans/migrations/0001_initial.py",
+      "lineRange": [
+        33,
+        52
+      ],
+      "summary": "Django migration defining the Loan table and running the seed function.",
+      "tags": [
+        "migration",
+        "data-model",
+        "database"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "method:src/fees/gateway.py:HttpPaymentGateway.charge",
+      "type": "method",
+      "name": "HttpPaymentGateway.charge",
+      "filePath": "src/fees/gateway.py",
+      "summary": "method HttpPaymentGateway.charge (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        20,
+        20
+      ]
+    },
+    {
+      "id": "method:src/fees/gateway.py:_NoRedirect.redirect_request",
+      "type": "method",
+      "name": "_NoRedirect.redirect_request",
+      "filePath": "src/fees/gateway.py",
+      "summary": "method _NoRedirect.redirect_request (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        11,
+        11
+      ]
+    },
+    {
+      "id": "method:src/fees/repository.py:DjangoFeeLoanRepository.find",
+      "type": "method",
+      "name": "DjangoFeeLoanRepository.find",
+      "filePath": "src/fees/repository.py",
+      "summary": "method DjangoFeeLoanRepository.find (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        5,
+        5
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:Clock.today",
+      "type": "method",
+      "name": "Clock.today",
+      "filePath": "src/fees/services.py",
+      "summary": "method Clock.today (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        17,
+        17
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:FeeApplication.__init__",
+      "type": "method",
+      "name": "FeeApplication.__init__",
+      "filePath": "src/fees/services.py",
+      "summary": "method FeeApplication.__init__ (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        44,
+        44
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:FeeApplication.fee_for",
+      "type": "method",
+      "name": "FeeApplication.fee_for",
+      "filePath": "src/fees/services.py",
+      "summary": "method FeeApplication.fee_for (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        49,
+        49
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:FeeApplication.pay",
+      "type": "method",
+      "name": "FeeApplication.pay",
+      "filePath": "src/fees/services.py",
+      "summary": "method FeeApplication.pay (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        59,
+        59
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:LoanRepository.find",
+      "type": "method",
+      "name": "LoanRepository.find",
+      "filePath": "src/fees/services.py",
+      "summary": "method LoanRepository.find (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        13,
+        13
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:PaymentGateway.charge",
+      "type": "method",
+      "name": "PaymentGateway.charge",
+      "filePath": "src/fees/services.py",
+      "summary": "method PaymentGateway.charge (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        21,
+        21
+      ]
+    },
+    {
+      "id": "method:src/fees/services.py:PaymentGatewayFailure.__init__",
+      "type": "method",
+      "name": "PaymentGatewayFailure.__init__",
+      "filePath": "src/fees/services.py",
+      "summary": "method PaymentGatewayFailure.__init__ (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        38,
+        38
+      ]
+    },
+    {
+      "id": "method:src/loans/clock.py:SystemClock.today",
+      "type": "method",
+      "name": "SystemClock.today",
+      "filePath": "src/loans/clock.py",
+      "summary": "method SystemClock.today (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        7,
+        7
+      ]
+    },
+    {
+      "id": "method:src/loans/models.py:Loan.due_on",
+      "type": "method",
+      "name": "Loan.due_on",
+      "filePath": "src/loans/models.py",
+      "summary": "method Loan.due_on (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        17,
+        17
+      ]
+    },
+    {
+      "id": "method:src/loans/repository.py:DjangoLoanRepository.find",
+      "type": "method",
+      "name": "DjangoLoanRepository.find",
+      "filePath": "src/loans/repository.py",
+      "summary": "method DjangoLoanRepository.find (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        10,
+        10
+      ]
+    },
+    {
+      "id": "method:src/loans/repository.py:DjangoLoanRepository.next_id",
+      "type": "method",
+      "name": "DjangoLoanRepository.next_id",
+      "filePath": "src/loans/repository.py",
+      "summary": "method DjangoLoanRepository.next_id (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        13,
+        13
+      ]
+    },
+    {
+      "id": "method:src/loans/repository.py:DjangoLoanRepository.create",
+      "type": "method",
+      "name": "DjangoLoanRepository.create",
+      "filePath": "src/loans/repository.py",
+      "summary": "method DjangoLoanRepository.create (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        17,
+        17
+      ]
+    },
+    {
+      "id": "method:src/loans/repository.py:DjangoLoanRepository.mark_returned",
+      "type": "method",
+      "name": "DjangoLoanRepository.mark_returned",
+      "filePath": "src/loans/repository.py",
+      "summary": "method DjangoLoanRepository.mark_returned (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        21,
+        21
+      ]
+    },
+    {
+      "id": "method:src/loans/repository.py:DjangoLoanRepository.all",
+      "type": "method",
+      "name": "DjangoLoanRepository.all",
+      "filePath": "src/loans/repository.py",
+      "summary": "method DjangoLoanRepository.all (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        7,
+        7
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:Clock.today",
+      "type": "method",
+      "name": "Clock.today",
+      "filePath": "src/loans/services.py",
+      "summary": "method Clock.today (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        18,
+        18
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanApplication.__init__",
+      "type": "method",
+      "name": "LoanApplication.__init__",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanApplication.__init__ (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        34,
+        34
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanApplication.lend",
+      "type": "method",
+      "name": "LoanApplication.lend",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanApplication.lend (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        38,
+        38
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanApplication.return_loan",
+      "type": "method",
+      "name": "LoanApplication.return_loan",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanApplication.return_loan (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        46,
+        46
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanApplication.list_loans_text",
+      "type": "method",
+      "name": "LoanApplication.list_loans_text",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanApplication.list_loans_text (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        49,
+        49
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanApplication.get_loan_text",
+      "type": "method",
+      "name": "LoanApplication.get_loan_text",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanApplication.get_loan_text (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        52,
+        52
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanRepository.all",
+      "type": "method",
+      "name": "LoanRepository.all",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanRepository.all (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        22,
+        22
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanRepository.find",
+      "type": "method",
+      "name": "LoanRepository.find",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanRepository.find (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        24,
+        24
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanRepository.next_id",
+      "type": "method",
+      "name": "LoanRepository.next_id",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanRepository.next_id (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        26,
+        26
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanRepository.create",
+      "type": "method",
+      "name": "LoanRepository.create",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanRepository.create (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        28,
+        28
+      ]
+    },
+    {
+      "id": "method:src/loans/services.py:LoanRepository.mark_returned",
+      "type": "method",
+      "name": "LoanRepository.mark_returned",
+      "filePath": "src/loans/services.py",
+      "summary": "method LoanRepository.mark_returned (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        30,
+        30
+      ]
+    },
+    {
+      "id": "table:src/loans/models.py:loans_loan",
+      "type": "table",
+      "name": "loans_loan",
+      "filePath": "src/loans/models.py",
+      "summary": "Table loans_loan mapped by Django model Loan",
+      "tags": [
+        "afs-enriched",
+        "django-model"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        6,
+        6
+      ]
+    },
+    {
+      "id": "page:templates/fees/detail.html:templates/fees/detail.html",
+      "type": "page",
+      "name": "templates/fees/detail.html",
+      "filePath": "templates/fees/detail.html",
+      "summary": "Template fees/detail.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/fees/payment-status.html:templates/fees/payment-status.html",
+      "type": "page",
+      "name": "templates/fees/payment-status.html",
+      "filePath": "templates/fees/payment-status.html",
+      "summary": "Template fees/payment-status.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/loans/list.html:templates/loans/list.html",
+      "type": "page",
+      "name": "templates/loans/list.html",
+      "filePath": "templates/loans/list.html",
+      "summary": "Template loans/list.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/loans/detail.html:templates/loans/detail.html",
+      "type": "page",
+      "name": "templates/loans/detail.html",
+      "filePath": "templates/loans/detail.html",
+      "summary": "Template loans/detail.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/loans/loan-created.html:templates/loans/loan-created.html",
+      "type": "page",
+      "name": "templates/loans/loan-created.html",
+      "filePath": "templates/loans/loan-created.html",
+      "summary": "Template loans/loan-created.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/loans/return-status.html:templates/loans/return-status.html",
+      "type": "page",
+      "name": "templates/loans/return-status.html",
+      "filePath": "templates/loans/return-status.html",
+      "summary": "Template loans/return-status.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:src/fees/urls.py:GET /fees/<str:loan_id>",
+      "type": "endpoint",
+      "name": "GET /fees/<str:loan_id>",
+      "filePath": "src/fees/urls.py",
+      "summary": "URL GET /fees/<str:loan_id>",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        6,
+        6
+      ]
+    },
+    {
+      "id": "endpoint:src/fees/urls.py:POST /payments/<str:loan_id>",
+      "type": "endpoint",
+      "name": "POST /payments/<str:loan_id>",
+      "filePath": "src/fees/urls.py",
+      "summary": "URL POST /payments/<str:loan_id>",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        7,
+        7
+      ]
+    },
+    {
+      "id": "endpoint:src/fees/urls.py:GET /ui/fees/<str:loan_id>/",
+      "type": "endpoint",
+      "name": "GET /ui/fees/<str:loan_id>/",
+      "filePath": "src/fees/urls.py",
+      "summary": "URL GET /ui/fees/<str:loan_id>/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        8,
+        8
+      ]
+    },
+    {
+      "id": "endpoint:src/fees/urls.py:POST /ui/payments/<str:loan_id>/",
+      "type": "endpoint",
+      "name": "POST /ui/payments/<str:loan_id>/",
+      "filePath": "src/fees/urls.py",
+      "summary": "URL POST /ui/payments/<str:loan_id>/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        9,
+        9
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:GET /loans",
+      "type": "endpoint",
+      "name": "GET /loans",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL GET /loans",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        6,
+        6
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:POST /loans",
+      "type": "endpoint",
+      "name": "POST /loans",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL POST /loans",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        6,
+        6
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:POST /loans/<str:loan_id>/return",
+      "type": "endpoint",
+      "name": "POST /loans/<str:loan_id>/return",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL POST /loans/<str:loan_id>/return",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        7,
+        7
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:/loans/<str:loan_id>",
+      "type": "endpoint",
+      "name": "/loans/<str:loan_id>",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL /loans/<str:loan_id>",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        8,
+        8
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:/ui/loans/",
+      "type": "endpoint",
+      "name": "/ui/loans/",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL /ui/loans/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        9,
+        9
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:GET /ui/loans/new/",
+      "type": "endpoint",
+      "name": "GET /ui/loans/new/",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL GET /ui/loans/new/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        10,
+        10
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:POST /ui/loans/new/",
+      "type": "endpoint",
+      "name": "POST /ui/loans/new/",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL POST /ui/loans/new/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        10,
+        10
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:POST /ui/loans/<str:loan_id>/return/",
+      "type": "endpoint",
+      "name": "POST /ui/loans/<str:loan_id>/return/",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL POST /ui/loans/<str:loan_id>/return/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        11,
+        11
+      ]
+    },
+    {
+      "id": "endpoint:src/loans/urls.py:/ui/loans/<str:loan_id>/",
+      "type": "endpoint",
+      "name": "/ui/loans/<str:loan_id>/",
+      "filePath": "src/loans/urls.py",
+      "summary": "URL /ui/loans/<str:loan_id>/",
+      "tags": [
+        "afs-enriched",
+        "django-url"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        12,
+        12
+      ]
+    },
+    {
+      "id": "page:templates/base.html:templates/base.html",
+      "type": "page",
+      "name": "templates/base.html",
+      "filePath": "templates/base.html",
+      "summary": "Template templates/base.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/fees/payment-form.html:templates/fees/payment-form.html",
+      "type": "page",
+      "name": "templates/fees/payment-form.html",
+      "filePath": "templates/fees/payment-form.html",
+      "summary": "Template templates/fees/payment-form.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/loans/loan-form.html:templates/loans/loan-form.html",
+      "type": "page",
+      "name": "templates/loans/loan-form.html",
+      "filePath": "templates/loans/loan-form.html",
+      "summary": "Template templates/loans/loan-form.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "page:templates/loans/new.html:templates/loans/new.html",
+      "type": "page",
+      "name": "templates/loans/new.html",
+      "filePath": "templates/loans/new.html",
+      "summary": "Template templates/loans/new.html",
+      "tags": [
+        "afs-enriched",
+        "django-template"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/fees/gateway.py",
+      "target": "class:src/fees/gateway.py:_NoRedirect",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/gateway.py",
+      "target": "function:src/fees/gateway.py:_open",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/gateway.py",
+      "target": "class:src/fees/gateway.py:HttpPaymentGateway",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/repository.py",
+      "target": "class:src/fees/repository.py:DjangoFeeLoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:LoanRecord",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:LoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:Clock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:PaymentGateway",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:Fee",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:GatewayResponse",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:PaymentGatewayFailure",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:FeeApplication",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:_fee_amount",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:_gateway_result",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:_fee_or_404",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:fee_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:payment",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:fee_page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "function:src/fees/views.py:payment_page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/fees/composition.py",
+      "target": "file:src/fees/gateway.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/composition.py",
+      "target": "file:src/fees/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/composition.py",
+      "target": "file:src/fees/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/gateway.py",
+      "target": "file:src/fees/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/urls.py",
+      "target": "file:src/fees/views.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "file:src/fees/composition.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/views.py",
+      "target": "file:src/fees/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/composition.py",
+      "target": "file:src/loans/clock.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/repository.py",
+      "target": "file:src/loans/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/fees/composition.py",
+      "target": "class:src/loans/clock.py:SystemClock",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/repository.py",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/fees/services.py:FeeApplication",
+      "target": "class:src/fees/services.py:Fee",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/fees/gateway.py:HttpPaymentGateway",
+      "target": "class:src/fees/services.py:GatewayResponse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/fees/views.py:_gateway_result",
+      "target": "class:src/fees/services.py:FeeApplication",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:FeeApplication",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:Fee",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:GatewayResponse",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/services.py",
+      "target": "class:src/fees/services.py:PaymentGatewayFailure",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/gateway.py",
+      "target": "class:src/fees/gateway.py:HttpPaymentGateway",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/fees/repository.py",
+      "target": "class:src/fees/repository.py:DjangoFeeLoanRepository",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/clock.py",
+      "target": "class:src/loans/clock.py:SystemClock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/repository.py",
+      "target": "class:src/loans/repository.py:DjangoLoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "class:src/loans/services.py:LoanApplication",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "function:src/loans/services.py:loan_line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "class:src/loans/services.py:LoanRecord",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "class:src/loans/services.py:Clock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "class:src/loans/services.py:LoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/clock.py",
+      "target": "class:src/loans/clock.py:SystemClock",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/repository.py",
+      "target": "class:src/loans/repository.py:DjangoLoanRepository",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "class:src/loans/services.py:LoanApplication",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/services.py",
+      "target": "function:src/loans/services.py:loan_line",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/composition.py",
+      "target": "file:src/loans/clock.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/composition.py",
+      "target": "file:src/loans/repository.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/composition.py",
+      "target": "file:src/loans/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/repository.py",
+      "target": "file:src/loans/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/composition.py",
+      "target": "class:src/loans/services.py:LoanApplication",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/composition.py",
+      "target": "class:src/loans/repository.py:DjangoLoanRepository",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/composition.py",
+      "target": "class:src/loans/clock.py:SystemClock",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/loans/forms.py",
+      "target": "file:src/loans/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/urls.py",
+      "target": "file:src/loans/views.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "file:src/loans/composition.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "file:src/loans/forms.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "file:src/loans/models.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "file:src/loans/services.py",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/loans/forms.py",
+      "target": "class:src/loans/forms.py:LoanForm",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/models.py",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_catalog",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_catalog_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_collection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_lend_page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_detail",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_return",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/views.py",
+      "target": "function:src/loans/views.py:loan_return_page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/forms.py",
+      "target": "class:src/loans/forms.py:LoanForm",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/loans/models.py",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "class:src/loans/forms.py:LoanForm",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:src/loans/views.py:loan_lend",
+      "target": "function:src/loans/services.py:loan_line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:src/loans/views.py:loan_return",
+      "target": "function:src/loans/services.py:loan_line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:templates/fees/detail.html",
+      "target": "file:templates/fees/payment-status.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/fees/detail.html",
+      "target": "file:templates/fees/payment-form.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/loans/new.html",
+      "target": "file:templates/loans/loan-form.html",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:templates/loans/loan-form.html",
+      "target": "file:templates/loans/loan-created.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:templates/loans/detail.html",
+      "target": "file:templates/loans/return-status.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:templates/loans/list.html",
+      "target": "file:templates/loans/detail.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:templates/loans/list.html",
+      "target": "file:templates/loans/new.html",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:src/core/database.py",
+      "target": "function:src/core/database.py:database_probe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/migrations/0001_initial.py",
+      "target": "function:src/loans/migrations/0001_initial.py:seed_loans",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/loans/migrations/0001_initial.py",
+      "target": "class:src/loans/migrations/0001_initial.py:Migration",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "class:src/fees/gateway.py:HttpPaymentGateway",
+      "target": "method:src/fees/gateway.py:HttpPaymentGateway.charge",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/gateway.py:_NoRedirect",
+      "target": "method:src/fees/gateway.py:_NoRedirect.redirect_request",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/repository.py:DjangoFeeLoanRepository",
+      "target": "method:src/fees/repository.py:DjangoFeeLoanRepository.find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:Clock",
+      "target": "method:src/fees/services.py:Clock.today",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:FeeApplication",
+      "target": "method:src/fees/services.py:FeeApplication.__init__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:FeeApplication",
+      "target": "method:src/fees/services.py:FeeApplication.fee_for",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:FeeApplication",
+      "target": "method:src/fees/services.py:FeeApplication.pay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:LoanRepository",
+      "target": "method:src/fees/services.py:LoanRepository.find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:PaymentGateway",
+      "target": "method:src/fees/services.py:PaymentGateway.charge",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/fees/services.py:PaymentGatewayFailure",
+      "target": "method:src/fees/services.py:PaymentGatewayFailure.__init__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/clock.py:SystemClock",
+      "target": "method:src/loans/clock.py:SystemClock.today",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/models.py:Loan",
+      "target": "method:src/loans/models.py:Loan.due_on",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "method:src/loans/repository.py:DjangoLoanRepository.find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "method:src/loans/repository.py:DjangoLoanRepository.next_id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "method:src/loans/repository.py:DjangoLoanRepository.create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "method:src/loans/repository.py:DjangoLoanRepository.mark_returned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "method:src/loans/repository.py:DjangoLoanRepository.all",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:Clock",
+      "target": "method:src/loans/services.py:Clock.today",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanApplication",
+      "target": "method:src/loans/services.py:LoanApplication.__init__",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanApplication",
+      "target": "method:src/loans/services.py:LoanApplication.lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanApplication",
+      "target": "method:src/loans/services.py:LoanApplication.return_loan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanApplication",
+      "target": "method:src/loans/services.py:LoanApplication.list_loans_text",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanApplication",
+      "target": "method:src/loans/services.py:LoanApplication.get_loan_text",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanRepository",
+      "target": "method:src/loans/services.py:LoanRepository.all",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanRepository",
+      "target": "method:src/loans/services.py:LoanRepository.find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanRepository",
+      "target": "method:src/loans/services.py:LoanRepository.next_id",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanRepository",
+      "target": "method:src/loans/services.py:LoanRepository.create",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:src/loans/services.py:LoanRepository",
+      "target": "method:src/loans/services.py:LoanRepository.mark_returned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "method:src/fees/gateway.py:HttpPaymentGateway.charge",
+      "target": "function:src/fees/gateway.py:_open",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/gateway.py:L25"
+    },
+    {
+      "source": "method:src/fees/gateway.py:HttpPaymentGateway.charge",
+      "target": "class:src/fees/services.py:GatewayResponse",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/gateway.py:L27"
+    },
+    {
+      "source": "method:src/fees/gateway.py:HttpPaymentGateway.charge",
+      "target": "class:src/fees/services.py:PaymentGatewayFailure",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/gateway.py:L33"
+    },
+    {
+      "source": "function:src/fees/gateway.py:_open",
+      "target": "class:src/fees/gateway.py:_NoRedirect",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/gateway.py:L16"
+    },
+    {
+      "source": "method:src/fees/services.py:FeeApplication.fee_for",
+      "target": "class:src/fees/services.py:Fee",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/services.py:L57"
+    },
+    {
+      "source": "function:src/fees/views.py:fee_detail",
+      "target": "function:src/fees/views.py:_fee_or_404",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L34"
+    },
+    {
+      "source": "function:src/fees/views.py:fee_detail",
+      "target": "function:src/fees/views.py:_fee_amount",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L41"
+    },
+    {
+      "source": "function:src/fees/views.py:fee_page",
+      "target": "function:src/fees/views.py:_fee_or_404",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L56"
+    },
+    {
+      "source": "function:src/fees/views.py:fee_page",
+      "target": "function:src/fees/views.py:_fee_amount",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L63"
+    },
+    {
+      "source": "function:src/fees/views.py:payment",
+      "target": "function:src/fees/views.py:_gateway_result",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L48"
+    },
+    {
+      "source": "function:src/fees/views.py:payment_page",
+      "target": "function:src/fees/views.py:_gateway_result",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L69"
+    },
+    {
+      "source": "function:src/fees/views.py:payment_page",
+      "target": "function:src/fees/views.py:_fee_amount",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/fees/views.py:L89"
+    },
+    {
+      "source": "method:src/loans/services.py:LoanApplication.get_loan_text",
+      "target": "function:src/loans/services.py:loan_line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/loans/services.py:L54"
+    },
+    {
+      "source": "method:src/loans/services.py:LoanApplication.list_loans_text",
+      "target": "function:src/loans/services.py:loan_line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/loans/services.py:L50"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_collection",
+      "target": "function:src/loans/views.py:loan_lend",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/loans/views.py:L23"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_lend",
+      "target": "class:src/loans/forms.py:LoanForm",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED src/loans/views.py:L28"
+    },
+    {
+      "source": "method:src/fees/services.py:FeeApplication.pay",
+      "target": "method:src/fees/services.py:PaymentGateway.charge",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED src/fees/services.py:L62"
+    },
+    {
+      "source": "class:src/fees/gateway.py:HttpPaymentGateway",
+      "target": "class:src/fees/services.py:PaymentGatewayFailure",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/fees/gateway.py:L33"
+    },
+    {
+      "source": "class:src/fees/repository.py:DjangoFeeLoanRepository",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/fees/repository.py:L6"
+    },
+    {
+      "source": "function:src/fees/views.py:_gateway_result",
+      "target": "class:src/fees/services.py:PaymentGatewayFailure",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/fees/views.py:L18"
+    },
+    {
+      "source": "class:src/loans/forms.py:LoanForm",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/loans/forms.py:L8"
+    },
+    {
+      "source": "class:src/loans/repository.py:DjangoLoanRepository",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/loans/repository.py:L8"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_catalog",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/loans/views.py:L12"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_catalog_detail",
+      "target": "class:src/loans/models.py:Loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/loans/views.py:L16"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_lend_page",
+      "target": "class:src/loans/forms.py:LoanForm",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 uses INFERRED src/loans/views.py:L41"
+    },
+    {
+      "source": "class:src/loans/models.py:Loan",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-model"
+    },
+    {
+      "source": "method:src/fees/repository.py:DjangoFeeLoanRepository.find",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "function:src/fees/views.py:_gateway_result",
+      "target": "method:src/fees/services.py:FeeApplication.pay",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/fees/views.py:_fee_or_404",
+      "target": "method:src/fees/services.py:FeeApplication.fee_for",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/fees/views.py:fee_page",
+      "target": "page:templates/fees/detail.html:templates/fees/detail.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "function:src/fees/views.py:payment_page",
+      "target": "method:src/fees/services.py:FeeApplication.fee_for",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/fees/views.py:payment_page",
+      "target": "page:templates/fees/detail.html:templates/fees/detail.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "function:src/fees/views.py:payment_page",
+      "target": "page:templates/fees/payment-status.html:templates/fees/payment-status.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "method:src/loans/repository.py:DjangoLoanRepository.all",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "method:src/loans/repository.py:DjangoLoanRepository.find",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "method:src/loans/repository.py:DjangoLoanRepository.next_id",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "method:src/loans/repository.py:DjangoLoanRepository.create",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "method:src/loans/repository.py:DjangoLoanRepository.mark_returned",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_catalog",
+      "target": "page:templates/loans/list.html:templates/loans/list.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_catalog",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_catalog_detail",
+      "target": "table:src/loans/models.py:loans_loan",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-orm"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_catalog_detail",
+      "target": "page:templates/loans/detail.html:templates/loans/detail.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_collection",
+      "target": "method:src/loans/services.py:LoanApplication.list_loans_text",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_lend",
+      "target": "method:src/loans/services.py:LoanApplication.lend",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_lend_page",
+      "target": "method:src/loans/services.py:LoanApplication.lend",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_lend_page",
+      "target": "page:templates/loans/loan-created.html:templates/loans/loan-created.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_detail",
+      "target": "method:src/loans/services.py:LoanApplication.get_loan_text",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_return",
+      "target": "method:src/loans/services.py:LoanApplication.return_loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_return_page",
+      "target": "method:src/loans/services.py:LoanApplication.return_loan",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:python-instance"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_return_page",
+      "target": "page:templates/loans/return-status.html:templates/loans/return-status.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "function:src/loans/views.py:loan_return_page",
+      "target": "page:templates/loans/detail.html:templates/loans/detail.html",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-template"
+    },
+    {
+      "source": "endpoint:src/fees/urls.py:GET /fees/<str:loan_id>",
+      "target": "function:src/fees/views.py:fee_detail",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/fees/urls.py:POST /payments/<str:loan_id>",
+      "target": "function:src/fees/views.py:payment",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/fees/urls.py:GET /ui/fees/<str:loan_id>/",
+      "target": "function:src/fees/views.py:fee_page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/fees/urls.py:POST /ui/payments/<str:loan_id>/",
+      "target": "function:src/fees/views.py:payment_page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:GET /loans",
+      "target": "function:src/loans/views.py:loan_collection",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:POST /loans",
+      "target": "function:src/loans/views.py:loan_collection",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:POST /loans/<str:loan_id>/return",
+      "target": "function:src/loans/views.py:loan_return",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:/loans/<str:loan_id>",
+      "target": "function:src/loans/views.py:loan_detail",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:/ui/loans/",
+      "target": "function:src/loans/views.py:loan_catalog",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:GET /ui/loans/new/",
+      "target": "function:src/loans/views.py:loan_lend_page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:POST /ui/loans/new/",
+      "target": "function:src/loans/views.py:loan_lend_page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:POST /ui/loans/<str:loan_id>/return/",
+      "target": "function:src/loans/views.py:loan_return_page",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "endpoint:src/loans/urls.py:/ui/loans/<str:loan_id>/",
+      "target": "function:src/loans/views.py:loan_catalog_detail",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-url"
+    },
+    {
+      "source": "page:templates/fees/detail.html:templates/fees/detail.html",
+      "target": "page:templates/base.html:templates/base.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    },
+    {
+      "source": "page:templates/fees/detail.html:templates/fees/detail.html",
+      "target": "page:templates/fees/payment-status.html:templates/fees/payment-status.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    },
+    {
+      "source": "page:templates/fees/detail.html:templates/fees/detail.html",
+      "target": "page:templates/fees/payment-form.html:templates/fees/payment-form.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    },
+    {
+      "source": "page:templates/fees/payment-form.html:templates/fees/payment-form.html",
+      "target": "endpoint:src/fees/urls.py:POST /payments/<str:loan_id>",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/payments/{{ loan_id }}/"
+    },
+    {
+      "source": "page:templates/fees/payment-form.html:templates/fees/payment-form.html",
+      "target": "endpoint:src/fees/urls.py:POST /ui/payments/<str:loan_id>/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/payments/{{ loan_id }}/"
+    },
+    {
+      "source": "page:templates/loans/detail.html:templates/loans/detail.html",
+      "target": "endpoint:src/loans/urls.py:POST /loans/<str:loan_id>/return",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/loans/{{ loan.id }}/return/"
+    },
+    {
+      "source": "page:templates/loans/detail.html:templates/loans/detail.html",
+      "target": "endpoint:src/loans/urls.py:POST /ui/loans/<str:loan_id>/return/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/loans/{{ loan.id }}/return/"
+    },
+    {
+      "source": "page:templates/loans/detail.html:templates/loans/detail.html",
+      "target": "page:templates/base.html:templates/base.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    },
+    {
+      "source": "page:templates/loans/list.html:templates/loans/list.html",
+      "target": "page:templates/base.html:templates/base.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    },
+    {
+      "source": "page:templates/loans/loan-form.html:templates/loans/loan-form.html",
+      "target": "endpoint:src/loans/urls.py:/loans/<str:loan_id>",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/loans/new/"
+    },
+    {
+      "source": "page:templates/loans/loan-form.html:templates/loans/loan-form.html",
+      "target": "endpoint:src/loans/urls.py:POST /ui/loans/new/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/loans/new/"
+    },
+    {
+      "source": "page:templates/loans/loan-form.html:templates/loans/loan-form.html",
+      "target": "endpoint:src/loans/urls.py:/ui/loans/<str:loan_id>/",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:template-script \u2014 POST /ui/loans/new/"
+    },
+    {
+      "source": "page:templates/loans/new.html:templates/loans/new.html",
+      "target": "page:templates/base.html:templates/base.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    },
+    {
+      "source": "page:templates/loans/new.html:templates/loans/new.html",
+      "target": "page:templates/loans/loan-form.html:templates/loans/loan-form.html",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:django-include"
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:entry-routing",
+      "name": "URL Routing & Views",
+      "description": "URL routing and request handlers (controllers) for loans and fees.",
+      "nodeIds": [
+        "file:src/fees/urls.py",
+        "file:src/fees/views.py",
+        "file:src/loans/forms.py",
+        "file:src/loans/urls.py",
+        "file:src/loans/views.py"
+      ]
+    },
+    {
+      "id": "layer:templates",
+      "name": "Templates (UI)",
+      "description": "Django HTML templates rendering loans and fees pages.",
+      "nodeIds": [
+        "file:templates/fees/detail.html",
+        "file:templates/fees/payment-form.html",
+        "file:templates/fees/payment-status.html",
+        "file:templates/loans/detail.html",
+        "file:templates/loans/list.html",
+        "file:templates/loans/loan-created.html",
+        "file:templates/loans/loan-form.html",
+        "file:templates/loans/new.html",
+        "file:templates/loans/return-status.html",
+        "file:templates/base.html"
+      ]
+    },
+    {
+      "id": "layer:services",
+      "name": "Services & Composition",
+      "description": "Business logic, gateways, clock, and dependency wiring.",
+      "nodeIds": [
+        "file:src/fees/composition.py",
+        "file:src/fees/gateway.py",
+        "file:src/fees/services.py",
+        "file:src/loans/clock.py",
+        "file:src/loans/composition.py",
+        "file:src/loans/services.py"
+      ]
+    },
+    {
+      "id": "layer:data",
+      "name": "Data & Persistence",
+      "description": "Models, repositories, database access and migrations.",
+      "nodeIds": [
+        "file:src/fees/repository.py",
+        "file:src/loans/repository.py",
+        "file:src/loans/models.py",
+        "file:src/core/database.py",
+        "file:src/loans/migrations/0001_initial.py",
+        "file:src/loans/migrations/__init__.py"
+      ]
+    },
+    {
+      "id": "layer:packaging",
+      "name": "Package Structure",
+      "description": "Package initializers.",
+      "nodeIds": [
+        "file:src/__init__.py",
+        "file:src/core/__init__.py",
+        "file:src/fees/__init__.py",
+        "file:src/loans/__init__.py"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview: Loans Routing",
+      "description": "Start at the loans URL routes, the entry point for the plain-text API and HTML UI pages. Every request in the loans side of the app begins here and is handed to the views, giving a map of what the app exposes.",
+      "nodeIds": [
+        "file:src/loans/urls.py"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Loan Views",
+      "description": "Building on the routes from Step 1, the views handle both the plain-text API and HTMX-aware UI pages. They delegate lending and returning to the loan application service instead of holding business logic themselves.",
+      "nodeIds": [
+        "file:src/loans/views.py",
+        "file:src/loans/forms.py"
+      ],
+      "languageLesson": "Django views are plain functions taking a request and returning a response; ModelForm classes validate input and tie it to a model."
+    },
+    {
+      "order": 3,
+      "title": "Loan Service and Wiring",
+      "description": "The service layer implements lending, returning and listing against protocol interfaces, so it stays independent of Django. The composition root wires it to the Django repository and the system clock into one shared instance used by the views.",
+      "nodeIds": [
+        "file:src/loans/services.py",
+        "file:src/loans/composition.py",
+        "file:src/loans/clock.py"
+      ],
+      "languageLesson": "Python typing.Protocol defines structural interfaces: any class with matching methods satisfies it, enabling dependency injection without inheritance."
+    },
+    {
+      "order": 4,
+      "title": "Data Model and Persistence",
+      "description": "The Loan model stores member, ISBN and dates, with a due date 14 days after lending. The repository implements the service's storage protocol using the ORM, with atomic creation and row-locked returns; the migration creates the table.",
+      "nodeIds": [
+        "file:src/loans/models.py",
+        "file:src/loans/repository.py",
+        "file:src/loans/migrations/0001_initial.py",
+        "file:src/core/database.py"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "Loan Templates",
+      "description": "Templates render the loan pages: a shared base, list and detail pages, and htmx partials such as the lend form and creation confirmation. HTMX lets forms swap fragments rather than reloading the page.",
+      "nodeIds": [
+        "file:templates/base.html",
+        "file:templates/loans/list.html",
+        "file:templates/loans/detail.html",
+        "file:templates/loans/loan-form.html",
+        "file:templates/loans/loan-created.html"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Fees Routing and Views",
+      "description": "The fees app follows the same pattern as loans: routes lead to views that show late-fee details and handle payments, in both text and HTMX template variants.",
+      "nodeIds": [
+        "file:src/fees/urls.py",
+        "file:src/fees/views.py"
+      ]
+    },
+    {
+      "order": 7,
+      "title": "Fee Domain Logic",
+      "description": "The framework-free fee domain computes late fees (2-day grace, 25 cents per day, capped at 1000) and triggers payments. As with the loan service, it depends only on protocols declared here.",
+      "nodeIds": [
+        "file:src/fees/services.py"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Fee Adapters and Composition",
+      "description": "The fees composition root wires FeeApplication to the Django loan lookup, the clock reused from loans, and an HTTP payment gateway. The gateway posts charges without following redirects and maps transport errors to a domain failure.",
+      "nodeIds": [
+        "file:src/fees/composition.py",
+        "file:src/fees/gateway.py",
+        "file:src/fees/repository.py"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Fee Templates",
+      "description": "The fee pages show due date, days late and amount, then either the payment form or the result. The payment form and status partials are swapped via HTMX into #payment-status.",
+      "nodeIds": [
+        "file:templates/fees/detail.html",
+        "file:templates/fees/payment-form.html",
+        "file:templates/fees/payment-status.html"
+      ]
+    }
+  ]
+}

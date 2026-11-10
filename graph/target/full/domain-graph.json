@@ -1,0 +1,584 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "analyze",
+    "languages": [
+      "html",
+      "python"
+    ],
+    "frameworks": [
+      "Django"
+    ],
+    "description": "Django-style library loans and fees application with loans and fees modules, repositories, services, views and HTML templates.",
+    "analyzedAt": "2026-11-10T17:04:51.770Z",
+    "gitCommitHash": "4f4bb689a7b8998a352921816dd7bb3c39556582",
+    "analyzedCommit": "1187c15bb1cdb72f280be2164f1314a925710cbd"
+  },
+  "nodes": [
+    {
+      "id": "domain:loan-management",
+      "type": "domain",
+      "name": "Loan Management",
+      "summary": "Lending and returning library books and tracking loan records. Loans have a 14-day due date and are stored with atomic creation and row-locked returns.",
+      "tags": [
+        "loans",
+        "lending"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "Member",
+          "ISBN"
+        ],
+        "businessRules": [
+          "Loan due date is 14 days after lending",
+          "A loan cannot be returned twice (409)",
+          "Member and ISBN are required"
+        ],
+        "crossDomainInteractions": [
+          "Fee Management reads loans to compute late fees"
+        ]
+      }
+    },
+    {
+      "id": "domain:fee-management",
+      "type": "domain",
+      "name": "Late Fees & Payments",
+      "summary": "Calculates late fees for overdue loans and charges them through an external payment gateway.",
+      "tags": [
+        "fees",
+        "payments"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Fee",
+          "GatewayResponse",
+          "Loan"
+        ],
+        "businessRules": [
+          "No fee for 2 or fewer days late",
+          "25 cents per day late, capped at 1000 cents",
+          "Gateway redirects are not followed; gateway failure yields 502"
+        ],
+        "crossDomainInteractions": [
+          "Reads loans and system clock from Loan Management"
+        ]
+      }
+    },
+    {
+      "id": "flow:lend-book",
+      "type": "flow",
+      "name": "Lend a Book",
+      "summary": "Validate member and ISBN and create a new loan.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "POST /loans, /ui/loans/new/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:lend-book:validate-loan-form",
+      "type": "step",
+      "name": "Validate loan form",
+      "summary": "LoanForm validates member and ISBN.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/forms.py",
+      "lineRange": [
+        6,
+        9
+      ]
+    },
+    {
+      "id": "step:lend-book:lend-via-application",
+      "type": "step",
+      "name": "Lend via application",
+      "summary": "LoanApplication creates the loan using the clock date.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        32,
+        53
+      ]
+    },
+    {
+      "id": "step:lend-book:persist-loan",
+      "type": "step",
+      "name": "Persist loan",
+      "summary": "Repository generates an ID and creates the record.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        6,
+        41
+      ]
+    },
+    {
+      "id": "step:lend-book:respond",
+      "type": "step",
+      "name": "Respond",
+      "summary": "Return 201 text or render created partial / 400 with errors.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        27,
+        52
+      ]
+    },
+    {
+      "id": "flow:return-book",
+      "type": "flow",
+      "name": "Return a Book",
+      "summary": "Mark a loan as returned, rejecting missing or already returned loans.",
+      "tags": [
+        "returns"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "POST /loans/<id>/return, /ui/loans/<id>/return/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:return-book:find-loan",
+      "type": "step",
+      "name": "Find loan",
+      "summary": "Look up the loan by ID, 404 when missing.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        63,
+        69
+      ]
+    },
+    {
+      "id": "step:return-book:mark-returned-atomically",
+      "type": "step",
+      "name": "Mark returned atomically",
+      "summary": "Repository locks the row and sets returned date.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        6,
+        41
+      ]
+    },
+    {
+      "id": "step:return-book:report-outcome",
+      "type": "step",
+      "name": "Report outcome",
+      "summary": "409 if already returned; otherwise success status partial.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        73,
+        91
+      ]
+    },
+    {
+      "id": "flow:browse-loans",
+      "type": "flow",
+      "name": "Browse Loans",
+      "summary": "List loans and view loan details as text or HTML.",
+      "tags": [
+        "catalog"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans, /ui/loans/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:browse-loans:query-loans",
+      "type": "step",
+      "name": "Query loans",
+      "summary": "Fetch loans from the repository.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        32,
+        53
+      ]
+    },
+    {
+      "id": "step:browse-loans:serialize-loan",
+      "type": "step",
+      "name": "Serialize loan",
+      "summary": "Format loan as CSV line or render template.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        56,
+        69
+      ]
+    },
+    {
+      "id": "step:browse-loans:render-page",
+      "type": "step",
+      "name": "Render page",
+      "summary": "Render list or detail page, 404 if missing.",
+      "tags": [
+        "loan-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        11,
+        59
+      ]
+    },
+    {
+      "id": "flow:view-late-fee",
+      "type": "flow",
+      "name": "View Late Fee",
+      "summary": "Compute and display the late fee for a loan.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "GET /fees/<id>, /ui/fees/<id>/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:view-late-fee:find-loan",
+      "type": "step",
+      "name": "Find loan",
+      "summary": "Look up the loan, 404 when missing.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/repository.py",
+      "lineRange": [
+        4,
+        6
+      ]
+    },
+    {
+      "id": "step:view-late-fee:compute-days-late",
+      "type": "step",
+      "name": "Compute days late",
+      "summary": "Compare due date with return date or today.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        49,
+        57
+      ]
+    },
+    {
+      "id": "step:view-late-fee:apply-fee-rules",
+      "type": "step",
+      "name": "Apply fee rules",
+      "summary": "Free up to 2 days, then 25c/day capped at 1000c.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        43,
+        62
+      ]
+    },
+    {
+      "id": "step:view-late-fee:render-fee",
+      "type": "step",
+      "name": "Render fee",
+      "summary": "Format amount and render summary page.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        33,
+        65
+      ]
+    },
+    {
+      "id": "flow:pay-late-fee",
+      "type": "flow",
+      "name": "Pay Late Fee",
+      "summary": "Charge the late fee through the external payment gateway.",
+      "tags": [
+        "payments"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "POST /payments/<id>, /ui/payments/<id>/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:pay-late-fee:resolve-fee",
+      "type": "step",
+      "name": "Resolve fee",
+      "summary": "Ensure loan and fee exist.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        25,
+        29
+      ]
+    },
+    {
+      "id": "step:pay-late-fee:charge-gateway",
+      "type": "step",
+      "name": "Charge gateway",
+      "summary": "POST charge to the gateway without following redirects.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/gateway.py",
+      "lineRange": [
+        19,
+        35
+      ]
+    },
+    {
+      "id": "step:pay-late-fee:map-result",
+      "type": "step",
+      "name": "Map result",
+      "summary": "Translate outcome to 404, 502 or 200.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        15,
+        22
+      ]
+    },
+    {
+      "id": "step:pay-late-fee:render-status",
+      "type": "step",
+      "name": "Render status",
+      "summary": "Return text or payment-status partial.",
+      "tags": [
+        "fee-management"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        47,
+        93
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:loan-management",
+      "target": "flow:lend-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:validate-loan-form",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:lend-via-application",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:persist-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:respond",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:return-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:find-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:mark-returned-atomically",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:report-outcome",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:loan-management",
+      "target": "flow:browse-loans",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:query-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:serialize-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:render-page",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fee-management",
+      "target": "flow:view-late-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:find-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:compute-days-late",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:apply-fee-rules",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:view-late-fee",
+      "target": "step:view-late-fee:render-fee",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fee-management",
+      "target": "flow:pay-late-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:resolve-fee",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:charge-gateway",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:map-result",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:pay-late-fee",
+      "target": "step:pay-late-fee:render-status",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fee-management",
+      "target": "domain:loan-management",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Reads loans and uses the loans system clock to compute fees",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}

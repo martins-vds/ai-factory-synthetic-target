@@ -1,0 +1,83 @@
+::error::graph gate (target): slice fees-payments: data path from `endpoint=GET /fees/<str:loan_id>`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice fees-payments: data path from `endpoint=POST /payments/<str:loan_id>`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice fees-payments: data path from `endpoint=GET /ui/fees/<str:loan_id>/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice fees-payments: data path from `endpoint=POST /ui/payments/<str:loan_id>/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice loan-catalog: data path from `endpoint=GET /loans`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice loan-catalog: data path from `endpoint=/loans/<str:loan_id>`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice loan-circulation: data path from `endpoint=POST /loans`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice loan-circulation: data path from `endpoint=POST /loans/<str:loan_id>/return`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice loan-circulation: data path from `endpoint=POST /ui/loans/new/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::error::graph gate (target): slice loan-circulation: data path from `endpoint=POST /ui/loans/<str:loan_id>/return/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+::warning::graph gate (target): slice monthly-report: data path from `command=monthly_report`: no matching node (match a node's name, or the end of its file path or id) (not enforced: LL-05 still open)
+AFS-TOOL graph_gate.py exit=1
+# Graph gate: target
+
+- 147 nodes, 219 edges
+- Edges added by harness enrichers: 106
+
+## Required types (profile graph.require)
+
+- node `table`: 1
+- node `endpoint`: 13
+- edge `reads_from`: 7
+- edge `writes_to`: 1
+- edge `routes`: 28
+- edge `calls`: 44
+
+## Data paths (slice specs data_paths)
+
+- `fees-payments` **endpoint=GET /fees/<str:loan_id>**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `fees-payments` **endpoint=POST /payments/<str:loan_id>**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `fees-payments` **endpoint=GET /ui/fees/<str:loan_id>/**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `fees-payments` **endpoint=POST /ui/payments/<str:loan_id>/**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `loan-catalog` **endpoint=GET /loans**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `loan-catalog` **endpoint=/loans/<str:loan_id>**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `loan-catalog` **endpoint=/ui/loans/**: `/ui/loans/` →routes `loan_catalog` →reads_from `loans_loan`
+- `loan-catalog` **endpoint=/ui/loans/<str:loan_id>/**: `/ui/loans/<str:loan_id>/` →routes `loan_catalog_detail` →reads_from `loans_loan`
+- `loan-circulation` **endpoint=POST /loans**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `loan-circulation` **endpoint=POST /loans/<str:loan_id>/return**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `loan-circulation` **endpoint=POST /ui/loans/new/**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `loan-circulation` **endpoint=POST /ui/loans/<str:loan_id>/return/**: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- `monthly-report` **command=monthly_report**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-05 open)_
+
+## Entry points owned by a slice (ADR-0026)
+
+- 13 owned, 0 not owned
+
+## Entry points reaching data (for review)
+
+- 4 of 23 pages/endpoints
+  - no path: page `templates/fees/detail.html`
+  - no path: page `templates/fees/payment-status.html`
+  - no path: page `templates/loans/list.html`
+  - no path: page `templates/loans/detail.html`
+  - no path: page `templates/loans/loan-created.html`
+  - no path: page `templates/loans/return-status.html`
+  - no path: endpoint `GET /fees/<str:loan_id>`
+  - no path: endpoint `POST /payments/<str:loan_id>`
+  - no path: endpoint `GET /ui/fees/<str:loan_id>/`
+  - no path: endpoint `POST /ui/payments/<str:loan_id>/`
+  - no path: endpoint `GET /loans`
+  - no path: endpoint `POST /loans`
+  - no path: endpoint `POST /loans/<str:loan_id>/return`
+  - no path: endpoint `/loans/<str:loan_id>`
+  - no path: endpoint `GET /ui/loans/new/`
+  - no path: endpoint `POST /ui/loans/new/`
+  - no path: endpoint `POST /ui/loans/<str:loan_id>/return/`
+  - no path: page `templates/base.html`
+  - no path: page `templates/fees/payment-form.html`
+
+## Gate
+
+- FAIL: slice fees-payments: data path from `endpoint=GET /fees/<str:loan_id>`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice fees-payments: data path from `endpoint=POST /payments/<str:loan_id>`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice fees-payments: data path from `endpoint=GET /ui/fees/<str:loan_id>/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice fees-payments: data path from `endpoint=POST /ui/payments/<str:loan_id>/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice loan-catalog: data path from `endpoint=GET /loans`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice loan-catalog: data path from `endpoint=/loans/<str:loan_id>`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice loan-circulation: data path from `endpoint=POST /loans`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice loan-circulation: data path from `endpoint=POST /loans/<str:loan_id>/return`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice loan-circulation: data path from `endpoint=POST /ui/loans/new/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+- FAIL: slice loan-circulation: data path from `endpoint=POST /ui/loans/<str:loan_id>/return/`: **NO PATH** from 1 matching node(s) to a table/schema over calls/contains/inherits/publishes/reads_from/routes/triggers/writes_to (implements backwards)
+
+AFS-RESULT gate=graph side=target verdict=fail failures=10 entry_points=23 reaching_data=4 enriched_edges=106
