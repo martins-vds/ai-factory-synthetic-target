@@ -23,3 +23,4 @@ Written by `afs-run`, one row per gate run. Raw logs are not committed; the SHA-
 
 Acceptance rows above were imported unchanged from the verified artifact for [Actions run 42752283868, attempt 1](https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42752283868). Its result is archived at `.migration/evidence/acceptance-runs/42752283868-1.json`; artifact retention runs through 2026-12-10.
 | 2026-11-10T22:13:59+00:00 | setup-probe | 0 | 0.0 | `true` | `e3b0c44298fc1c14` |  |  |
+| 2026-11-10T22:14:39+00:00 | finish-check | 0 | 1.31 | `python .migration/harness/tools/afs-finish-check --ticket LC-ACCEPT --role afs-slice-coordinator` | `da3a3a1a351baf0d` |  | gate=finish-check ticket=LC-ACCEPT role=afs-slice-coordinator findings=0 |

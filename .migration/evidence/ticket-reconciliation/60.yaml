@@ -26,3 +26,8 @@ issues:
     pull_requests: [101]
     returns:
       - .migration/returns/LC-AUDIT.afs-auditor.yaml
+  - number: 108
+    disposition: completed
+    pull_requests: [109]
+    returns:
+      - .migration/returns/LC-ACCEPT.afs-slice-coordinator.yaml
