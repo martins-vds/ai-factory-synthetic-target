@@ -1,0 +1,10 @@
+role: afs-auditor
+ticket: LF-AUDIT
+issue: martins-vds/ai-factory-synthetic-target#114
+scope: fees-payments
+report: .migration/evidence/fees-payments/report.md
+capabilities_checked: 3
+gaps: []
+graph_inconsistencies: []
+verdict: complete
+acceptance_run: .migration/evidence/acceptance-runs/42912984554-1.json

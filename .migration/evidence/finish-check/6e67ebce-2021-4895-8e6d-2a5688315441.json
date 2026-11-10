@@ -1,0 +1,30 @@
+[
+  {
+    "at": "2026-11-10T22:54:11Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 36541,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LF-AUDIT",
+    "role": "afs-auditor",
+    "changed": [
+      ".migration/evidence/acceptance-runs/42912984554-1.json",
+      ".migration/evidence/fees-payments/report.md",
+      ".migration/evidence/runs/LF-AUDIT.md",
+      ".migration/returns/LF-AUDIT.afs-auditor.yaml"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
