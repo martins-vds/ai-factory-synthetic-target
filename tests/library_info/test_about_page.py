@@ -7,7 +7,12 @@ from playwright.sync_api import sync_playwright
 HTTP_GOLDEN_PATH = (
     Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
 )
-HTTP_GOLDENS = json.loads(HTTP_GOLDEN_PATH.read_text(encoding='utf-8'))
+HTTP_FIXTURE_PATH = Path(__file__).parent / 'fixtures/http.json'
+HTTP_GOLDENS = json.loads(
+    (HTTP_GOLDEN_PATH if HTTP_GOLDEN_PATH.exists() else HTTP_FIXTURE_PATH).read_text(
+        encoding='utf-8'
+    )
+)
 
 
 def test_about_endpoint_matches_characterized_response(client):
