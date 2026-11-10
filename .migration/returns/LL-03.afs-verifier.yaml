@@ -12,7 +12,10 @@ gates:
   regression: 0
 evidence_logs:
   - .migration/evidence/runs/LL-03.md
-findings: []
+findings:
+  - severity: minor
+    where: tests/fees/test_endpoints.py:127
+    what: "The UI unknown-loan test repeats API response assertions; kept separate because the routes have distinct behavior contracts."
 tests_added:
   - tests/fees/test_endpoints.py::test_fee_page_displays_the_characterized_capped_amount
   - tests/fees/test_endpoints.py::test_fee_page_payment_rejects_unknown_loan_without_calling_gateway
