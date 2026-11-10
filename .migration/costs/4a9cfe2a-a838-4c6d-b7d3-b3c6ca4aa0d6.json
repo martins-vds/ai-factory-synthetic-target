@@ -144,29 +144,29 @@
       ]
     },
     "event_types": {
-      "assistant.message": 66,
-      "assistant.turn_end": 42,
-      "assistant.turn_start": 42,
+      "assistant.message": 67,
+      "assistant.turn_end": 43,
+      "assistant.turn_start": 43,
       "external_tool.completed": 1,
       "external_tool.requested": 1,
-      "hook.end": 149,
-      "hook.start": 150,
+      "hook.end": 154,
+      "hook.start": 155,
       "permission.completed": 64,
       "permission.requested": 64,
-      "session.resume": 1,
+      "session.resume": 2,
       "session.start": 1,
-      "session.usage_checkpoint": 1,
+      "session.usage_checkpoint": 2,
       "skill.invoked": 7,
       "subagent.selected": 1,
-      "system.message": 2,
+      "system.message": 3,
       "tool.execution_complete": 78,
       "tool.execution_start": 78,
-      "user.message": 9
+      "user.message": 10
     },
-    "events": 757,
+    "events": 774,
     "usage_fields": []
   },
-  "ended_at": "2026-11-10T04:00:33.209Z",
+  "ended_at": "2026-11-10T04:03:42.618Z",
   "event": "sessionEnd",
   "harness_tools": [
     {
@@ -218,12 +218,12 @@
   "log": "/home/runner/.copilot/session-state/4a9cfe2a-a838-4c6d-b7d3-b3c6ca4aa0d6/events.jsonl",
   "models": {
     "gpt-6-luna": {
-      "output": 31151,
-      "requests": 66
+      "output": 31555,
+      "requests": 67
     }
   },
   "prompt_head": null,
-  "recorded_at": "2026-11-10T04:00:35+00:00",
+  "recorded_at": "2026-11-10T04:03:45+00:00",
   "schema": "afs-cost/1",
   "session_id": "4a9cfe2a-a838-4c6d-b7d3-b3c6ca4aa0d6",
   "shutdown_wait_s": "skipped: the coding agent writes session.shutdown after session hooks",
