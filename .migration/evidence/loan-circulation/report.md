@@ -1,6 +1,7 @@
 # Loan circulation — acceptance evidence
 
 - Tickets: LL-02 (#61), verifier #84 / PR #85 · Commit: `70fef8e7bc822092770b04b1bf9b5288e04d8bb6` · Date: 2026-11-10
+- Re-audit: LC-REAUDIT (#100), following PR #98; the archived acceptance run is unchanged. No gates or mutation were rerun.
 - Acceptance: [Actions run 42752283868, attempt 1](https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42752283868), successful on `main` at the audited commit. The verified artifact is `afs-acceptance-70fef8e7bc822092770b04b1bf9b5288e04d8bb6-42752283868-1`, retained until 2026-12-10. Its unchanged `result.json` is archived at `.migration/evidence/acceptance-runs/42752283868-1.json`; `afs-acceptance verify` returned `status=verified` for the expected commit, run, and attempt. The artifact journal rows are appended unchanged to `.migration/evidence/runs/LC-AUDIT.md`.
 
 ## Gates
@@ -26,11 +27,11 @@ The three circulation capabilities are tier-A characterized. LL-02's committed j
 
 | Ledger capability | Target components | Independent code and behavior evidence | Audit |
 |---|---|---|---|
-| `loan.lend` | Ledger names `src.loans.services.lend_loan`, `LoanForm`, `loan_collection`, `loan_lend_page`; `lend_loan` does not exist. The actual use case is `LoanApplication.lend`. | `tests/loans/test_catalog.py` exercises POST `/loans` with a 201 response, current lend date, 14-day due date, persisted values, delimiter escaping, missing/blank field errors, and browser/HTMX lending. | Behavior is present and connected end to end; the ledger target path is misplaced. Blank rejection and delimiter escaping follow approved rulings #39 and #43. |
-| `loan.return` | `loan_return`, `loan_return_page`, `urls` | Tests assert successful API return, exact 404 and 409 bodies/statuses, browser/HTMX return, unknown-loan handling, and repeat-return UI errors. | Present and connected end to end; repeat behavior follows approved ruling #41. |
-| `loan.return-date` | Ledger names `src.loans.repository.LoanRepository.mark_returned`, but `LoanRepository` is the protocol in `services.py`; the ORM adapter is `DjangoLoanRepository.mark_returned`. `LoanApplication.return_loan` is present. | Tests assert first return persists today's date and a repeated API or browser return preserves the original date. `tests/loans/test_services.py` exercises the application service with injected fake repository and clock. | Behavior is present and connected end to end; the ledger target path is misplaced. Approved ruling #41 is represented in behavior and ledger notes. |
+| `loan.lend` | Ledger now names `src.loans.forms.LoanForm`, `src.loans.services.LoanApplication.lend`, `src.loans.views.loan_collection`, and `src.loans.views.loan_lend_page`; each resolves to the current implementation. `loan_collection` delegates POST to `loan_lend`, which calls `LoanApplication.lend`. | `tests/loans/test_catalog.py` exercises POST `/loans` with a 201 response, current lend date, 14-day due date, persisted values, delimiter escaping, missing/blank field errors, and browser/HTMX lending. | Behavior is present and connected end to end; the previously misplaced ledger references were corrected by PR #98. Blank rejection and delimiter escaping follow approved rulings #39 and #43. |
+| `loan.return` | Ledger names `src.loans.views.loan_return`, `src.loans.views.loan_return_page`, and `src.loans.urls`; each resolves to its current implementation. | Tests assert successful API return, exact 404 and 409 bodies/statuses, browser/HTMX return, unknown-loan handling, and repeat-return UI errors. | Present and connected end to end; repeat behavior follows approved ruling #41. |
+| `loan.return-date` | Ledger now names `src.loans.repository.DjangoLoanRepository.mark_returned` and `src.loans.services.LoanApplication.return_loan`; both resolve to the current persistence adapter and application use case. | Tests assert first return persists today's date and a repeated API or browser return preserves the original date. `tests/loans/test_services.py` exercises the application service with injected fake repository and clock. | Behavior is present and connected end to end; the previously misplaced ledger references were corrected by PR #98. Approved ruling #41 is represented in behavior and ledger notes. |
 
-Two target-component references in the ledger do not resolve to the implementation's current names after re-architecture. The behavior and idiomatic port/adapter implementations exist, so these are `misplaced` ledger gaps, not missing behaviors. They require a follow-up ticket and ledger correction; the auditor's read-only scope did not permit creating that ticket.
+The re-audit confirmed all three circulation ledger entries name their current implementation components. The two `misplaced` references from LC-AUDIT were corrected in PR #98, and migration validation passes with the target-component existence check. There are no remaining ledger gaps for this slice.
 
 ## Port/adapter design
 
@@ -40,7 +41,7 @@ Two target-component references in the ledger do not resolve to the implementati
 
 The verified target graph records the return API path through `loan_return` → `LoanApplication.return_loan` → `LoanRepository.mark_returned` → `loans_loan`, and the browser lending and return paths through the expected application ports and persistence adapter. All four target anchors in `.migration/slices/loan-circulation.yaml` match routes.
 
-One target-graph path is not faithful to the request branch: for `POST /loans`, `graph-check.md` reports `loan_collection` → `LoanApplication.list_loans_text` → `LoanRepository.all` (a read). The inspected view branches POST to `loan_lend`, which calls `LoanApplication.lend`; API behavior tests exercise that route and assert the resulting persisted loan. This is a graph-path inconsistency, not a missing or broken capability; it is reported for coordinator follow-up.
+The unchanged accepted target graph still has one path that is not faithful to the request branch: for `POST /loans`, `graph-check.md` reports `loan_collection` → `LoanApplication.list_loans_text` → `LoanRepository.all` (a read). The inspected view branches POST to `loan_lend`, which calls `LoanApplication.lend`; API behavior tests exercise that route and assert the resulting persisted loan. This remains a graph-path inconsistency, not a missing or broken capability, and is reported for coordinator follow-up.
 
 ## Surviving mutants
 
@@ -48,4 +49,4 @@ The full run reports 11 survivors: six URL literals, four HTTP-method decorators
 
 ## Human check
 
-The independent auditor reviewed all three ledger capabilities and reports the two misplaced target references above. The operator's side-by-side flow sign-off is the coordinator's subsequent step; it is not represented as a gap in this verdict.
+The independent re-audit reviewed all three ledger capabilities. Their target references now resolve, with no ledger gaps; the graph-path inconsistency remains for coordinator follow-up. The operator's side-by-side flow sign-off is the coordinator's subsequent step and is not represented as a gap in this verdict.
