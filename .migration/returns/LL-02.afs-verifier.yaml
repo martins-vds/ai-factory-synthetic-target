@@ -15,7 +15,7 @@ evidence_logs:
 findings:
   - severity: minor
     where: .migration/evidence/mutants/LL-02.md:5
-    what: "The prior ports finding is resolved: LoanApplication depends only on Clock and LoanRepository ports with adapters wired once and in-memory-fake unit tests; 11 route, method-guard, and LoanForm.Meta.model mutants survive the known selector bug, but focused and full behavior tests pass, including the first verifier's four tests."
+    what: "The ports finding is resolved: LoanApplication depends only on application-owned Clock and LoanRepository ports, with adapters wired once and in-memory-fake unit tests. The 11 route, method-guard, and LoanForm.Meta.model survivors reflect the known module-level harness test-selection bug; focused and full behavior tests pass, including the first verifier's four tests."
 tests_added:
   - tests/loans/test_catalog.py::test_lend_endpoint_rejects_missing_or_blank_fields
   - tests/loans/test_catalog.py::test_browser_lending_page_shows_errors_for_blank_fields
