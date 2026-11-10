@@ -1,0 +1,7 @@
+side: target
+scope: full
+target_commit: 8f9a11640eef9801378f3db53a76903363c5e5b5
+tree.src: 785e3232b0ffcce762b6bab45340887a2b7936d0
+tree.templates: ae3ec611a9f633a95e12f9a34bc318adb53813c8
+understand_anything: 4e6d3299017a7432da15957874992837a315c5b4
+run: https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/42912984554

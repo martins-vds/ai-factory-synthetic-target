@@ -1,0 +1,89 @@
+> target_commit: 8f9a11640eef9801378f3db53a76903363c5e5b5 tree.src: 785e3232b0ffcce762b6bab45340887a2b7936d0 tree.templates: ae3ec611a9f633a95e12f9a34bc318adb53813c8 
+
+# Graph gate: target
+
+- 149 nodes, 257 edges
+- Edges added by harness enrichers: 148
+
+## Required types (profile graph.require)
+
+- node `table`: 1
+- node `endpoint`: 13
+- edge `reads_from`: 7
+- edge `writes_to`: 1
+- edge `routes`: 28
+- edge `calls`: 60
+
+## Data paths (slice specs data_paths)
+
+- `fees-payments` **endpoint=GET /fees/<str:loan_id>**: `GET /fees/<str:loan_id>` →routes `fee_detail` →calls `_fee_or_404` →calls `FeeApplication.fee_for` →calls `DjangoFeeLoanRepository.find` →reads_from `loans_loan`
+- `fees-payments` **endpoint=POST /payments/<str:loan_id>**: `POST /payments/<str:loan_id>` →routes `payment` →calls `_gateway_result` →calls `FeeApplication.pay` →calls `DjangoFeeLoanRepository.find` →reads_from `loans_loan`
+- `fees-payments` **endpoint=GET /ui/fees/<str:loan_id>/**: `GET /ui/fees/<str:loan_id>/` →routes `fee_page` →calls `_fee_or_404` →calls `FeeApplication.fee_for` →calls `DjangoFeeLoanRepository.find` →reads_from `loans_loan`
+- `fees-payments` **endpoint=POST /ui/payments/<str:loan_id>/**: `POST /ui/payments/<str:loan_id>/` →routes `payment_page` →calls `FeeApplication.fee_for` →calls `DjangoFeeLoanRepository.find` →reads_from `loans_loan`
+- `loan-catalog` **endpoint=GET /loans**: `GET /loans` →routes `loan_collection` →calls `LoanApplication.list_loans_text` →calls `DjangoLoanRepository.all` →reads_from `loans_loan`
+- `loan-catalog` **endpoint=/loans/<str:loan_id>**: `/loans/<str:loan_id>` →routes `loan_detail` →calls `LoanApplication.get_loan_text` →calls `DjangoLoanRepository.find` →reads_from `loans_loan`
+- `loan-catalog` **endpoint=/ui/loans/**: `/ui/loans/` →routes `loan_catalog` →reads_from `loans_loan`
+- `loan-catalog` **endpoint=/ui/loans/<str:loan_id>/**: `/ui/loans/<str:loan_id>/` →routes `loan_catalog_detail` →reads_from `loans_loan`
+- `loan-circulation` **endpoint=POST /loans**: `POST /loans` →routes `loan_collection` →calls `LoanApplication.list_loans_text` →calls `DjangoLoanRepository.all` →reads_from `loans_loan`
+- `loan-circulation` **endpoint=POST /loans/<str:loan_id>/return**: `POST /loans/<str:loan_id>/return` →routes `loan_return` →calls `LoanApplication.return_loan` →calls `DjangoLoanRepository.mark_returned` →reads_from `loans_loan`
+- `loan-circulation` **endpoint=POST /ui/loans/new/**: `POST /ui/loans/new/` →routes `loan_lend_page` →calls `LoanApplication.lend` →calls `DjangoLoanRepository.create` →writes_to `loans_loan`
+- `loan-circulation` **endpoint=POST /ui/loans/<str:loan_id>/return/**: `POST /ui/loans/<str:loan_id>/return/` →routes `loan_return_page` →calls `LoanApplication.return_loan` →calls `DjangoLoanRepository.mark_returned` →reads_from `loans_loan`
+- `monthly-report` **command=monthly_report**: no matching node (match a node's name, or the end of its file path or id) _(not built yet: LL-05 open)_
+
+## Entry points owned by a slice (ADR-0026)
+
+- 13 owned, 0 not owned
+
+## Entry points reaching data (for review)
+
+- 18 of 23 pages/endpoints
+  - no path: page `templates/fees/payment-status.html`
+  - no path: page `templates/loans/list.html`
+  - no path: page `templates/loans/loan-created.html`
+  - no path: page `templates/loans/return-status.html`
+  - no path: page `templates/base.html`
+
+## Gate
+
+- PASS
+
+AFS-RESULT gate=graph side=target verdict=pass failures=0 entry_points=23 reaching_data=18 enriched_edges=148
+
+# Graph check: analyze
+
+- Commit: `8f9a11640eef9801378f3db53a76903363c5e5b5` · analyzed 2026-11-10T22:18:48.423264Z
+- Languages: python, html · frameworks: Django
+- 149 nodes, 257 edges, 5 layers
+
+## Required node types
+
+| Type | Count | Needed for |
+|---|---|---|
+| `endpoint` | 13 | entry points for slices (HTTP) |
+| `screen` | **0** | UI screens (ledger kind: ui) |
+| `page` | 10 | UI pages (alternative to screen) |
+| `table` | 1 | data capabilities and data-migration slices |
+| `service` | **0** | service boundaries |
+| `domain` | 2 | bounded contexts |
+| `flow` | 5 | business flows → slice anchors |
+| `step` | 17 | flow steps → capabilities |
+
+## Required edge types
+
+| Type | Count | Needed for |
+|---|---|---|
+| `calls` | 60 | dependency resolution |
+| `reads_from` | 7 | data access (read) |
+| `writes_to` | 1 | data access (write) |
+| `routes` | 28 | UI/HTTP routing |
+| `tested_by` | **0** | legacy test inventory |
+| `contains_flow` | 5 | domain → flow |
+| `flow_step` | 17 | flow → step |
+
+## All node types
+
+`file` 31, `method` 28, `function` 22, `class` 20, `step` 17, `endpoint` 13, `page` 10, `flow` 5, `domain` 2, `table` 1
+
+## All edge types
+
+`contains` 74, `calls` 60, `routes` 28, `depends_on` 25, `exports` 21, `flow_step` 17, `implements` 16, `reads_from` 7, `contains_flow` 5, `related` 1, `defines_schema` 1, `writes_to` 1, `cross_domain` 1

@@ -1,0 +1,10 @@
+AFS-TOOL afs-mutation exit=0
+afs-mutation: ok score=0.975 threshold=0.8 killed=236 survived=6 skipped=0 files=15 jobs=4 base=all
+AFS-RESULT gate=mutation score=0.975 threshold=0.8 killed=236 survived=6 files=15 base=all
+  tests: coverage; runner for src/core/database.py: /opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/afs-mutation --pytest -q -x -p no:cacheprovider --no-cov
+  survived: src/loans/views.py:12 Mutant #1
+  survived: src/loans/views.py:12 Mutant #2
+  survived: src/loans/urls.py:9 Mutant #27
+  survived: src/fees/services.py:24 Mutant #1
+  survived: src/fees/services.py:31 Mutant #3
+  survived: src/loans/forms.py:8 Mutant #44
