@@ -1,0 +1,18 @@
+role: afs-migrator
+ticket: LL-04
+issue: martins-vds/ai-factory-synthetic-target#65
+pr: martins-vds/ai-factory-synthetic-target#103
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 7.0
+  mutation_changed: 1.0
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-04.md
+ledger_updated:
+  - .migration/ledger/about.page.yaml
+quirk_tickets: []
+new_tickets: []
+handoff: none

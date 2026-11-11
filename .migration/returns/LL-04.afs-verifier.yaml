@@ -1,0 +1,21 @@
+role: afs-verifier
+ticket: LL-04
+issue: martins-vds/ai-factory-synthetic-target#113
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/115
+verdict: pass
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 7.0
+  mutation_changed: 1.0
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-04.md
+findings:
+  - severity: minor
+    where: tests/library_info/test_about_page.py:7-15
+    what: "Possible duplication: HTTP golden source/fallback loading is also implemented in tests/loans/test_catalog.py; no behavior impact."
+tests_added: []
+ledger_issues: []
+quirk_tickets: []
