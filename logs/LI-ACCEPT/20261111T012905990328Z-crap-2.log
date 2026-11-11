@@ -1,0 +1,32 @@
+AFS-TOOL crap.py exit=0
+# CRAP risk map
+
+- Methods: 40 · coverage input: yes
+- Above 30: **0** (0.0%)
+
+## Top 20
+
+| CRAP | CCN | Cov | Method | File:lines |
+|---:|---:|---:|---|---|
+| 7 | 7 | 100% | `loan_lend_page( request )` | src/loans/views.py:40-52 |
+| 6 | 6 | 100% | `charge( self , loan_id )` | src/fees/gateway.py:20-35 |
+| 4 | 4 | 100% | `loan_lend( request )` | src/loans/views.py:27-36 |
+| 4 | 4 | 100% | `loan_return_page( request , loan_id )` | src/loans/views.py:73-91 |
+| 4 | 4 | 100% | `fee_for( self , loan_id : str )` | src/fees/services.py:49-57 |
+| 4 | 4 | 100% | `_gateway_result( loan_id )` | src/fees/views.py:15-22 |
+| 3 | 3 | 100% | `mark_returned( self , loan_id , returned_on )` | src/loans/repository.py:21-28 |
+| 3 | 3 | 100% | `loan_return( request , loan_id )` | src/loans/views.py:63-69 |
+| 3 | 3 | 100% | `payment_page( request , loan_id )` | src/fees/views.py:68-93 |
+| 2 | 2 | 80% | `fee_page( request , loan_id )` | src/fees/views.py:55-64 |
+| 2 | 2 | 100% | `list_loans_text( self )` | src/loans/services.py:49-50 |
+| 2 | 2 | 100% | `get_loan_text( self , loan_id : str )` | src/loans/services.py:52-54 |
+| 2 | 2 | 100% | `loan_line( loan )` | src/loans/services.py:57-70 |
+| 2 | 2 | 100% | `loan_collection( request )` | src/loans/views.py:21-24 |
+| 2 | 2 | 100% | `loan_detail( request , loan_id )` | src/loans/views.py:55-59 |
+| 2 | 2 | 100% | `pay( self , loan_id : str )` | src/fees/services.py:59-62 |
+| 2 | 2 | 100% | `_fee_or_404( loan_id )` | src/fees/views.py:25-29 |
+| 2 | 2 | 100% | `fee_detail( request , loan_id )` | src/fees/views.py:33-43 |
+| 2 | 2 | 100% | `payment( request , loan_id )` | src/fees/views.py:47-51 |
+| 1 | 1 | 100% | `seed_loans( apps , schema_editor )` | src/loans/migrations/0001_initial.py:6-31 |
+
+AFS-RESULT gate=crap max=7.0 threshold=30 over=0 methods=40
