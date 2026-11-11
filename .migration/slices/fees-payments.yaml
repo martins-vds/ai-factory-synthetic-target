@@ -3,8 +3,9 @@ data_paths:
   source:
     - endpoint=GET /fees/{id}
     - endpoint=POST /payments/{id}
+  # Target anchors name LL-03's Django routes exactly: each view declares one HTTP method.
   target:
-    - endpoint=GET /fees/{id}
-    - endpoint=POST /payments/{id}
-    - endpoint=GET /ui/fees/{id}/
-    - endpoint=POST /ui/payments/{id}/
+    - endpoint=GET /fees/<str:loan_id>
+    - endpoint=POST /payments/<str:loan_id>
+    - endpoint=GET /ui/fees/<str:loan_id>/
+    - endpoint=POST /ui/payments/<str:loan_id>/

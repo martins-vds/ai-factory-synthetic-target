@@ -9,7 +9,7 @@ source:
 boundary: "GET /loans/{id} returns the formatted loan line and newline with HTTP 200, or HTTP 404 with `no such loan` and a newline when the id is absent."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 target:
-  components: [src.loans.views.loan_detail, src.loans.services.get_loan_text]
+  components: [src.loans.views.loan_detail, src.loans.services.LoanApplication.get_loan_text]
 status: migrated
 verification: differential
 characterization_tier: A

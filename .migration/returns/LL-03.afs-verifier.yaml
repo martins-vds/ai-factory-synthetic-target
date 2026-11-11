@@ -1,0 +1,27 @@
+role: afs-verifier
+ticket: LL-03
+issue: martins-vds/ai-factory-synthetic-target#96
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/97
+verdict: pass
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 7.0
+  mutation_changed: 0.914
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-03.md
+findings:
+  - severity: minor
+    where: tests/fees/test_endpoints.py:127
+    what: "The UI unknown-loan test repeats API response assertions; kept separate because the routes have distinct behavior contracts."
+tests_added:
+  - tests/fees/test_endpoints.py::test_fee_page_displays_the_characterized_capped_amount
+  - tests/fees/test_endpoints.py::test_fee_page_payment_rejects_unknown_loan_without_calling_gateway
+  - tests/fees/test_endpoints.py::test_fee_page_payment_without_htmx_returns_updated_fee_page
+  - tests/fees/test_endpoints.py::test_gateway_uses_the_characterized_default_url_when_unconfigured
+ledger_issues: []
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#40
+  - martins-vds/ai-factory-synthetic-target#42
