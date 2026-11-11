@@ -31,5 +31,5 @@ evidence:
 notes: "DRILL (operator-requested, 2026-11-10): exercises the review-only verification path; never merge. The real entry on main uses differential verification."
 approval:
   by: martins-vds
-  ref: https://github.com/martins-vds/ai-factory-synthetic-target/pull/119#pullrequestreview-5852817157
-  reason: "Operator-requested drill of the review-only path; the operator's review on PR #119 reads 'Approved' (GitHub records it as a comment because the operator authored the PR)."
+  ref: martins-vds/ai-factory-synthetic-target#119
+  reason: "Operator-requested drill of the review-only path; the operator's review on PR #119 reads 'Approved' (review 5852817157; GitHub records it as a comment because the operator authored the PR)."
