@@ -9,8 +9,15 @@ class LoanRecord(Protocol):
     id: str
     member: str
     due_on: date
-    lent_on: date
     returned_on: date | None
+
+
+class FeeResult(Protocol):
+    amount_cents: int
+
+
+class FeeCalculator(Protocol):
+    def fee_for(self, loan_id: str) -> FeeResult | None: ...
 
 
 class MonthlyReportRepository(Protocol):
@@ -33,8 +40,9 @@ class _MemberTotals:
 
 
 class MonthlyReportApplication:
-    def __init__(self, loans: MonthlyReportRepository):
+    def __init__(self, loans: MonthlyReportRepository, fees: FeeCalculator):
         self.loans = loans
+        self.fees = fees
 
     def for_previous_month(self, as_of: date) -> list[MemberMonthlyReport]:
         end = as_of.replace(day=1)
@@ -47,10 +55,9 @@ class MonthlyReportApplication:
             if loan.returned_on is not None and loan.returned_on > loan.due_on:
                 member_totals.late_returns += 1
 
-            end_date = loan.returned_on if loan.returned_on is not None else as_of
-            days_late = max(0, (end_date - loan.due_on).days)
-            if days_late > 2:
-                member_totals.total_late_fees_cents += min(1000, days_late * 25)
+            fee = self.fees.fee_for(loan.id)
+            if fee is not None:
+                member_totals.total_late_fees_cents += fee.amount_cents
 
         return sorted(
             (
