@@ -1,4 +1,5 @@
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, timedelta
 from typing import Protocol
@@ -13,7 +14,7 @@ class LoanRecord(Protocol):
 
 
 class MonthlyReportRepository(Protocol):
-    def started_between(self, start: date, end: date) -> list[LoanRecord]: ...
+    def started_between(self, start: date, end: date) -> Iterable[LoanRecord]: ...
 
 
 @dataclass(frozen=True)

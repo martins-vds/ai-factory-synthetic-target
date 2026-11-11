@@ -14,9 +14,7 @@ class Command(BaseCommand):
         reports = monthly_report.for_previous_month(timezone.localdate())
         output = StringIO(newline='')
         writer = csv.writer(output, lineterminator='\n')
-        writer.writerow(
-            ['member_id', 'loans_started', 'late_returns', 'total_late_fees_cents']
-        )
+        writer.writerow(['member_id', 'loans_started', 'late_returns', 'total_late_fees_cents'])
         for report in reports:
             writer.writerow(
                 [
