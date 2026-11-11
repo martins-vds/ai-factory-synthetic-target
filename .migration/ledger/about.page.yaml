@@ -29,3 +29,7 @@ evidence:
   - tests/library_info/test_about_page.py::test_about_endpoint_matches_characterized_response
   - tests/library_info/test_about_page.py::test_modern_about_page_shows_library_information_in_browser
 notes: "DRILL (operator-requested, 2026-11-10): exercises the review-only verification path; never merge. The real entry on main uses differential verification."
+approval:
+  by: martins-vds
+  ref: https://github.com/martins-vds/ai-factory-synthetic-target/pull/119#pullrequestreview-5852817157
+  reason: "Operator-requested drill of the review-only path; the operator's review on PR #119 reads 'Approved' (GitHub records it as a comment because the operator authored the PR)."
