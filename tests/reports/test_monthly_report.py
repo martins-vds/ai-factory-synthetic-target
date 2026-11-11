@@ -49,6 +49,27 @@ def test_monthly_report_summarizes_previous_month_loans_in_specified_order(monke
                 returned_on=date(2026, 2, 20),
             ),
             Loan(
+                id='L-zeta-4',
+                member='zeta',
+                isbn='8',
+                lent_on=date(2026, 2, 6),
+                returned_on=date(2026, 2, 22),
+            ),
+            Loan(
+                id='L-zeta-5',
+                member='zeta',
+                isbn='9',
+                lent_on=date(2026, 2, 7),
+                returned_on=date(2026, 2, 24),
+            ),
+            Loan(
+                id='L-max',
+                member='max',
+                isbn='10',
+                lent_on=date(2026, 2, 1),
+                returned_on=date(2026, 3, 30),
+            ),
+            Loan(
                 id='L-before',
                 member='before',
                 isbn='5',
@@ -72,9 +93,10 @@ def test_monthly_report_summarizes_previous_month_loans_in_specified_order(monke
 
     assert list(csv.reader(StringIO(output.getvalue()))) == [
         ['member_id', 'loans_started', 'late_returns', 'total_late_fees_cents'],
+        ['max', '1', '1', '1000'],
         ['alpha', '1', '1', '250'],
         ['beta', '1', '1', '250'],
-        ['zeta', '3', '2', '75'],
+        ['zeta', '5', '4', '150'],
     ]
 
 
