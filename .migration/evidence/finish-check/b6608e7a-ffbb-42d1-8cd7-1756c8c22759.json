@@ -1,0 +1,30 @@
+[
+  {
+    "at": "2026-11-11T01:58:32Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 36574,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LI-AUDIT",
+    "role": "afs-auditor",
+    "changed": [
+      ".migration/evidence/acceptance-runs/42938753426-1.json",
+      ".migration/evidence/library-info/report.md",
+      ".migration/evidence/runs/LI-AUDIT.md",
+      ".migration/returns/LI-AUDIT.afs-auditor.yaml"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
