@@ -67,7 +67,6 @@ def test_monthly_report_summarizes_previous_month_loans_in_specified_order(monke
                 member='max',
                 isbn='10',
                 lent_on=date(2026, 2, 1),
-                returned_on=date(2026, 3, 30),
             ),
             Loan(
                 id='L-before',
@@ -93,7 +92,7 @@ def test_monthly_report_summarizes_previous_month_loans_in_specified_order(monke
 
     assert list(csv.reader(StringIO(output.getvalue()))) == [
         ['member_id', 'loans_started', 'late_returns', 'total_late_fees_cents'],
-        ['max', '1', '1', '1000'],
+        ['max', '1', '0', '350'],
         ['alpha', '1', '1', '250'],
         ['beta', '1', '1', '250'],
         ['zeta', '5', '4', '150'],
