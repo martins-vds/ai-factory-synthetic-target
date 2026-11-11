@@ -1,0 +1,10 @@
+role: afs-auditor
+ticket: LI-AUDIT
+issue: martins-vds/ai-factory-synthetic-target#122
+scope: library-info
+report: .migration/evidence/library-info/report.md
+capabilities_checked: 1
+gaps: []
+graph_inconsistencies: []
+verdict: complete
+acceptance_run: .migration/evidence/acceptance-runs/42938753426-1.json
