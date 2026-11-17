@@ -1,5 +1,10 @@
 import pytest
+from django.contrib.staticfiles import finders
 from playwright.sync_api import sync_playwright
+
+
+def test_project_stylesheet_is_a_static_file():
+    assert finders.find('css/tailwind.css') is not None
 
 
 @pytest.mark.django_db
