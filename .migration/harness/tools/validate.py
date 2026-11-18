@@ -39,6 +39,9 @@ from jsonschema import Draft202012Validator, FormatChecker
 HERE = pathlib.Path(__file__).resolve().parent
 PR_ATTRIBUTION_RULE_V1 = "PR_ATTRIBUTION_RULE_V1"  # Stable history marker for rollout compatibility.
 VERIFIER_VERDICT_RULE_V1 = "VERIFIER_VERDICT_RULE_V1"  # Phase 3e: returns committed before this rule are exempt.
+VERIFIER_RULES_RULE_V1 = "VERIFIER_RULES_RULE_V1"  # Phase 3e (rules checked): earlier returns are exempt.
+LEDGER_RULES_RULE_V1 = "LEDGER_RULES_RULE_V1"  # Phase 3e (rules in the ledger): earlier returns are exempt.
+MIGRATOR_SELF_VERIFY_RULE_V1 = "MIGRATOR_SELF_VERIFY_RULE_V1"  # ADR-0045: earlier Migrator returns are exempt.
 
 
 def load_schema(schemas, name):
@@ -162,6 +165,8 @@ def check_verifier_return(folder, path, doc, errors):
     - `blocked`: only when a gate couldn't run or finish; `blocked_reason` is `<gate>: <why>`.
     - A blocker or major finding has `evidence`: a test id from `tests_added` (a test that shows the defect), or
       `run: <name>`, a failing run of that name in the ticket's journal. Without evidence, it is `minor`.
+    - `inherited` (defects from earlier tickets this work depends on, operator ruling 2026-11-17) is reported
+      apart: each entry has `where`, `what` and `origin`, and none counts toward the verdict.
     Eval b3c: verdicts contradicted findings (LL-04 r1), and unproven serious findings failed clean work."""
     if doc.get("role") != "afs-verifier" or doc.get("handoff") not in (None, "", "none"):
         return
@@ -181,6 +186,11 @@ def check_verifier_return(folder, path, doc, errors):
             errors.append(f"{path}: verdict blocked needs `blocked_reason: '<gate>: <why>'` naming the gate that "
                           f"couldn't run or finish ({', '.join(VERIFIER_GATES)}). A defect you found is a "
                           "finding with verdict changes-required, not blocked")
+    inherited = doc.get("inherited")
+    if inherited is not None and (not isinstance(inherited, list) or not all(
+            isinstance(i, dict) and i.get("where") and i.get("what") and i.get("origin") for i in inherited)):
+        errors.append(f"{path}: `inherited` lists defects from earlier tickets, each with `where`, `what` and "
+                      "`origin` (the ticket that wrote it, or 'unknown')")
     if serious:
         tests = {str(t) for t in doc.get("tests_added") or []}
         journal = folder / "evidence" / "runs" / f"{doc.get('ticket')}.md"
@@ -199,6 +209,122 @@ def check_verifier_return(folder, path, doc, errors):
                 errors.append(f"{path}: {f.get('severity')} finding at {f.get('where')} {problem}. Back it with a "
                               "test you added that shows the defect (list it in tests_added and cite its id), or "
                               "`run: <name>` of a failing afs-run in the journal; otherwise it is minor")
+
+
+def ticket_capabilities(folder, ticket):
+    """The capabilities the plan gives a ticket, or None when no plan lists it."""
+    for plan in sorted((folder / "plan").glob("*.tickets.yaml")):
+        try:
+            data = load_yaml(plan) or {}
+        except Exception:  # noqa: BLE001 (a broken plan is check_plan's error to report)
+            continue
+        for t in data.get("tickets") or []:
+            if isinstance(t, dict) and t.get("id") == ticket:
+                return list(t.get("capabilities") or [])
+    return None
+
+
+def test_exists(repo, test_id):
+    """`path::name` (parameters and classes allowed) names a test function in a file of the repository."""
+    file, _, rest = str(test_id).partition("::")
+    name = rest.split("::")[-1].split("[")[0]
+    path = repo / file
+    if not file or not name or not path.is_file():
+        return False
+    return re.search(rf"^\s*(async\s+)?def\s+{re.escape(name)}\s*\(", path.read_text(encoding="utf-8"),
+                     re.M) is not None
+
+
+def check_verifier_rules(folder, path, doc, errors):
+    """Phase 3e: the Verifier proves where each business rule is enforced (eval v3h: BK-05F's eligibility rule
+    sat in the view, and no run wrote the use-case test that shows it). ADR-0045: the Migrator, which now
+    verifies its own work, proves it the same way, and a rule its use case doesn't enforce is its to fix.
+
+    - `rules` lists, for each capability the plan gives the ticket, the business rules it carries: `capability`,
+      `rule`, `use_case` (what the test calls), `test` (a test that calls the use case directly, with no view or
+      request, using input the rule must refuse) and `enforced` (true when the use case refuses it).
+    - A capability with no business rule (a static page) goes in `no_rules: {<capability>: <why>}`.
+    - `enforced: false` is a defect in the rule's layer: a blocker or major finding cites that test as evidence.
+    - Each test must exist in the repository."""
+    if doc.get("role") not in ("afs-verifier", "afs-migrator") or doc.get("handoff") not in (None, "", "none") \
+            or doc.get("verdict") == "blocked":
+        return
+    migrator = doc["role"] == "afs-migrator"
+    caps = ticket_capabilities(folder, doc.get("ticket"))
+    if caps is None:
+        return
+    rules = doc.get("rules")
+    no_rules = doc.get("no_rules") or {}
+    if not isinstance(rules, list) or not isinstance(no_rules, dict):
+        errors.append(f"{path}: list `rules` (each business rule the ticket's capabilities carry, with the use-case "
+                      "test that shows where it's enforced) and `no_rules: {<capability>: <why>}` for a capability "
+                      "with none")
+        return
+    repo = folder.resolve().parent
+    covered = set(no_rules)
+    serious_evidence = {str(f.get("evidence") or "").strip() for f in doc.get("findings") or []
+                        if isinstance(f, dict) and f.get("severity") in ("blocker", "major")}
+    for i, r in enumerate(rules):
+        if not isinstance(r, dict) or not all(r.get(k) for k in ("capability", "rule", "use_case", "test")) \
+                or not isinstance(r.get("enforced"), bool):
+            errors.append(f"{path}: rules[{i}] needs `capability`, `rule`, `use_case`, `test` and `enforced` "
+                          "(true or false)")
+            continue
+        covered.add(r["capability"])
+        if not test_exists(repo, r["test"]):
+            errors.append(f"{path}: rules[{i}] cites test '{r['test']}', which isn't in the repository; write the "
+                          "test that calls the use case directly")
+        if r["enforced"] is False and migrator:
+            errors.append(f"{path}: rules[{i}] ('{r['rule']}') isn't enforced by {r['use_case']}: move the rule into "
+                          "the use case or domain (ADR-0045: no Verifier follows you), keep the test, and set "
+                          "`enforced: true`")
+        elif r["enforced"] is False and str(r["test"]) not in serious_evidence:
+            errors.append(f"{path}: rules[{i}] ('{r['rule']}') isn't enforced by {r['use_case']}: report it as a "
+                          f"blocker or major finding with `evidence: {r['test']}`")
+    for cap in caps:
+        listed = {str(r.get("ledger_rule")) for r in rules if isinstance(r, dict) and r.get("capability") == cap}
+        for lr in ledger_rules(folder, cap):
+            if lr["id"] not in listed:
+                errors.append(f"{path}: the ledger lists rule '{lr['id']}' for {cap} ({lr['rule']}); add it to `rules` "
+                              f"with `ledger_rule: {lr['id']}` and a use-case test, enforced or not")
+    missing = [c for c in caps if c not in covered]
+    if missing:
+        errors.append(f"{path}: no rule checked for capability {', '.join(missing)}: add its business rules to "
+                      "`rules`, each with a use-case test, or say why it has none under `no_rules`")
+
+
+def ledger_rules(folder, capability):
+    """The `rules` a capability's ledger entry records ([] when none, or when the entry is missing)."""
+    entry = folder / "ledger" / f"{capability}.yaml"
+    try:
+        data = (load_yaml(entry) or {}) if entry.is_file() else {}
+    except Exception:  # noqa: BLE001 (a broken entry is the schema check's error to report)
+        return []
+    return [r for r in data.get("rules") or [] if isinstance(r, dict) and r.get("id")]
+
+
+def check_migrator_ledger_rules(folder, path, doc, errors):
+    """Phase 3e: the Migrator records each capability's business rules in its ledger entry, so the Verifier's
+    rule check has a list to cover that it didn't choose itself (eval v3i: BK-05F's Verifiers listed only rules
+    the use case enforced; the misplaced one was in no plan or ledger).
+
+    Every capability the plan gives a finished Migrator ticket has a ledger entry with `rules` (each `id` and
+    `rule`) or `no_rules: <why>`."""
+    if doc.get("role") != "afs-migrator" or doc.get("handoff") not in (None, "", "none"):
+        return
+    caps = ticket_capabilities(folder, doc.get("ticket"))
+    for cap in caps or []:
+        entry = folder / "ledger" / f"{cap}.yaml"
+        try:
+            data = (load_yaml(entry) or {}) if entry.is_file() else None
+        except Exception:  # noqa: BLE001
+            continue
+        if data is None:
+            continue                                  # a missing entry is check_return_evidence's to report
+        if not data.get("rules") and not data.get("no_rules"):
+            errors.append(f"{path}: ledger entry {cap} records no business rules: list each rule the capability "
+                          "carries under `rules` (`id`, `rule`, `source`), wherever your code enforces it, or say "
+                          "why it has none under `no_rules`")
 
 
 def cell(text, limit=400):
@@ -447,11 +573,12 @@ def check_thresholds(path, profile, errors):
 
 
 def check_layering_gate(path, profile, errors):
-    """A profile with layer contracts runs them: `layering` without check_layers.py in gates.idiom checks nothing."""
-    if profile.get("layering") and not any("check_layers.py" in str(cmd)
-                                            for cmd in (profile.get("gates") or {}).get("idiom") or []):
-        errors.append(f"{path}: `layering` is set but gates.idiom doesn't run it; add "
-                      "`python .migration/harness/tools/check_layers.py`")
+    """A profile with layer contracts or UI checks runs them: without the tool in gates.idiom, they check nothing."""
+    idiom = (profile.get("gates") or {}).get("idiom") or []
+    for key, tool in (("layering", "check_layers.py"), ("ui_checks", "check_ui.py")):
+        if profile.get(key) and not any(tool in str(cmd) for cmd in idiom):
+            errors.append(f"{path}: `{key}` is set but gates.idiom doesn't run it; add "
+                          f"`python .migration/harness/tools/{tool}`")
 
 
 def main():
@@ -512,6 +639,11 @@ def main():
                 check_tier_attempt(path, doc, errors)
                 if not predates_rule(path, folder, VERIFIER_VERDICT_RULE_V1):
                     check_verifier_return(folder, path, doc, errors)
+                marker = MIGRATOR_SELF_VERIFY_RULE_V1 if doc.get("role") == "afs-migrator" else VERIFIER_RULES_RULE_V1
+                if not predates_rule(path, folder, marker):
+                    check_verifier_rules(folder, path, doc, errors)
+                if not predates_rule(path, folder, LEDGER_RULES_RULE_V1):
+                    check_migrator_ledger_rules(folder, path, doc, errors)
             if isinstance(doc, dict) and "ticket" in doc and "role" in doc:
                 want = f"{doc['ticket']}.{doc['role']}"
                 if path.stem != want:

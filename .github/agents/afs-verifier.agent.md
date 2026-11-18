@@ -42,12 +42,28 @@ slices; the ticket's own ledger entries alone may not contain the whole behavior
    replacement behavior explicitly, distinguish inconsistent source snapshots from target defects,
    and keep unresolved differences visible in the evidence report.
 3. **Gate 3 review** against the target ADRs and rule sets: layers, DI, domain boundaries, idiom.
-   - Import-level layering is a tool's job: when the profile has `layering`, the idiom gate runs
-     `check_layers.py`. A violation it reports fails the gate, which is a finding (`evidence: run: <name>`).
-     A `known, not failing` line is debt in code this ticket's work depends on: report it when the ticket's
-     code relies on it.
-   - Your review covers what the tool can't see. Is each rule enforced where the ADR puts it (a use case, not
-     a view)? Does a view call a use case, or does it do the use case's work itself?
+   - Import-level layering and two UI checks are tools' jobs. When the profile has `layering`, the idiom
+     gate runs `check_layers.py`. When it has `ui_checks`, the gate runs `check_ui.py`: htmx error responses
+     render, and the built CSS holds every utility a changed template uses. A violation either reports fails
+     the gate, which is a finding (`evidence: run: <name>`).
+     A `known, not failing` line is debt from an earlier ticket: list it under `inherited` (step 6) when this
+     ticket's code relies on it.
+   - Your review covers what the tool can't see. Two checks find what reading alone misses; do both, and
+     let a failing test be the evidence:
+     - **Where each rule is enforced** (required: the finish check refuses your return without it). For
+       each capability the plan gives the ticket, list its business rules (an eligibility check, a limit, a
+       state transition) under `rules`. Every rule its ledger entry records must be there, with
+       `ledger_rule: <its id>`; add any other rule you find in the code, a guard in a view above all. For each rule, write a test that calls the use case directly, with
+       no view and no request, using input the rule must refuse. Record `enforced: true` when the use case
+       refuses it. When it accepts it, record `enforced: false`: the rule lives in the wrong layer (often the
+       view), and that failing test is a major finding's evidence. A capability with no business rule (a
+       static page, a report layout) goes under `no_rules` with the reason.
+     - **Every error path renders.** For every request the ticket's pages send (a form post, an htmx or
+       fetch call), list the non-2xx responses its view can return (validation 4xx, not found, a failed
+       downstream call 5xx). Check each one shows the user what the plan says. htmx 2 swaps no 4xx or 5xx
+       response unless the page configures it (`htmx.config.responseHandling`, an `htmx:beforeSwap`
+       handler, or the response-targets extension). Without that, the error fragment never appears: a
+       test that asserts the configuration, or a browser test that triggers the error, shows it.
 4. **Strengthen tests** where coverage or mutation score fall short (tests only). Surviving mutants that
    reveal missing behavior go in the report.
 5. **Ledger:** entries validate; statuses and evidence are true.
@@ -58,6 +74,13 @@ slices; the ticket's own ledger entries alone may not contain the whole behavior
 
      A claim you can't back this way is `minor`. If a behavior looks wrong but you can't make a test fail,
      it isn't proven.
+   - **Judge this ticket's work; report inherited defects apart.** A defect whose cause is outside this
+     ticket's diff (code an earlier ticket wrote, which this work depends on) is not a finding. List it under
+     `inherited`, with `where`, `what`, `origin` (the ticket that wrote it, or `unknown`) and `evidence`
+     (`run: <name>` of a failing run; don't commit a failing test for it). It never changes the verdict. The
+     dispatcher plans its fix as a separate ticket. Example: an About page that is unstyled because the
+     project's static-files setting predates the ticket is `inherited`; a view this ticket wrote that skips
+     the use case is a finding.
    - **The verdict follows the findings.**
      - `pass`: no blocker or major finding.
      - `changes-required`: at least one blocker or major finding.
@@ -87,4 +110,15 @@ ledger_issues: [<one line>]
 quirk_tickets: [<link>]
 ```
 Add `blocked_reason: "<gate>: <why>"` when the verdict is `blocked`. Each blocker or major finding also
-carries `evidence:` (step 6).
+carries `evidence:` (step 6). Add `inherited: [{where, what, origin, evidence}]` for defects from earlier
+tickets (step 6). Always add the rules you checked (step 3):
+```yaml
+rules:
+  - capability: <one of the ticket's capabilities>
+    rule: <the business rule, one line>
+    use_case: <the use case the test calls, e.g. CargoRouting.assign_route>
+    test: <path::test id; a test that calls the use case directly with input the rule must refuse>
+    enforced: <true | false>   # false needs a blocker/major finding with this test as evidence
+    ledger_rule: <the rule's id in the capability's ledger entry, when it has one>
+no_rules: {<capability>: <why it carries no business rule>}
+```
