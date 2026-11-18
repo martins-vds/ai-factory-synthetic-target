@@ -36,6 +36,17 @@ tickets:
       - loan.list
       - loan.text-export
     blocked_by: []
+  - id: LL-06
+    title: Serve the project stylesheet (static/ isn't a static-files directory)
+    role: afs-migrator
+    specialty: null
+    files:
+      - config/settings.py
+      - tests/test_ui_smoke.py
+      - .migration/evidence/runs/LL-06.md
+      - .migration/returns/LL-06.afs-migrator.yaml
+    capabilities: []
+    blocked_by: [LL-05]
 cross_slice:
   - file: config/settings.py
     slices: [loan-catalog, monthly-report]
