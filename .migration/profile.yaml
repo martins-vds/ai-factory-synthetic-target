@@ -54,7 +54,7 @@ skills:
       - postgresql-optimization
 gates:
   build: ["python -m compileall -q src", "python manage.py check"]
-  idiom: ["ruff check src config manage.py tests", "ruff format --check src config manage.py tests"]
+  idiom: ["ruff check src config manage.py tests", "ruff format --check src config manage.py tests", "python .migration/harness/tools/check_layers.py", "python .migration/harness/tools/check_ui.py"]
   tests: ["pytest -q"]
   crap:
     - "pytest -q --cov=src --cov-report=lcov:.migration/runs/crap.lcov"
@@ -80,3 +80,18 @@ services:
   env: {POSTGRES_DB: lending, POSTGRES_USER: lending, POSTGRES_HOST: 127.0.0.1, POSTGRES_PORT: '5432'}   # scaffolding writes settings to these defaults
 signoff:
   approvers: [martins-vds]
+layering:                    # use cases depend only on their ports (LL-02 verify ruling #79), checked in the idiom gate (harness ADR-0043)
+  source_root: .
+  contracts:
+    - name: use cases depend only on their ports
+      adr: synthetic LL-02 verify ruling (#79)
+      files: ["src/*/services.py"]
+      forbid: ["django", "src.*.models", "src.*.repository", "src.*.clock", "src.*.gateway", "src.*.views", "src.*.forms", "src.*.composition", "src.core"]
+ui_checks:                   # harness ADR-0043: htmx error responses render; the built CSS holds the templates' utilities
+  templates: ["templates/**/*.html"]
+  scripts: ["static/**/*.js"]
+  htmx_errors: true
+  built_css: static/css/tailwind.css
+self_heal:                   # harness ADR-0034: the stop hook sends an agent back to fix what CI would reject
+  enabled: true
+  max_blocks: 2
