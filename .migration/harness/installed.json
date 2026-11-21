@@ -1,7 +1,7 @@
 {
   "harness_version": "0.2.0",
-  "harness_commit": "79592f6613877246b27f2e494e4be56af5673896",
-  "installed_at": "2026-11-20T23:48:52Z",
+  "harness_commit": "a74a90c757091e7f9a906ce404dedc3cc304ba71",
+  "installed_at": "2026-11-21T03:57:31Z",
   "entries": [
     {
       "path": ".github/agents/afs-analyst.agent.md",
@@ -1046,9 +1046,9 @@
         ".migration/harness/tools/afs-cost-hook": "11d03088b545d9ad08f9236bd4fa078ef431f9d0754e1e5df84da79c44117edd",
         ".migration/harness/tools/afs-costs": "f3cc1d4b9de512fd18c8e35f6f9690070ba5060ca0284271e842257df786a9ab",
         ".migration/harness/tools/afs-drill": "ed8ba2f25075cf2644facf21a73fdb14bd5c8cb2df8b0df4d2d65e5f6b12186b",
-        ".migration/harness/tools/afs-finish-check": "b8d047bad5ccc341163909abcce1b0f575ee9c432033df72aa2ad01b183d4fe0",
+        ".migration/harness/tools/afs-finish-check": "5754e832a06dc6b5ebc789bf7fddbdf29fc7118b4bf630e4938c1d6eef60639a",
         ".migration/harness/tools/afs-merge": "4dfd42c27fdca9a5ce294e45653549e7cb0ebd46ffe0c08383274236de1a5f6f",
-        ".migration/harness/tools/afs-mutation": "bae80b93fc4de320cfe685d592469e3b705e6a3564e268153f3b8e5e0319e50f",
+        ".migration/harness/tools/afs-mutation": "142ee2f26fc2e3b82896e7d36cb4e2eb32326048b621dea79166e88f3b0a0c46",
         ".migration/harness/tools/afs-run": "71b8fa2e46cbff8098becb7567577dcbf41983e0c408de59e69c9f10b039179a",
         ".migration/harness/tools/afs-services": "9ba61468eef1d55329963d02ae05bee14d8ad3ed2afcb620208ca3e9c16f2669",
         ".migration/harness/tools/afs_trace.py": "68e27fa4ffc01cd1f423f0120935c342d91479db3ccfd7b6f0cc4da4276110bf",
