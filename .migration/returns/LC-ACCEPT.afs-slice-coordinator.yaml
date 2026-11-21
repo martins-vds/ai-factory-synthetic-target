@@ -1,0 +1,20 @@
+role: afs-slice-coordinator
+ticket: LC-ACCEPT
+issue: martins-vds/ai-factory-synthetic-target#108
+slice: loan-circulation
+tickets:
+  total: 5
+  merged: 5
+  open: 0
+  blocked: []
+acceptance:
+  report: .migration/evidence/loan-circulation/acceptance.md
+  gates: all-green
+  mutation_score: 0.920
+  coverage_gaps: 0
+human_check: requested
+human_check_issues: []
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#39
+  - martins-vds/ai-factory-synthetic-target#41
+  - martins-vds/ai-factory-synthetic-target#43
