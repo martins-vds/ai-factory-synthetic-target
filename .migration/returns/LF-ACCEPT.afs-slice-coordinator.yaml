@@ -1,0 +1,19 @@
+role: afs-slice-coordinator
+ticket: LF-ACCEPT
+issue: martins-vds/ai-factory-synthetic-target#117
+slice: fees-payments
+tickets:
+  total: 5
+  merged: 5
+  open: 0
+  blocked: []
+acceptance:
+  report: .migration/evidence/fees-payments/acceptance.md
+  gates: all-green
+  mutation_score: 0.975
+  coverage_gaps: 0
+human_check: requested
+human_check_issues: []
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#40
+  - martins-vds/ai-factory-synthetic-target#42
