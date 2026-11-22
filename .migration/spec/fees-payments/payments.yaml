@@ -1,0 +1,32 @@
+capability: integration.payment-gateway
+title: Paying a late fee through the gateway
+# A real local HTTP stub stands in for the payment gateway (ADR-0068); PAYMENT_GATEWAY_URL points the target at it.
+# The recorded exchanges (gateway.json) were taken with a local test gateway answering 200 "charged" and 503 "declined".
+cases:
+  - title: The recorded payments come back the same, and the gateway gets the recorded charge
+    rule: [charge-passes-through, refusal-is-bad-gateway]
+    given: {gateways: {payment: {respond: {status: "{gateway_status}", body: "{gateway_body}"}}}}
+    examples:
+      columns: [exchange, gateway_status, gateway_body, charge]
+      rows:
+        - ["POST /payments/L1 via test gateway", 200, "charged\n", "/charge?loan=L1"]
+        - ["POST /payments/L2 via test gateway", 503, "declined\n", "/charge?loan=L2"]
+    when: {replay: {recording: .migration/characterization/source/goldens/gateway.json, under: responses, exchange: "{exchange}"}}
+    then:
+      replay: {body: exact}
+      sent: {payment: [{method: POST, path: "{charge}"}]}
+
+  - title: A payment for a loan that doesn't exist never reaches the gateway
+    rule: unknown-loan-not-charged
+    given: {gateways: {payment: {respond: {status: 200, body: "charged\n"}}}}
+    when: {replay: {recording: .migration/characterization/source/goldens/gateway.json, under: responses, exchange: "POST /payments/unknown via test gateway"}}
+    then:
+      replay: {body: exact}
+      sent: {payment: []}
+
+  - title: A gateway that can't be reached is reported as unavailable
+    rule: unreachable-is-bad-gateway
+    oracle: .migration/references/characterization-SY-05.md
+    given: {gateways: {payment: {unreachable: true}}}
+    when: {http: {method: POST, path: /payments/L1}}
+    then: {status: 502, text: ["payment gateway unavailable"]}
