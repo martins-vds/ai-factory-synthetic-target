@@ -99,4 +99,4 @@ self_heal:                   # harness ADR-0034: the stop hook sends an agent ba
   max_blocks: 2
 spec:
   adapter: django
-  required: false
+  required: true
