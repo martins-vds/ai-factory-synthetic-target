@@ -15,3 +15,19 @@ status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/edge-cases.json, .migration/evidence/runs/LL-03.md, tests/fees/test_fee_calculation.py::test_fee_calculates_unreturned_loan_with_grace_period_and_cap, tests/fees/test_fee_calculation.py::test_fee_for_returned_loan_uses_return_date_instead_of_today]
+rules:
+  - id: late-days-end-at-return
+    rule: Days late run from the due date (14 days after lending) to the return date, or to today while the loan is out; never below zero.
+    source: legacy/src/main/java/lib/LateFeeView.java:31-37
+  - id: fee-waived-two-days
+    rule: Up to two days late costs nothing.
+    source: legacy/src/main/java/lib/LateFeeView.java:31-37
+  - id: fee-25-cents-a-day
+    rule: Beyond two days, every day late costs 25 cents, the first two included.
+    source: legacy/src/main/java/lib/LateFeeView.java:31-37
+  - id: fee-capped-at-10
+    rule: The fee never exceeds $10.00.
+    source: legacy/src/main/java/lib/LateFeeView.java:31-37
+  - id: unknown-loan-404
+    rule: A fee for a loan that doesn't exist is answered with 404.
+    source: .migration/characterization/source/goldens/http.json
