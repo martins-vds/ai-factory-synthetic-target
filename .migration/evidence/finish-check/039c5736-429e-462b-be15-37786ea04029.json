@@ -1,0 +1,34 @@
+[
+  {
+    "at": "2026-11-18T22:19:42Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "agentId",
+      "agentType",
+      "cwd",
+      "parentAgentId",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 15997,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "LL-07",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/evidence/runs/LL-07.md",
+      ".migration/ledger/loan.lend.yaml",
+      ".migration/returns/LL-07.afs-migrator.yaml",
+      "src/loans/forms.py",
+      "tests/loans/test_lend_values.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]

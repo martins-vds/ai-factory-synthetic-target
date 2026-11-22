@@ -16,6 +16,18 @@ tickets:
       - .migration/returns/LL-02.afs-migrator.yaml
     capabilities: [loan.lend, loan.return-date, loan.return]
     blocked_by: [LL-01]
+  - id: LL-07
+    title: Store member and ISBN as given when lending (the loan form trims them; the legacy doesn't)
+    role: afs-migrator
+    specialty: null
+    files:
+      - src/loans/forms.py
+      - tests/loans/test_lend_values.py
+      - .migration/ledger/loan.lend.yaml
+      - .migration/evidence/runs/LL-07.md
+      - .migration/returns/LL-07.afs-migrator.yaml
+    capabilities: [loan.lend]
+    blocked_by: [LL-02]
 cross_slice:
   - file: config/urls.py
     slices: [loan-catalog, loan-circulation, fees-payments, library-info]

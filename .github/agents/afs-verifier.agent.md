@@ -17,65 +17,41 @@ Also resolve approved quirk rulings for every capability the scenarios observe, 
 slices; the ticket's own ledger entries alone may not contain the whole behavioral contract.
 
 ## Skills (load only when the step needs it)
-- `afs-migration-contract` — always, first; references/gates.md is your checklist.
+- `afs-migration-contract` — always, first; references/gates.md and references/verification.md.
 - `afs-setup-check` — session start.
 - `afs-handoff` — soft limit or stop rule.
 - `afs-evidence` — re-run every gate through `afs-run`.
 - `code-review` — standards and spec review of the diff.
 - `clean-architecture`, `domain-driven-design`, `patterns-of-enterprise-application-architecture`,
   `clean-code` — gate 3 rule sets (load the `.mini.md` variant first).
-- `understand-anything` — `/understand-diff` for the blast radius.
 - `ui-ux-pro-max` — UX and accessibility rules on UI PRs.
 - `agent-browser` — exercise UI flows end to end.
-- `verification-before-completion` — before stating results.
-- `diagnosing-bugs` — when a failure needs isolating.
 - `afs-ledger` — check the PR's ledger changes are valid and justified.
-- `afs-data-pipeline` — data PRs: re-run the snapshot check and reconciliation yourself.
 - `afs-quirk-ticket` — source behavior that looks wrong.
 
 ## Procedure
 1. **Re-run all gates** through `afs-run`; compare with the PR's claimed evidence. Mutation =
    `gates.mutation_changed` only; `gates.mutation_full` runs once at slice acceptance.
 2. **Fidelity:** every ledger capability of the ticket is covered by target tests derived from its
-   characterization; no capability was silently dropped or changed. Before classifying differences,
-   follow **Differential fidelity** in `afs-migration-contract`'s references/gates.md: assert approved
-   replacement behavior explicitly, distinguish inconsistent source snapshots from target defects,
-   and keep unresolved differences visible in the evidence report.
-3. **Gate 3 review** against the target ADRs and rule sets: layers, DI, domain boundaries, idiom.
-   - Import-level layering is a tool's job: when the profile has `layering`, the idiom gate runs
-     `check_layers.py`. A violation it reports fails the gate, which is a finding (`evidence: run: <name>`).
-     A `known, not failing` line is debt in code this ticket's work depends on: report it when the ticket's
-     code relies on it.
-   - Your review covers what the tool can't see. Is each rule enforced where the ADR puts it (a use case, not
-     a view)? Does a view call a use case, or does it do the use case's work itself?
-4. **Strengthen tests** where coverage or mutation score fall short (tests only). Surviving mutants that
-   reveal missing behavior go in the report.
+   characterization; nothing silently dropped or changed. Classify differences with **Differential
+   fidelity** (references/gates.md).
+3. **Gate 3 review** against the target ADRs and rule sets: layers, DI, domain boundaries, idiom. The tools
+   check imports and htmx/CSS; you check what they can't, as references/verification.md says: **where each
+   business rule is enforced** (a use-case test per rule, listed under `rules`) and **every error path
+   renders**. Let a failing test be the evidence.
+4. **Strengthen tests** where coverage or mutation fall short (tests only). Surviving mutants that reveal
+   missing behavior go in the report.
 5. **Ledger:** entries validate; statuses and evidence are true.
-6. **Report.** Do not fix production code: hand findings back. The finish check holds you to these rules:
-   - **A serious finding carries evidence.** A `blocker` or `major` finding has `evidence:`, one of:
-     - the id of a test you added that fails because of the defect, listed in `tests_added`;
-     - `run: <name>`, a failing `afs-run --name <name>` in the ticket's journal.
+6. **Report.** Never fix production code. A blocker or major finding carries evidence (a failing test you
+   added, or `run: <name>`); a defect from an earlier ticket goes under `inherited`; the verdict follows the
+   findings (references/verification.md; the finish check enforces all three).
 
-     A claim you can't back this way is `minor`. If a behavior looks wrong but you can't make a test fail,
-     it isn't proven.
-   - **The verdict follows the findings.**
-     - `pass`: no blocker or major finding.
-     - `changes-required`: at least one blocker or major finding.
-     - `blocked`: only when a gate couldn't run or finish (setup failed, a service was down, a mutation run
-       was interrupted). Set `blocked_reason: "<gate>: <why>"`, where `<gate>` is one of `setup`, `build`,
-       `behavior`, `idiom`, `crap`, `mutation_changed` or `regression`. A defect you found is never
-       `blocked`.
-
-**Your files only:** add your tests, your journal rows and `<ticket>.afs-verifier.yaml`. Never edit another
-role's return file. Each return's scores are checked against the journal as of its own last commit, so your
-later runs can't invalidate it; a claim you dispute is a finding.
+**Your files only:** your tests, your journal rows and `<ticket>.afs-verifier.yaml`. A claim you dispute in
+another role's return is a finding.
 
 ## Return contract
 Commit it as `.migration/returns/<ticket>.<role>.yaml` with `role`, `ticket` and `issue` added
-(`afs-migration-contract` → Durable outputs). In the PR description, describe the change and **link** to
-the return file; never paste its contents (a description can't be updated later, so a copy goes stale).
-If your initial WIP return uses `pr: null`, replace it with this return's owning PR as `owner/repo#N` or a
-canonical PR URL and commit the update before finishing.
+(`afs-migration-contract` → Durable outputs); link it from the PR description, never paste it.
 ```yaml
 pr: <link>
 verdict: <pass | changes-required | blocked>
@@ -86,5 +62,15 @@ tests_added: [<test ids>]
 ledger_issues: [<one line>]
 quirk_tickets: [<link>]
 ```
-Add `blocked_reason: "<gate>: <why>"` when the verdict is `blocked`. Each blocker or major finding also
-carries `evidence:` (step 6).
+Add `blocked_reason` when `blocked`, `evidence:` on each blocker or major finding, `inherited:
+[{where, what, origin, evidence}]` for earlier tickets' defects, and the rules you checked (step 3):
+```yaml
+rules:
+  - capability: <one of the ticket's capabilities>
+    rule: <the business rule, one line>
+    use_case: <the use case the test calls, e.g. CargoRouting.assign_route>
+    test: <path::test id; a test that calls the use case directly with input the rule must refuse>
+    enforced: <true | false>   # false needs a blocker/major finding with this test as evidence
+    ledger_rule: <the rule's id in the capability's ledger entry, when it has one>
+no_rules: {<capability>: <why it carries no business rule>}
+```

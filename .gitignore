@@ -7,3 +7,4 @@ __pycache__/
 .mutmut-cache
 .pytest_cache/
 .ruff_cache/
+/legacy/target/

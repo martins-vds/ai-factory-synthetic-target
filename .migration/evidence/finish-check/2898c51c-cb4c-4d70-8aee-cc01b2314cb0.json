@@ -1,0 +1,63 @@
+[
+  {
+    "at": "2026-11-18T22:21:02Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 15997,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "LL-07",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/costs/2898c51c-cb4c-4d70-8aee-cc01b2314cb0.json",
+      ".migration/evidence/runs/LL-07.md",
+      ".migration/handoffs/LL-07.md",
+      ".migration/ledger/loan.lend.yaml",
+      ".migration/returns/LL-07.afs-migrator.yaml",
+      "src/loans/forms.py",
+      "tests/loans/test_lend_values.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  },
+  {
+    "at": "2026-11-19T00:00:55Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 33324,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "LL-07",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/costs/2898c51c-cb4c-4d70-8aee-cc01b2314cb0.json",
+      ".migration/evidence/runs/LL-07.md",
+      ".migration/ledger/loan.lend.yaml",
+      ".migration/returns/LL-07.afs-migrator.yaml",
+      "src/loans/forms.py",
+      "tests/loans/test_lend_values.py"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]

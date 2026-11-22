@@ -8,6 +8,10 @@ description: Run gates and produce auditable evidence — every gate command goe
 A claim that something passes requires **fresh output from this session**, or independently verified
 durable Actions output for the same execution inputs as described below.
 
+**Before you claim done** (this replaces the separate `verification-before-completion` skill, phase 5):
+name the command that proves the claim, run it now through `afs-run`, read its summary, and state what it
+showed. No "should pass", "looks right" or "probably": an unrun check is an unknown, so say so.
+
 ## Running a gate
 ```bash
 .migration/harness/tools/afs-run --ticket <ticket-id> --name <gate> -- <command from profile.gates.*>
@@ -49,7 +53,7 @@ target observation, expected target behavior and the decision or independent evi
 Keep approved divergences, comparison defects, unresolved quirks and implementation defects distinct.
 Record remaining failures honestly; a corrected oracle is not evidence that production now passes.
 
-## Slice evidence report (Slice Coordinator, Auditor)
+## Slice evidence report (Program Orchestrator's slice acceptance, Auditor)
 Write `.migration/evidence/<slice>/report.md` (committed):
 ```markdown
 # Slice <slice> — acceptance evidence

@@ -1,0 +1,27 @@
+role: afs-migrator
+ticket: LL-07
+issue: martins-vds/ai-factory-synthetic-target#139
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/141
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  crap: 0
+  mutation_changed: 1.0
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/LL-07.md
+ledger_updated:
+  - .migration/ledger/loan.lend.yaml
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#39
+  - martins-vds/ai-factory-synthetic-target#43
+new_tickets: []
+handoff: none
+rules:
+  - capability: loan.lend
+    rule: Lending stores member and ISBN exactly as submitted, including surrounding whitespace.
+    use_case: LoanApplication.lend
+    test: tests/loans/test_lend_values.py::test_lending_use_case_passes_member_and_isbn_unchanged
+    enforced: true
+    ledger_rule: preserve-lend-values

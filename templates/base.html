@@ -7,6 +7,14 @@
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.24/dist/full.min.css" rel="stylesheet">
   <link href="/static/css/tailwind.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js"></script>
+  <script>
+    htmx.config.responseHandling = [
+      {code: "204", swap: false},
+      {code: "[23]..", swap: true},
+      {code: "[45]..", swap: true, error: true},
+      {code: "...", swap: false}
+    ];
+  </script>
 </head>
 <body class="min-h-screen bg-[#f5f0e5] text-[#2f3428] font-serif">
   <header class="mx-auto max-w-7xl px-6 pt-8">

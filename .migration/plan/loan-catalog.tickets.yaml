@@ -47,6 +47,20 @@ tickets:
       - .migration/returns/LL-06.afs-migrator.yaml
     capabilities: []
     blocked_by: [LL-05]
+  - id: LL-08
+    title: Render htmx error responses on every page (one response-handling setting in the base template)
+    role: afs-migrator
+    specialty: ui
+    files:
+      - templates/base.html
+      - templates/fees/payment-form.html
+      - templates/loans/detail.html
+      - templates/loans/loan-form.html
+      - tests/test_htmx_errors.py
+      - .migration/evidence/runs/LL-08.md
+      - .migration/returns/LL-08.afs-migrator.yaml
+    capabilities: []
+    blocked_by: []
 cross_slice:
   - file: config/settings.py
     slices: [loan-catalog, monthly-report]
