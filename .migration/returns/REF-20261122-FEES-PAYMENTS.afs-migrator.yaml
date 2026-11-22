@@ -1,0 +1,21 @@
+role: afs-migrator
+ticket: REF-20261122-FEES-PAYMENTS
+issue: martins-vds/ai-factory-synthetic-target#160
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/161
+gates:
+  build: 0
+  behavior: 0
+  spec: 0
+  idiom: 0
+  crap: 0
+  mutation_changed: 1.0
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/REF-20261122-FEES-PAYMENTS.md
+ledger_updated: []
+quirk_tickets: []
+new_tickets: []
+handoff: none
+rules: []
+no_rules: {}
+notes: No tests were changed; the existing tests do not reference the removed private helper names.
