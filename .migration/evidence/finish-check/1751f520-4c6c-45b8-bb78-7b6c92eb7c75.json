@@ -1,0 +1,30 @@
+[
+  {
+    "at": "2026-11-14T20:07:10Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 39801,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": false,
+    "ticket": "LI-ACCEPT",
+    "role": "afs-slice-coordinator",
+    "changed": [
+      ".migration/evidence/library-info/acceptance.md",
+      ".migration/evidence/runs/LI-ACCEPT.md",
+      ".migration/evidence/ticket-reconciliation/64.yaml",
+      ".migration/returns/LI-ACCEPT.afs-slice-coordinator.yaml"
+    ],
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
