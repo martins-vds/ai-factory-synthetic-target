@@ -1,0 +1,35 @@
+[
+  {
+    "at": "2026-11-22T23:55:09Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 15884,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "REF-20261122-FEES-PAYMENTS",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/costs/e7eca616-4641-417a-837f-f9a8c1e49768.json",
+      ".migration/evidence/runs/REF-20261122-FEES-PAYMENTS.md",
+      ".migration/returns/REF-20261122-FEES-PAYMENTS.afs-migrator.yaml",
+      "src/fees/view_helpers.py",
+      "src/fees/views.py"
+    ],
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
