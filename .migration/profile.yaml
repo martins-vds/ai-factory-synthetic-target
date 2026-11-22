@@ -71,6 +71,20 @@ layering:                    # import contracts, checked in the idiom gate (harn
       files: ["src/*/services.py"]
       forbid: ["django", "src.*.models", "src.*.repository", "src.*.clock", "src.*.gateway", "src.*.views",
                "src.*.forms", "src.*.composition", "src.core"]
+    - name: web adapters and commands call use cases, not persistence
+      adr: the layering of LL-02's ruling (#79), from the adapter side (harness ADR-0043, step 4.4)
+      files: ["src/*/views.py", "src/*/management/commands/*.py"]   # forms may be ModelForms (Django idiom)
+      forbid: ["django.db", "src.*.models", "src.*.repository"]
+    - name: persistence and gateways don't reach up into the web
+      adr: the layering of LL-02's ruling (#79), from the adapter side (harness ADR-0043, step 4.4)
+      files: ["src/*/repository.py", "src/*/gateway.py", "src/*/models.py", "src/*/clock.py"]
+      forbid: ["django.http", "django.shortcuts", "django.template", "django.urls", "django.views",
+               "src.*.views", "src.*.forms", "src.*.urls"]
+  known:
+    - file: src/loans/views.py
+      module: src.loans.models
+      reason: the loan list and detail pages query the ORM directly (Loan.objects, get_object_or_404) instead of
+        the loan use case; a fix ticket moves them behind LoanApplication
 thresholds:
   crap_max_per_method: 30
   mutation_score_min: 0.8
