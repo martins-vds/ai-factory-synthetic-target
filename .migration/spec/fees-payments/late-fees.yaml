@@ -44,3 +44,17 @@ cases:
     oracle: .migration/characterization/source/goldens/edge-cases.json
     when: {http: {method: GET, path: /fees/L9}}
     then: {status: 404, text: ["No such loan."]}
+
+  - title: Each recorded fee answer comes back the same
+    rule: [late-days-end-at-return, fee-25-cents-a-day, fee-capped-at-10, unknown-loan-404]
+    given: {clock: "{recorded_on}"}
+    examples:
+      columns: [recording, exchange, recorded_on]
+      rows:
+        - [".migration/characterization/source/goldens/http.json", "GET /fees/{id}", "2026-11-08"]
+        - [".migration/characterization/source/goldens/edge-cases.json", "GET /fees/L1 before return", "2026-11-08"]
+        - [".migration/characterization/source/goldens/edge-cases.json", "GET /fees/L2 early return", "2026-11-08"]
+        - [".migration/characterization/source/goldens/edge-cases.json", "GET /fees/unknown", "2026-11-08"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: text}}
+
