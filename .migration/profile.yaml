@@ -55,7 +55,8 @@ skills:
 gates:
   build: ["python -m compileall -q src", "python manage.py check"]
   idiom: ["ruff check src config manage.py tests", "ruff format --check src config manage.py tests", "python .migration/harness/tools/check_layers.py", "python .migration/harness/tools/check_ui.py"]
-  tests: ["pytest -q", "python .migration/harness/tools/afs-spec run"]
+  tests: ["pytest -q"]
+  spec: ["python .migration/harness/tools/afs-spec run"]
   crap:
     - "pytest -q --cov=src --cov-report=lcov:.migration/runs/crap.lcov"
     - "lizard --csv src > .migration/runs/lizard.csv"
