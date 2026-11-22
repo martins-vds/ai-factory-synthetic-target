@@ -17,3 +17,17 @@ characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/gateway.json, .migration/evidence/runs/LL-03.md, tests/fees/test_endpoints.py::test_payment_endpoint_forwards_the_characterized_gateway_request, tests/fees/test_endpoints.py::test_payment_endpoint_maps_gateway_failure_to_bad_gateway, tests/fees/test_endpoints.py::test_payment_endpoint_rejects_unknown_loan_without_calling_gateway, tests/fees/test_endpoints.py::test_interrupted_gateway_call_is_preserved_as_the_gateway_failure_cause, tests/fees/test_endpoints.py::test_interrupted_payment_request_returns_gateway_failure]
 notes: "The approved fix in #40 maps interruption to HTTP 502 and retains InterruptedError as the gateway failure cause."
 quirks: [martins-vds/ai-factory-synthetic-target#40]
+rules:
+  - id: charge-passes-through
+    rule: A charge the gateway accepts (HTTP 200) is answered with the gateway's own status and body.
+    source: legacy/src/main/java/lib/FinePayments.java:26-40
+  - id: refusal-is-bad-gateway
+    rule: Any other gateway answer is reported as 502, with the gateway's body.
+    source: legacy/src/main/java/lib/FinePayments.java:26-40
+  - id: unreachable-is-bad-gateway
+    rule: A gateway that can't be reached is reported as 502 "payment gateway unavailable".
+    source: legacy/src/main/java/lib/FinePayments.java:26-40; quirk ruling #40
+  - id: unknown-loan-not-charged
+    rule: A payment for a loan that doesn't exist is answered 404 and never reaches the gateway.
+    source: .migration/characterization/source/goldens/gateway.json
+
