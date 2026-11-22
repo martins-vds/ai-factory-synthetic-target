@@ -1,0 +1,40 @@
+capability: fees.calculation
+title: Late fees
+# The seed loans (L1 out since 2026-01-02, due 2026-01-16; L2 back early; L3 back 19 days late) come with the
+# database. Expected values agree with the legacy app's goldens (.migration/characterization/source/goldens).
+cases:
+  - title: A loan still out costs nothing for two days late, then 25 cents a day, never more than ten dollars
+    rule: [late-days-end-at-return, fee-waived-two-days, fee-25-cents-a-day, fee-capped-at-10]
+    given: {clock: "{today}"}
+    examples:
+      columns: [today, days, fee]
+      rows:
+        - ["2026-01-16", 0, "$0.00"]
+        - ["2026-01-18", 2, "$0.00"]
+        - ["2026-01-19", 3, "$0.75"]
+        - ["2026-02-24", 39, "$9.75"]
+        - ["2026-02-25", 40, "$10.00"]
+        - ["2026-06-30", 165, "$10.00"]
+    when: {http: {method: GET, path: /fees/L1}}
+    then: {status: 200, text: ["{days} day(s) late", "Fee: {fee}"]}
+
+  - title: A returned loan's fee stops at its return date, whatever today is
+    rule: late-days-end-at-return
+    given: {clock: "2026-11-22"}
+    examples:
+      columns: [loan, days, fee]
+      rows:
+        - [L3, 19, "$4.75"]
+        - [L2, 0, "$0.00"]
+    when: {http: {method: GET, path: "/fees/{loan}"}}
+    then: {status: 200, text: ["{days} day(s) late", "Fee: {fee}"]}
+
+  - title: The fee page shows the same fee
+    rule: fee-25-cents-a-day
+    when: {http: {method: GET, path: /ui/fees/L3/}}
+    then: {status: 200, text: ["Late fee for L3", "19 day(s) late", "Fee: $4.75"]}
+
+  - title: There is no fee for a loan that doesn't exist
+    rule: unknown-loan-404
+    when: {http: {method: GET, path: /fees/L9}}
+    then: {status: 404, text: ["No such loan."]}

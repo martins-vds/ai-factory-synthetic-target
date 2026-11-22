@@ -55,7 +55,7 @@ skills:
 gates:
   build: ["python -m compileall -q src", "python manage.py check"]
   idiom: ["ruff check src config manage.py tests", "ruff format --check src config manage.py tests", "python .migration/harness/tools/check_layers.py", "python .migration/harness/tools/check_ui.py"]
-  tests: ["pytest -q"]
+  tests: ["pytest -q", "python .migration/harness/tools/afs-spec run"]
   crap:
     - "pytest -q --cov=src --cov-report=lcov:.migration/runs/crap.lcov"
     - "lizard --csv src > .migration/runs/lizard.csv"
@@ -96,3 +96,6 @@ ui_checks:                   # harness ADR-0043: htmx error responses render; th
 self_heal:                   # harness ADR-0034: the stop hook sends an agent back to fix what CI would reject
   enabled: true
   max_blocks: 2
+spec:
+  adapter: django
+  required: false

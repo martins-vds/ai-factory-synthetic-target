@@ -1,7 +1,7 @@
 {
   "harness_version": "0.2.0",
-  "harness_commit": "a74a90c757091e7f9a906ce404dedc3cc304ba71",
-  "installed_at": "2026-11-21T03:57:31Z",
+  "harness_commit": "281a028fa1cc70aa362dab5be720035c83e46514",
+  "installed_at": "2026-11-22T13:02:13Z",
   "entries": [
     {
       "path": ".github/agents/afs-analyst.agent.md",
@@ -128,7 +128,7 @@
       "origin": "menu",
       "install": "harness",
       "files": {
-        ".github/skills/afs-slice-acceptance/SKILL.md": "7f00623a5c5ba413640351e14cc9bbaa69adf8eeee0c3590b893e8051a970ac1"
+        ".github/skills/afs-slice-acceptance/SKILL.md": "f87f28dfd1fcd2b52e14546c559705b8025af14f463876e9298cc45583e4f1d2"
       }
     },
     {
@@ -1048,9 +1048,12 @@
         ".migration/harness/tools/afs-drill": "ed8ba2f25075cf2644facf21a73fdb14bd5c8cb2df8b0df4d2d65e5f6b12186b",
         ".migration/harness/tools/afs-finish-check": "5754e832a06dc6b5ebc789bf7fddbdf29fc7118b4bf630e4938c1d6eef60639a",
         ".migration/harness/tools/afs-merge": "4dfd42c27fdca9a5ce294e45653549e7cb0ebd46ffe0c08383274236de1a5f6f",
-        ".migration/harness/tools/afs-mutation": "142ee2f26fc2e3b82896e7d36cb4e2eb32326048b621dea79166e88f3b0a0c46",
+        ".migration/harness/tools/afs-mutation": "3e8f22f7c3535743626caa5326fd66f464f0888f9ec1a506bdddde69246659a7",
         ".migration/harness/tools/afs-run": "71b8fa2e46cbff8098becb7567577dcbf41983e0c408de59e69c9f10b039179a",
         ".migration/harness/tools/afs-services": "9ba61468eef1d55329963d02ae05bee14d8ad3ed2afcb620208ca3e9c16f2669",
+        ".migration/harness/tools/afs-spec": "0592970e44f81d151cbcd7ef174e547dcfa5a330cc43f01a4e32a85753410e70",
+        ".migration/harness/tools/afs-test-health": "6584369b596874a1c89d81fb2dc332ea264f41a936d570a5c90e18ae16a988d0",
+        ".migration/harness/tools/afs_spec_django.py": "d46d061782fc40475c42be2e587050e013071da45c378e9c8106b0e7660a7d06",
         ".migration/harness/tools/afs_trace.py": "68e27fa4ffc01cd1f423f0120935c342d91479db3ccfd7b6f0cc4da4276110bf",
         ".migration/harness/tools/check_dispatch_paths.py": "6bcd83a896825f9f81c9418577050b03f0a083466b82e8b81c59f8848822b43f",
         ".migration/harness/tools/check_domain_coverage.py": "728fc0b3cf3c74ee3a05a1deb6b8261416ddd4496ca4eecb8ca882ac66f11188",
@@ -1070,7 +1073,7 @@
         ".migration/harness/tools/close_gap_issues.py": "87ab330838f4acc01175c5ea2caf8901b82007b097029a3d733a979269832e47",
         ".migration/harness/tools/crap.py": "78f19ab57dcdeca3bb7f024ba731f00d8a31671ed670aff6ab292d0c3f3f2797",
         ".migration/harness/tools/data_reconcile.py": "71b7dda59b5a173834d81a5c0bfe525df6ec7d818217bf2b4921cf508f34c97d",
-        ".migration/harness/tools/data_snapshot.py": "b7b0010ff346ec8d958be18bd808b2ade0835613147406dbc7aad8313d011867",
+        ".migration/harness/tools/data_snapshot.py": "604805726b8b8d88c7bab543490b921e4e56fe5d69b86ad71af88c96318bfda2",
         ".migration/harness/tools/drills.json": "65443aa85a0ee87aa529e2fe83fe67b5256da87e985f055f00f1180e69271f0e",
         ".migration/harness/tools/enrich_graph.py": "dbd23c1fcf310cc9d0edd1ee9ac81af611452987007c57cfd4575a6b37342729",
         ".migration/harness/tools/extract_slice.py": "80199267a5a100fd40b2ffd383aa4977bb3a2c9ad75641ecfac66442013a3f98",
@@ -1084,7 +1087,7 @@
         ".migration/harness/tools/stack_refresh.py": "6dafe2568a432d2221aa40cfa7e6d84501aea8e026ecb16c526c329c11acc71c",
         ".migration/harness/tools/ticket_guard.py": "30636800b1b2cd6d1e22195c10c395ff7e84adf8abfc19d99297b0eb13b88bb4",
         ".migration/harness/tools/understand.py": "6e8f4b43e15f323829c34f2e6932d8a1a306937f4b069a541e518d2f1c68e315",
-        ".migration/harness/tools/validate.py": "49c4ff5ffa7faa1b4d243b2650af9a677d723289819cac2d9c0972be7ffc96ea"
+        ".migration/harness/tools/validate.py": "492c7c1fae5eed032092db62320222328d9f5cfe50be360e2af23e1100167756"
       }
     },
     {
@@ -1092,11 +1095,12 @@
       "kind": "schemas",
       "files": {
         ".migration/harness/schemas/capabilities.schema.json": "0bfa043af69da8ccb6f7146b3d3e80c55c7c7e6c79b83baa04e4406fbc5461c5",
-        ".migration/harness/schemas/ledger-entry.schema.json": "f75e1dc2cb83ebe3a0730c7c36da549f8ba807f5e376dd0eb65edbf0275b7bf2",
+        ".migration/harness/schemas/ledger-entry.schema.json": "a8ba3fcb6122f57fd728d7c51bfd75b92405112e55820975b986cea8860abd26",
         ".migration/harness/schemas/plan-tickets.schema.json": "fe6f8f3b41cf64292bbcc6a4aef45e3bc252ba72ac92c702a7b91273dbc6b9da",
-        ".migration/harness/schemas/profile.schema.json": "a6c811a7fd4a2126b6a844119aa514d9dd7f398d33c1dbd29ca27db407219511",
+        ".migration/harness/schemas/profile.schema.json": "be81bc12f872dabedf24692d78847e44c0e65ba45ec5040f0b335ec4d8ff6cad",
         ".migration/harness/schemas/return.schema.json": "ff1fe532e773865fdcae5ab0f321b26376802567270d4753f5e01e22e85b7d21",
-        ".migration/harness/schemas/slice.schema.json": "4697d465a8e85177184f1699af4d7a290e15922e9e92e799cc68ba96da2db706"
+        ".migration/harness/schemas/slice.schema.json": "4697d465a8e85177184f1699af4d7a290e15922e9e92e799cc68ba96da2db706",
+        ".migration/harness/schemas/spec.schema.json": "b244c3036144478b6e6e473568174d19087f67d55d5f19c6f2eba4bbf4e9dfbc"
       }
     },
     {
