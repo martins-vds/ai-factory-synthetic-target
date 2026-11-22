@@ -16,6 +16,16 @@ tickets:
       - .migration/returns/LL-03.afs-migrator.yaml
     capabilities: [fees.calculation, fees.page, integration.payment-gateway]
     blocked_by: [LL-02]
+  - id: REF-20261122-FEES-PAYMENTS
+    title: Move src/fees/views.py's private helpers into their own module, preserving behaviour
+    role: afs-migrator
+    specialty: null
+    files:
+    - src/fees/
+    - tests/fees/
+    capabilities: []
+    blocked_by: []
+    refactor: true
 cross_slice:
   - file: config/urls.py
     slices: [loan-catalog, loan-circulation, fees-payments, library-info]
