@@ -100,3 +100,6 @@ self_heal:                   # harness ADR-0034: the stop hook sends an agent ba
 spec:
   adapter: django
   required: true
+
+test_health:                  # ADR-0064: the coupling guard refuses new test lines that lean on the code's internals
+  block: true

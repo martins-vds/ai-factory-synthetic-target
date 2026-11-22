@@ -1,7 +1,7 @@
 {
   "harness_version": "0.2.0",
-  "harness_commit": "91a1047154c0535b7f347ac649a00ed914e91c50",
-  "installed_at": "2026-11-22T13:43:27Z",
+  "harness_commit": "9d138d2b8a236d4402f10188f0102502fff488bb",
+  "installed_at": "2026-11-22T19:08:34Z",
   "entries": [
     {
       "path": ".github/agents/afs-analyst.agent.md",
@@ -62,7 +62,7 @@
         ".github/skills/afs-migration-contract/references/capability-coverage.md": "a0b43baddc3a0e2be7396e68361704d9db49761698c10c3753545038c8782ffd",
         ".github/skills/afs-migration-contract/references/characterization.md": "0c4677646e45898b00e5afc35566697d1c52cdd72d56bf77bcf277f7d63cf3e3",
         ".github/skills/afs-migration-contract/references/final-verification.md": "847e361034d3f5a7f0ddcf26a0602183588b752cb91206c298c55c4c3cfcb12b",
-        ".github/skills/afs-migration-contract/references/gates.md": "d28ec7a89b291a72897fbc0af44ba40e20c3778e168de22ec01e91c576863f79",
+        ".github/skills/afs-migration-contract/references/gates.md": "31ba27b8452206e9c611d1d89fba65d5d4bf072437d8c9282f146efea6da3039",
         ".github/skills/afs-migration-contract/references/lifecycle.md": "0ade5f4d93757c3f9de0e175c55f4d024d6e8be0098cef302e5fcbbdfb9b378f",
         ".github/skills/afs-migration-contract/references/spec.md": "cf02de60678704e439b18ac2a1cf54574009f7950a5dad4a9a86cbdb43dca24b",
         ".github/skills/afs-migration-contract/references/verification.md": "afdc2152809c34327d4b2c4365b80e4a826f9c6728842005ca38d5269ef97105"
@@ -1047,13 +1047,13 @@
         ".migration/harness/tools/afs-cost-hook": "11d03088b545d9ad08f9236bd4fa078ef431f9d0754e1e5df84da79c44117edd",
         ".migration/harness/tools/afs-costs": "f3cc1d4b9de512fd18c8e35f6f9690070ba5060ca0284271e842257df786a9ab",
         ".migration/harness/tools/afs-drill": "ed8ba2f25075cf2644facf21a73fdb14bd5c8cb2df8b0df4d2d65e5f6b12186b",
-        ".migration/harness/tools/afs-finish-check": "b86e69f5a35d9b06a47f32af508222f9ee8929b91c8c1f2e042f7be7a7fac727",
+        ".migration/harness/tools/afs-finish-check": "98741b42363b744c5cf7d37da09691c8c370a4cdb27c4a175533dd6118b4cd06",
         ".migration/harness/tools/afs-merge": "4dfd42c27fdca9a5ce294e45653549e7cb0ebd46ffe0c08383274236de1a5f6f",
         ".migration/harness/tools/afs-mutation": "bf31f626fa0497d08eb6075b03c82cd26d72640550bfbc9c95a2c63a1f779e3f",
         ".migration/harness/tools/afs-run": "71b8fa2e46cbff8098becb7567577dcbf41983e0c408de59e69c9f10b039179a",
         ".migration/harness/tools/afs-services": "9ba61468eef1d55329963d02ae05bee14d8ad3ed2afcb620208ca3e9c16f2669",
         ".migration/harness/tools/afs-spec": "ae02ee98e5050d9a949e769359b8404b38933d74b2626952cee540fb37f5290c",
-        ".migration/harness/tools/afs-test-health": "6584369b596874a1c89d81fb2dc332ea264f41a936d570a5c90e18ae16a988d0",
+        ".migration/harness/tools/afs-test-health": "b4de65cdebdea544290a3c6e210fd6031caed36486d20ab753b8a915026754d0",
         ".migration/harness/tools/afs_spec_django.py": "d46d061782fc40475c42be2e587050e013071da45c378e9c8106b0e7660a7d06",
         ".migration/harness/tools/afs_trace.py": "68e27fa4ffc01cd1f423f0120935c342d91479db3ccfd7b6f0cc4da4276110bf",
         ".migration/harness/tools/check_dispatch_paths.py": "6bcd83a896825f9f81c9418577050b03f0a083466b82e8b81c59f8848822b43f",
@@ -1098,7 +1098,7 @@
         ".migration/harness/schemas/capabilities.schema.json": "0bfa043af69da8ccb6f7146b3d3e80c55c7c7e6c79b83baa04e4406fbc5461c5",
         ".migration/harness/schemas/ledger-entry.schema.json": "a8ba3fcb6122f57fd728d7c51bfd75b92405112e55820975b986cea8860abd26",
         ".migration/harness/schemas/plan-tickets.schema.json": "fe6f8f3b41cf64292bbcc6a4aef45e3bc252ba72ac92c702a7b91273dbc6b9da",
-        ".migration/harness/schemas/profile.schema.json": "43c5a185ee392aaccd33cd2e3dc9faeff82acfb8691b83225efc5d73cad623a9",
+        ".migration/harness/schemas/profile.schema.json": "96a3c82edc7ba6ea6672de2ede27d649b67a59a2e533f53625c41d5342164881",
         ".migration/harness/schemas/return.schema.json": "ff1fe532e773865fdcae5ab0f321b26376802567270d4753f5e01e22e85b7d21",
         ".migration/harness/schemas/slice.schema.json": "4697d465a8e85177184f1699af4d7a290e15922e9e92e799cc68ba96da2db706",
         ".migration/harness/schemas/spec.schema.json": "f6c7aadd62bef5115e353b066c173d34ef53bd95c27405519936f91ec66da1a7"
