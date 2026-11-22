@@ -58,3 +58,21 @@ cases:
     when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
     then: {replay: {body: text}}
 
+  - title: A loan still out never costs less than nothing or more than ten dollars, whatever the date
+    rule: [fee-waived-two-days, fee-capped-at-10]
+    oracle: .migration/references/characterization-SY-05.md
+    forall: {today: {date: {from: "2026-01-16", to: "2030-12-31"}}}
+    given: {clock: "{today}"}
+    when: {http: {method: GET, path: /fees/L1}}
+    then:
+      status: 200
+      number: {pattern: 'Fee: \$([0-9.]+)', min: 0, max: 10}
+
+  - title: A returned loan's fee never changes, whatever today is
+    rule: late-days-end-at-return
+    oracle: .migration/characterization/source/goldens/http.json
+    forall: {today: {date: {from: "2026-01-04", to: "2030-12-31"}}}
+    given: {clock: "{today}"}
+    when: {http: {method: GET, path: /fees/L3}}
+    then: {status: 200, text: ["19 day(s) late", "Fee: $4.75"]}
+
