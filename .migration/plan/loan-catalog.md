@@ -29,3 +29,28 @@ The persistent loan catalog is available through the characterized list and look
 ## Shared files
 
 `config/settings.py` and `config/urls.py` are extended by later slices. Later slices are blocked along the approved composition order; see `cross_slice` in the tickets file.
+
+## TD-20261122-UI: Make the browser tests wait for the page
+
+**Test debt** in the `loan-catalog` slice: lines `afs-test-health` flags in tests written before the coupling guard (ADR-0064, ADR-0065):
+
+  - `tests/fees/test_endpoints.py:260` non-waiting browser assertion: `inner_text()`
+  - `tests/library_info/test_about_page.py:42` non-waiting browser assertion: `is_visible()`
+  - `tests/library_info/test_about_page.py:43` non-waiting browser assertion: `is_visible()`
+  - `tests/library_info/test_about_page.py:46` non-waiting browser assertion: `is_visible()`
+  - `tests/library_info/test_about_page.py:47` non-waiting browser assertion: `is_visible()`
+  - `tests/library_info/test_about_page.py:48` non-waiting browser assertion: `get_attribute()`
+  - `tests/library_info/test_about_page.py:52` non-waiting browser assertion: `get_attribute()`
+  - `tests/loans/test_catalog.py:116` non-waiting browser assertion: `count()`
+  - `tests/loans/test_catalog.py:324` non-waiting browser assertion: `count()`
+  - `tests/loans/test_catalog.py:325` non-waiting browser assertion: `count()`
+  - `tests/loans/test_catalog.py:357` non-waiting browser assertion: `count()`
+  - `tests/loans/test_catalog.py:416` non-waiting browser assertion: `inner_text()`
+  - `tests/loans/test_catalog.py:408` non-waiting browser assertion: `inner_text()`
+  - `tests/test_htmx_errors.py:79` non-waiting browser assertion: `inner_text()`
+  - `tests/test_ui_smoke.py:21` non-waiting browser assertion: `is_visible()`
+  - `tests/test_ui_smoke.py:22` non-waiting browser assertion: `is_visible()`
+
+Rewrite each one to assert with Playwright's `expect(locator).to_be_visible()` / `.to_have_text(...)`, which waits for the page (ADR-0065), and look headers up by their lowercase name.
+
+**Behaviour doesn't change.** Change production code only to expose a clean seam a test needs, and say why in your return's `notes`. Every rewritten test must still fail if the behaviour it covers breaks. When you finish, `python .migration/harness/tools/afs-test-health` must list none of these lines (an exempted line with a reason is fine).
