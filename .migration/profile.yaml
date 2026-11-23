@@ -1,7 +1,7 @@
 harness_version: 0.2.0
 source:
   repo: martins-vds/ai-factory-synthetic-target
-  sha: 563c316ed51462b08fd6e58f3781a3c8b2890453
+  sha: 96d50b85a9a456d9c0a58f080414b3badb501e59
   path: legacy
   stacks: [java-17, java-ee, maven, jax-rs-3.1, hibernate-orm-6.4, h2-2.2]
   encoding: UTF-8
