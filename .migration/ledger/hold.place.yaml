@@ -6,12 +6,13 @@ source:
   flow: Place Hold
   location: legacy/src/main/java/lib/HoldResource.java:37-57
   risk: {crap: 110, complexity: 10, coverage: 0}
-boundary: "POST /holds requires nonblank member and isbn (400 otherwise); returns 409 if the ISBN has no open loan, the requester has that loan, or the requester already has an active hold for that ISBN. It checks activeFor(member) > 3 before creating a hold, so a member with three active holds can create a fourth; this discrepancy is raised in hold-limit-off-by-one.md. Success creates H{max sequence + 1} dated today and returns 201 with a semicolon-separated hold line and trailing newline."
+boundary: "POST /holds requires nonblank member and isbn (400 otherwise); returns 409 if the ISBN has no open loan, the requester has that loan, or the requester already has an active hold for that ISBN. It checks activeFor(member) > 3 before creating a hold, so a member with three active holds can create a fourth; this discrepancy is raised as quirk martins-vds/ai-factory-synthetic-target#170. Success creates H{max sequence + 1} dated today and returns 201 with a semicolon-separated hold line and trailing newline."
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
 verification: pending
-notes: "Quirk draft: .migration/quirks/hold-limit-off-by-one.md."
+notes: "The hold limit awaits the operator's ruling on quirk martins-vds/ai-factory-synthetic-target#170."
+quirks: [martins-vds/ai-factory-synthetic-target#170]
 rules:
   - id: required-fields
     rule: Missing or whitespace-only member or ISBN returns HTTP 400.
