@@ -10,4 +10,10 @@ boundary: "POST /holds/{id}/cancel returns 404 for an unknown id and 409 for an 
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: pending
+verification: characterized
+characterization_tier: A
+evidence:
+  - .migration/references/characterization-SY-08.md
+  - .migration/evidence/runs/SY-08.md
+  - .migration/characterization/source/goldens/http.json
+  - .migration/characterization/source/goldens/edge-cases.json

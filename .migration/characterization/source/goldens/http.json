@@ -23,6 +23,18 @@
       "status": 200
     }
   },
+  "GET /holds": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
   "GET /loans": {
     "request": {
       "form": null,
@@ -43,6 +55,33 @@
     },
     "response": {
       "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /holds": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H2;dee;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /holds/{id}/cancel": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H2/cancel"
+    },
+    "response": {
+      "body": "H2;dee;9780134685991;2026-11-23;2026-12-23\n",
       "content_type": "text/plain",
       "status": 200
     }

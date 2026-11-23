@@ -28,8 +28,9 @@ capabilities:
   provided_by:
   - kind: tool
     name: .migration/characterization/source/characterize.py and HTTP/browser golden files
-  notes: 'All 7 source graph endpoints, 12 edge cases, 2 browser pages, restart reset and payment-gateway mappings
-    are captured. Evidence: .migration/evidence/runs/SY-05.md (source-characterization-record, source-characterization-verify).'
+  notes: 'All 10 source graph endpoints, 27 edge cases, 2 browser pages, restart reset, payment-gateway mappings and
+    hold expiry/limit observations are captured. Evidence: .migration/evidence/runs/SY-05.md and
+    .migration/evidence/runs/SY-08.md; details: .migration/references/characterization-SY-08.md.'
 - id: unit-integration-tests
   applies_to: target
   status: met

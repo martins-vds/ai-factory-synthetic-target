@@ -12,6 +12,6 @@ target:
 status: migrated
 verification: differential
 characterization_tier: A
-evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records]
-notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 seeds fresh databases only; subsequent startup does not overwrite existing loans. The revised seed script adds a separate sample HOLD row, tracked in data.hold-seed-record."
+evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records, .migration/references/characterization-SY-08.md, .migration/evidence/runs/SY-08.md, .migration/characterization/source/goldens/edge-cases.json]
+notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 seeds fresh databases only; subsequent startup does not overwrite existing loans. The re-pinned seed row H1 was re-checked at the hold boundary; it is expired on the run date but remains cancellable. The row is tracked in data.hold-seed-record."
 quirks: [martins-vds/ai-factory-synthetic-target#42]

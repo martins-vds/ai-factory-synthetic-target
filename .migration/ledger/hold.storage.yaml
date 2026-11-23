@@ -8,4 +8,11 @@ boundary: "HOLD stores id, sequence, member, ISBN, placement date, and nullable 
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: pending
+verification: characterized
+characterization_tier: A
+evidence:
+  - .migration/references/characterization-SY-08.md
+  - .migration/evidence/runs/SY-08.md
+  - .migration/characterization/source/goldens/hold-listing.json
+  - .migration/characterization/source/goldens/hold-expired.json
+  - .migration/characterization/source/goldens/edge-cases.json

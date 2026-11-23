@@ -35,6 +35,42 @@
       "status": 404
     }
   },
+  "GET /holds after writes": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H3;dee;9780134685991;2026-11-23;2026-12-23\nH4;eli;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds filtered": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds?isbn=9780134685991"
+    },
+    "response": {
+      "body": "H3;dee;9780134685991;2026-11-23;2026-12-23\nH4;eli;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds filtered empty": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds?isbn="
+    },
+    "response": {
+      "body": "\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
   "GET /loans after writes": {
     "request": {
       "form": null,
@@ -67,6 +103,172 @@
     },
     "response": {
       "body": "no such loan\n",
+      "content_type": "text/plain",
+      "status": 404
+    }
+  },
+  "POST /holds/already cancelled": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H2/cancel"
+    },
+    "response": {
+      "body": "hold already cancelled\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/blank-fields": {
+    "request": {
+      "form": {
+        "isbn": "",
+        "member": " "
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /holds/book-available": {
+    "request": {
+      "form": {
+        "isbn": "9780596007126",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "book is available\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/borrower": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "ana"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member has this book\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/cancel expired seed": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H1/cancel"
+    },
+    "response": {
+      "body": "H1;bo;9780134685991;2026-01-05;2026-02-04\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /holds/cancel expired seed again": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H1/cancel"
+    },
+    "response": {
+      "body": "hold already cancelled\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/duplicate": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "already on hold\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/duplicate setup": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H3;dee;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /holds/missing-isbn": {
+    "request": {
+      "form": {
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /holds/missing-member": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /holds/second member": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "eli"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H4;eli;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /holds/unknown cancel": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/unknown/cancel"
+    },
+    "response": {
+      "body": "no such hold\n",
       "content_type": "text/plain",
       "status": 404
     }

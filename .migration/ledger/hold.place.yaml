@@ -10,8 +10,15 @@ boundary: "POST /holds requires nonblank member and isbn (400 otherwise); return
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: pending
-notes: "The hold limit awaits the operator's ruling on quirk martins-vds/ai-factory-synthetic-target#170."
+verification: characterized
+characterization_tier: A
+evidence:
+  - .migration/references/characterization-SY-08.md
+  - .migration/evidence/runs/SY-08.md
+  - .migration/characterization/source/goldens/http.json
+  - .migration/characterization/source/goldens/edge-cases.json
+  - .migration/characterization/source/goldens/hold-limit.json
+notes: "Quirk martins-vds/ai-factory-synthetic-target#170 is ruled preserve: the source accepts a fourth active hold and rejects a fifth."
 quirks: [martins-vds/ai-factory-synthetic-target#170]
 rules:
   - id: required-fields

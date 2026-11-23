@@ -1,0 +1,23 @@
+role: afs-characterizer
+ticket: SY-08
+issue: martins-vds/ai-factory-synthetic-target#171
+tier_used: {A: 9, B: 0, C: 0}
+suite:
+  path: .migration/characterization/source/characterize.py
+  cases: 52
+  passing: 52
+  run_log: .migration/evidence/runs/SY-08.md
+predicted_vs_observed: {match: 9, differs: 0}
+ledger_updated:
+  - hold.place
+  - hold.list-active
+  - hold.cancel
+  - hold.repository
+  - hold.storage
+  - data.hold-seed-record
+  - application.startup
+  - data.loan-storage
+  - data.seed-records
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#170
+review_only_requests: []
