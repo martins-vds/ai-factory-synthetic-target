@@ -1,0 +1,30 @@
+id: hold.place
+kind: behavioral
+title: Place a hold on a checked-out book
+source:
+  graph_node: endpoint:legacy/src/main/java/lib/HoldResource.java:POST /holds
+  flow: Place Hold
+  location: legacy/src/main/java/lib/HoldResource.java:37-57
+  risk: {crap: 110, complexity: 10, coverage: 0}
+boundary: "POST /holds requires nonblank member and isbn (400 otherwise); returns 409 if the ISBN has no open loan, the requester has that loan, or the requester already has an active hold for that ISBN. It checks activeFor(member) > 3 before creating a hold, so a member with three active holds can create a fourth; this discrepancy is raised in hold-limit-off-by-one.md. Success creates H{max sequence + 1} dated today and returns 201 with a semicolon-separated hold line and trailing newline."
+slice: hold-management
+tickets: [martins-vds/ai-factory-synthetic-target#168]
+status: pending
+verification: pending
+notes: "Quirk draft: .migration/quirks/hold-limit-off-by-one.md."
+rules:
+  - id: required-fields
+    rule: Missing or whitespace-only member or ISBN returns HTTP 400.
+    source: legacy/src/main/java/lib/HoldResource.java:37-40
+  - id: on-loan
+    rule: A hold may be placed only when the ISBN has an open loan and the requesting member is not the borrower.
+    source: legacy/src/main/java/lib/HoldResource.java:41-48
+  - id: no-duplicate-active-hold
+    rule: A member with an active hold for the ISBN is rejected with HTTP 409.
+    source: legacy/src/main/java/lib/HoldResource.java:49-51
+  - id: active-hold-limit
+    rule: The source rejects placement only when the member already has more than three active holds; with three it accepts a fourth.
+    source: legacy/src/main/java/lib/HoldResource.java:52-54
+  - id: hold-placement-date
+    rule: A newly placed hold records the current local date as placedOn.
+    source: legacy/src/main/java/lib/HoldResource.java:55-57

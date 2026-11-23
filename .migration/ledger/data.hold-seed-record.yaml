@@ -1,0 +1,11 @@
+id: data.hold-seed-record
+kind: data
+title: Seed one example hold
+source:
+  graph_node: table:legacy/src/main/resources/META-INF/seed.sql:HOLD
+  location: legacy/src/main/resources/META-INF/seed.sql:4
+boundary: "The seed script inserts H1 (sequence 1) for member bo and ISBN 9780134685991, placed on 2026-01-05 with no cancellation date."
+slice: hold-management
+tickets: [martins-vds/ai-factory-synthetic-target#168]
+status: pending
+verification: pending

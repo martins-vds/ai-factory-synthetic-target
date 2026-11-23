@@ -1,0 +1,13 @@
+id: hold.list-active
+kind: behavioral
+title: List active holds
+source:
+  graph_node: endpoint:legacy/src/main/java/lib/HoldResource.java:GET /holds
+  flow: List Active Holds
+  location: legacy/src/main/java/lib/HoldResource.java:30-34
+  risk: {crap: 2, complexity: 1, coverage: 0}
+boundary: "GET /holds lists uncancelled holds whose expiry date is today or later, in sequence order; an optional isbn query filters the list. Each line is id;member;isbn;placedOn;expiresOn with a trailing newline; an empty result is a single newline."
+slice: hold-management
+tickets: [martins-vds/ai-factory-synthetic-target#168]
+status: pending
+verification: pending

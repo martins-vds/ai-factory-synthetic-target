@@ -4,7 +4,7 @@ kind: data
 title: Seed the three example loans
 source:
   graph_node: table:legacy/src/main/resources/META-INF/seed.sql:LOAN
-  location: legacy/src/main/resources/META-INF/seed.sql:1-3
+  location: legacy/src/main/resources/META-INF/seed.sql:1-4
 boundary: "The persistence unit loads three fixed example loan rows at startup: L1, L2, and L3, with their member, ISBN, and lent/returned dates."
 tickets: [martins-vds/ai-factory-synthetic-target#35]
 target:
@@ -13,5 +13,5 @@ status: migrated
 verification: differential
 characterization_tier: A
 evidence: [.migration/references/characterization-SY-05.md, .migration/evidence/runs/SY-05.md, .migration/characterization/source/goldens/http.json, .migration/characterization/source/goldens/restart.json, .migration/evidence/runs/LL-01.md, tests/loans/test_catalog.py::test_list_endpoint_returns_seeded_records]
-notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 seeds fresh databases only; subsequent startup does not overwrite existing loans."
+notes: "The approved ruling in martins-vds/ai-factory-synthetic-target#42 seeds fresh databases only; subsequent startup does not overwrite existing loans. The revised seed script adds a separate sample HOLD row, tracked in data.hold-seed-record."
 quirks: [martins-vds/ai-factory-synthetic-target#42]

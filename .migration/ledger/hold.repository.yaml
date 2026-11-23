@@ -1,0 +1,11 @@
+id: hold.repository
+kind: structural
+title: Query and persist holds
+source:
+  graph_node: class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository
+  location: legacy/src/main/java/lib/HoldRepository.java:13-83
+boundary: "HoldRepository reads and closes an EntityManager for active, member-count, duplicate and id lookups; active holds are ordered by sequence and optionally filtered by ISBN. Writes use a transaction, commit on success, roll back if still active after failure, and close the EntityManager. Placement uses max(seq)+1 for the H-prefixed id; cancellation merges the updated entity."
+slice: hold-management
+tickets: [martins-vds/ai-factory-synthetic-target#168]
+status: pending
+verification: pending

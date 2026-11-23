@@ -1,0 +1,13 @@
+id: hold.cancel
+kind: behavioral
+title: Cancel a hold
+source:
+  graph_node: endpoint:legacy/src/main/java/lib/HoldResource.java:POST /holds/{id}/cancel
+  flow: Cancel Hold
+  location: legacy/src/main/java/lib/HoldResource.java:60-70
+  risk: {crap: 12, complexity: 3, coverage: 0}
+boundary: "POST /holds/{id}/cancel returns 404 for an unknown id and 409 for an already-cancelled hold. Otherwise it records today's date and returns the hold line with HTTP 200; an expired but not-yet-cancelled hold is still cancellable."
+slice: hold-management
+tickets: [martins-vds/ai-factory-synthetic-target#168]
+status: pending
+verification: pending
