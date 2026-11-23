@@ -62,6 +62,21 @@
         "promptRequest",
         "requestId"
       ],
+      "session.resume": [
+        "alreadyInUse",
+        "context",
+        "contextTier",
+        "continuePendingWork",
+        "eventCount",
+        "eventsFileSizeBytes",
+        "reasoningEffort",
+        "reasoningSummary",
+        "remoteSteerable",
+        "resumeTime",
+        "selectedModel",
+        "sessionLimits",
+        "sessionWasActive"
+      ],
       "session.start": [
         "alreadyInUse",
         "context",
@@ -76,6 +91,15 @@
         "startTime",
         "version"
       ],
+      "session.usage_checkpoint": [
+        "accountingSnapshot",
+        "modelCacheState",
+        "promptCacheBreakState",
+        "providerModelMetrics",
+        "totalNanoAiu",
+        "totalPremiumRequests",
+        "usageAccountingWatermarks"
+      ],
       "session.usage_record": [
         "usage"
       ],
@@ -89,6 +113,20 @@
       "skill.invoked": [
         "allowedTools",
         "content",
+        "description",
+        "invokedAtTurn",
+        "model",
+        "name",
+        "path",
+        "pluginName",
+        "pluginVersion",
+        "source",
+        "trigger"
+      ],
+      "skill.invoked_ref": [
+        "allowedTools",
+        "contentId",
+        "contentLength",
         "description",
         "invokedAtTurn",
         "model",
@@ -149,63 +187,76 @@
       ]
     },
     "event_types": {
-      "assistant.message": 66,
-      "assistant.turn_end": 34,
-      "assistant.turn_start": 34,
-      "external_tool.completed": 1,
-      "external_tool.requested": 1,
-      "hook.end": 116,
-      "hook.start": 117,
-      "permission.completed": 71,
-      "permission.requested": 71,
+      "assistant.message": 104,
+      "assistant.turn_end": 55,
+      "assistant.turn_start": 55,
+      "external_tool.completed": 2,
+      "external_tool.requested": 2,
+      "hook.end": 196,
+      "hook.start": 197,
+      "permission.completed": 121,
+      "permission.requested": 121,
+      "session.resume": 1,
       "session.start": 1,
-      "session.usage_record": 34,
-      "skill.context_delivered_ref": 6,
+      "session.usage_checkpoint": 1,
+      "session.usage_record": 55,
+      "skill.context_delivered_ref": 8,
       "skill.invoked": 6,
+      "skill.invoked_ref": 2,
       "subagent.selected": 1,
-      "system.message": 1,
-      "tool.execution_complete": 76,
-      "tool.execution_start": 76,
-      "user.message": 1
+      "system.message": 2,
+      "tool.execution_complete": 122,
+      "tool.execution_start": 122,
+      "user.message": 2
     },
-    "events": 713,
+    "events": 1176,
     "usage_fields": []
   },
-  "ended_at": "2026-11-23T13:58:16.403Z",
+  "ended_at": "2026-11-23T14:38:26.294Z",
   "event": "agentStop",
   "harness_tools": [
     {
-      "count": 4,
+      "count": 1,
+      "exit": 0,
+      "tool": "afs-mutation"
+    },
+    {
+      "count": 9,
       "exit": 0,
       "tool": "afs-run"
     },
     {
-      "count": 2,
+      "count": 4,
       "exit": 1,
       "tool": "afs-run"
     },
     {
-      "count": 1,
+      "count": 2,
       "exit": 0,
       "tool": "afs-services"
     },
     {
       "count": 1,
       "exit": 0,
-      "tool": "check_inputs.py"
+      "tool": "afs-test-health"
     },
     {
       "count": 2,
+      "exit": 0,
+      "tool": "check_inputs.py"
+    },
+    {
+      "count": 4,
       "exit": 0,
       "tool": "check_plan.py"
     },
     {
-      "count": 1,
+      "count": 2,
       "exit": 0,
       "tool": "check_runtime.py"
     },
     {
-      "count": 2,
+      "count": 4,
       "exit": 0,
       "tool": "validate.py"
     },
@@ -219,11 +270,11 @@
   "models": {
     "gpt-6-luna": {
       "output": 0,
-      "requests": 66
+      "requests": 104
     }
   },
   "prompt_head": null,
-  "recorded_at": "2026-11-23T13:58:22+00:00",
+  "recorded_at": "2026-11-23T14:38:31+00:00",
   "schema": "afs-cost/1",
   "session_id": "9f8ed20d-137c-44b1-971d-5ffeb57e10af",
   "shutdown_wait_s": "skipped: the coding agent writes session.shutdown after session hooks",
