@@ -6,7 +6,7 @@
       "path": "/fees/L1"
     },
     "response": {
-      "body": "<h1>Late fee for L1</h1><p>Due 2026-01-16, 296 day(s) late.</p><p class=\"fee\">Fee: $10.00</p>",
+      "body": "<h1>Late fee for L1</h1><p>Due 2026-01-16, 311 day(s) late.</p><p class=\"fee\">Fee: $10.00</p>",
       "content_type": "text/html",
       "status": 200
     }
@@ -35,6 +35,42 @@
       "status": 404
     }
   },
+  "GET /holds after writes": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H3;dee;9780134685991;2026-11-23;2026-12-23\nH4;eli;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds filtered": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds?isbn=9780134685991"
+    },
+    "response": {
+      "body": "H3;dee;9780134685991;2026-11-23;2026-12-23\nH4;eli;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds filtered empty": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds?isbn="
+    },
+    "response": {
+      "body": "\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
   "GET /loans after writes": {
     "request": {
       "form": null,
@@ -42,7 +78,7 @@
       "path": "/loans"
     },
     "response": {
-      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\nL2;bo;9780596007126;2026-01-10;2026-01-24;2026-11-08\nL3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\nL4;dee;123;2026-11-08;2026-11-22;\nL5;;;2026-11-08;2026-11-22;\nL6;a;b;123;456;2026-11-08;2026-11-22;\n",
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;\nL2;bo;9780596007126;2026-01-10;2026-01-24;2026-11-23\nL3;cy;9781617294945;2025-12-01;2025-12-15;2026-01-03\nL4;dee;123;2026-11-23;2026-12-07;\nL5;;;2026-11-23;2026-12-07;\nL6;a;b;123;456;2026-11-23;2026-12-07;\n",
       "content_type": "text/plain",
       "status": 200
     }
@@ -54,7 +90,7 @@
       "path": "/loans/L5"
     },
     "response": {
-      "body": "L5;;;2026-11-08;2026-11-22;\n",
+      "body": "L5;;;2026-11-23;2026-12-07;\n",
       "content_type": "text/plain",
       "status": 200
     }
@@ -71,6 +107,172 @@
       "status": 404
     }
   },
+  "POST /holds/already cancelled": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H2/cancel"
+    },
+    "response": {
+      "body": "hold already cancelled\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/blank-fields": {
+    "request": {
+      "form": {
+        "isbn": "",
+        "member": " "
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /holds/book-available": {
+    "request": {
+      "form": {
+        "isbn": "9780596007126",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "book is available\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/borrower": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "ana"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member has this book\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/cancel expired seed": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H1/cancel"
+    },
+    "response": {
+      "body": "H1;bo;9780134685991;2026-01-05;2026-02-04\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /holds/cancel expired seed again": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/H1/cancel"
+    },
+    "response": {
+      "body": "hold already cancelled\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/duplicate": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "already on hold\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds/duplicate setup": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H3;dee;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /holds/missing-isbn": {
+    "request": {
+      "form": {
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /holds/missing-member": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member and isbn are required\n",
+      "content_type": "text/plain",
+      "status": 400
+    }
+  },
+  "POST /holds/second member": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "eli"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H4;eli;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /holds/unknown cancel": {
+    "request": {
+      "form": null,
+      "method": "POST",
+      "path": "/holds/unknown/cancel"
+    },
+    "response": {
+      "body": "no such hold\n",
+      "content_type": "text/plain",
+      "status": 404
+    }
+  },
   "POST /loans/L2/return again": {
     "request": {
       "form": null,
@@ -78,7 +280,7 @@
       "path": "/loans/L2/return"
     },
     "response": {
-      "body": "L2;bo;9780596007126;2026-01-10;2026-01-24;2026-11-08\n",
+      "body": "L2;bo;9780596007126;2026-01-10;2026-01-24;2026-11-23\n",
       "content_type": "text/plain",
       "status": 200
     }
@@ -93,7 +295,7 @@
       "path": "/loans"
     },
     "response": {
-      "body": "L5;;;2026-11-08;2026-11-22;\n",
+      "body": "L5;;;2026-11-23;2026-12-07;\n",
       "content_type": "text/plain",
       "status": 201
     }
@@ -108,7 +310,7 @@
       "path": "/loans"
     },
     "response": {
-      "body": "L6;a;b;123;456;2026-11-08;2026-11-22;\n",
+      "body": "L6;a;b;123;456;2026-11-23;2026-12-07;\n",
       "content_type": "text/plain",
       "status": 201
     }

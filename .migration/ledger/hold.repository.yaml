@@ -8,4 +8,11 @@ boundary: "HoldRepository reads and closes an EntityManager for active, member-c
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: pending
+verification: characterized
+characterization_tier: A
+evidence:
+  - .migration/references/characterization-SY-08.md
+  - .migration/evidence/runs/SY-08.md
+  - .migration/characterization/source/goldens/edge-cases.json
+  - .migration/characterization/source/goldens/hold-listing.json
+notes: "Public reads, placement and cancellation were observed at tier A. The rollback-on-failure branch has no public HTTP trigger and is source-confirmed at HoldRepository.java:69-81."

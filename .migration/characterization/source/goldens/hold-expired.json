@@ -1,0 +1,14 @@
+{
+  "GET /holds one day after expiry": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  }
+}

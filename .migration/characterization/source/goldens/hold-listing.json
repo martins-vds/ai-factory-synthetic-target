@@ -1,0 +1,80 @@
+{
+  "GET /holds filtered second isbn": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds?isbn=9781111111111"
+    },
+    "response": {
+      "body": "H3;eli;9781111111111;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds filtered unknown isbn": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds?isbn=unknown"
+    },
+    "response": {
+      "body": "\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds on expiry date": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H1;bo;9780134685991;2026-10-24;2026-11-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "GET /holds ordered": {
+    "request": {
+      "form": null,
+      "method": "GET",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H1;bo;9780134685991;2026-10-24;2026-11-23\nH2;dee;9780134685991;2026-11-23;2026-12-23\nH3;eli;9781111111111;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 200
+    }
+  },
+  "POST /holds first isbn": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H2;dee;9780134685991;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  },
+  "POST /holds second isbn": {
+    "request": {
+      "form": {
+        "isbn": "9781111111111",
+        "member": "eli"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H3;eli;9781111111111;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  }
+}

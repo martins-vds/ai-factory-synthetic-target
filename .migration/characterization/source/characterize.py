@@ -120,28 +120,32 @@ def run_source(source_dir, env, exercise, port=None, seed_sql=None):
     process_env.update(env)
     if port is not None:
         process_env['PORT'] = str(port)
-    with tempfile.TemporaryFile() as output:
+    seed_path = source_dir / 'src/main/resources/META-INF/seed.sql'
+    original_seed = seed_path.read_bytes() if seed_sql is not None else None
+    try:
         if seed_sql is not None:
-            (source_dir / 'src/main/resources/META-INF/seed.sql').write_text(
-                seed_sql, encoding='utf-8'
+            seed_path.write_text(seed_sql, encoding='utf-8')
+        with tempfile.TemporaryFile() as output:
+            process = subprocess.Popen(
+                ['bash', str(source_dir / 'run.sh')],
+                cwd=source_dir,
+                env=process_env,
+                stdout=output,
+                stderr=subprocess.STDOUT,
             )
-        process = subprocess.Popen(
-            ['bash', str(source_dir / 'run.sh')],
-            cwd=source_dir,
-            env=process_env,
-            stdout=output,
-            stderr=subprocess.STDOUT,
-        )
-        try:
-            wait_until_ready(process, output, base_url)
-            return exercise(base_url)
-        finally:
-            process.terminate()
             try:
-                process.wait(timeout=10)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
+                wait_until_ready(process, output, base_url)
+                return exercise(base_url)
+            finally:
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+    finally:
+        if original_seed is not None:
+            seed_path.write_bytes(original_seed)
 
 
 def exercise_http(base_url):
@@ -287,22 +291,29 @@ def hold_seed_for_date(days_ago):
 
 def exercise_hold_listing(base_url):
     observations = {
-        'GET /holds on expiry date': get_response('GET', '/holds', None, base_url),
+        'GET /holds on expiry date': observe('GET', '/holds', None, base_url),
     }
-    observations['POST /holds first isbn'] = get_response(
+    observations['POST /holds first isbn'] = observe(
         'POST', '/holds', {'member': 'dee', 'isbn': '9780134685991'}, base_url
     )
-    observations['POST /holds second isbn'] = get_response(
+    observations['POST /holds second isbn'] = observe(
         'POST', '/holds', {'member': 'eli', 'isbn': '9781111111111'}, base_url
     )
-    observations['GET /holds ordered'] = get_response('GET', '/holds', None, base_url)
-    observations['GET /holds filtered second isbn'] = get_response(
+    observations['GET /holds ordered'] = observe('GET', '/holds', None, base_url)
+    observations['GET /holds filtered second isbn'] = observe(
         'GET', '/holds?isbn=9781111111111', None, base_url
     )
-    observations['GET /holds filtered unknown isbn'] = get_response(
+    observations['GET /holds filtered unknown isbn'] = observe(
         'GET', '/holds?isbn=unknown', None, base_url
     )
     return observations
+
+
+def observe(method, path, form, base_url):
+    return {
+        'request': {'method': method, 'path': path, 'form': form},
+        'response': get_response(method, path, form, base_url),
+    }
 
 
 def hold_listing_seed():
@@ -314,7 +325,7 @@ def hold_listing_seed():
 
 
 def exercise_hold_expired(base_url):
-    return {'GET /holds one day after expiry': get_response('GET', '/holds', None, base_url)}
+    return {'GET /holds one day after expiry': observe('GET', '/holds', None, base_url)}
 
 
 def hold_limit_seed():
@@ -345,10 +356,10 @@ def hold_limit_seed():
 
 def exercise_hold_limit(base_url):
     return {
-        'POST /holds with three active holds': get_response(
+        'POST /holds with three active holds': observe(
             'POST', '/holds', {'member': 'dee', 'isbn': '9783333333333'}, base_url
         ),
-        'POST /holds with four active holds': get_response(
+        'POST /holds with four active holds': observe(
             'POST', '/holds', {'member': 'dee', 'isbn': '9784444444444'}, base_url
         ),
     }

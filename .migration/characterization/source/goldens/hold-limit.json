@@ -1,0 +1,32 @@
+{
+  "POST /holds with four active holds": {
+    "request": {
+      "form": {
+        "isbn": "9784444444444",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "hold limit reached\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds with three active holds": {
+    "request": {
+      "form": {
+        "isbn": "9783333333333",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "H5;dee;9783333333333;2026-11-23;2026-12-23\n",
+      "content_type": "text/plain",
+      "status": 201
+    }
+  }
+}
