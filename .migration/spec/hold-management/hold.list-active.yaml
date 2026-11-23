@@ -3,7 +3,14 @@ title: List active holds
 cases:
   - title: Active holds are listed in sequence order and an ISBN filter narrows the list
     rule: [sequence-order, isbn-filter]
-    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/active-listing.json]}
+    given:
+      clock: "2026-11-23"
+      fixtures: [.migration/spec/hold-management/fixtures/expiry-hold.json]
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: eli, isbn: "9781111111111"}}
     examples:
       columns: [recording, exchange]
       rows:
@@ -15,7 +22,7 @@ cases:
 
   - title: A hold remains listed on its expiry date and is absent the next day
     rule: active-through-expiry-day
-    given: {clock: "{today}", fixtures: [tests/holds/fixtures/expiry-day.json]}
+    given: {clock: "{today}", fixtures: [.migration/spec/hold-management/fixtures/expiry-hold.json]}
     examples:
       columns: [recording, exchange, today]
       rows:
@@ -37,6 +44,13 @@ cases:
 
   - title: Cancelled holds do not appear in the active list
     rule: cancelled-excluded
-    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/after-writes.json]}
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: eli, isbn: "9780134685991"}}
     when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "GET /holds after writes"}}
     then: {replay: {body: exact}}

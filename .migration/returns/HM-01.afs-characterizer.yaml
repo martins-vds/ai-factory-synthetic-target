@@ -1,7 +1,7 @@
 role: afs-characterizer
 ticket: HM-01
 issue: martins-vds/ai-factory-synthetic-target#178
-pr: null
+pr: martins-vds/ai-factory-synthetic-target#179
 tier_used: {A: 6, B: 0, C: 0}
 suite:
   path: .migration/characterization/source/characterize.py
@@ -29,4 +29,4 @@ spec:
     - .migration/spec/hold-management/data.hold-seed-record.yaml
   cases: 36
   rules_proved: 21
-handoff: .migration/handoffs/HM-01.md
+handoff: null

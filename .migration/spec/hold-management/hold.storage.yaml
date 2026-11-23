@@ -3,13 +3,20 @@ title: Persist hold records
 cases:
   - title: A listed hold shows its identifying details and dates
     rule: hold-details
-    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/active-listing.json]}
+    given:
+      clock: "2026-11-23"
+      fixtures: [.migration/spec/hold-management/fixtures/expiry-hold.json]
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: eli, isbn: "9781111111111"}}
     when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds ordered"}}
     then: {replay: {body: exact}}
 
   - title: A hold expires 30 days after placement and remains active through that date
     rule: expiry-inclusive
-    given: {clock: "{today}", fixtures: [tests/holds/fixtures/expiry-day.json]}
+    given: {clock: "{today}", fixtures: [.migration/spec/hold-management/fixtures/expiry-hold.json]}
     examples:
       columns: [recording, exchange, today]
       rows:
@@ -20,6 +27,13 @@ cases:
 
   - title: A cancelled hold is not returned as active
     rule: cancellation-removes-active
-    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/after-writes.json]}
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: eli, isbn: "9780134685991"}}
     when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "GET /holds after writes"}}
     then: {replay: {body: exact}}

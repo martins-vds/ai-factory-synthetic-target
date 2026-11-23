@@ -8,18 +8,28 @@ cases:
 
   - title: An already-cancelled hold cannot be cancelled again
     rule: already-cancelled
-    given: {fixtures: [tests/holds/fixtures/cancelled-h2.json]}
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
     when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/already cancelled"}}
     then: {replay: {body: exact}}
 
   - title: An expired hold can still be cancelled and its details are returned
     rule: [expired-hold-cancellable, cancellation-returns-hold]
+    given: {clock: "2026-11-23"}
     when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/cancel expired seed"}}
     then: {replay: {body: exact}}
 
   - title: A recently placed hold can be cancelled
     rule: cancellation-returns-hold
-    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/active-h2.json]}
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
     examples:
       columns: [exchange]
       rows:
@@ -29,6 +39,9 @@ cases:
 
   - title: Cancelling the seed hold twice returns the recorded conflict
     rule: already-cancelled
-    given: {fixtures: [tests/holds/fixtures/cancelled-h1.json]}
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds/H1/cancel}
     when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/cancel expired seed again"}}
     then: {replay: {body: exact}}
