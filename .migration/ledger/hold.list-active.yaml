@@ -10,7 +10,7 @@ boundary: "GET /holds lists uncancelled holds whose expiry date is today or late
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md

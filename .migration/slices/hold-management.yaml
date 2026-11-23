@@ -1,0 +1,9 @@
+data_paths:
+  source:
+    - endpoint=GET /holds
+    - endpoint=POST /holds
+    - endpoint=POST /holds/{id}/cancel
+  target:
+    - endpoint=GET /holds
+    - endpoint=POST /holds
+    - endpoint=POST /holds/<str:hold_id>/cancel

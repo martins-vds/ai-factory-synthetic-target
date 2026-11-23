@@ -1,0 +1,13 @@
+role: afs-planner
+ticket: SY-09
+issue: martins-vds/ai-factory-synthetic-target#175
+plan: .migration/plan/hold-management.tickets.yaml
+slices:
+  - name: hold-management
+    anchor: GET /holds; POST /holds; POST /holds/{id}/cancel; placement also reads LOAN
+    tickets: 3
+    blocked_by: [loan-catalog, loan-circulation]
+design_tickets: [HM-02]
+data_slices: []
+unmapped_capabilities: []
+open_questions: []

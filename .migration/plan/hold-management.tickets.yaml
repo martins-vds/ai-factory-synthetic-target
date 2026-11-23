@@ -1,0 +1,69 @@
+slice: hold-management
+tickets:
+  - id: HM-01
+    title: Characterize hold management and write its customer spec
+    role: afs-characterizer
+    specialty: null
+    files:
+      - .migration/spec/hold-management/
+      - .migration/ledger/hold.place.yaml
+      - .migration/ledger/hold.list-active.yaml
+      - .migration/ledger/hold.cancel.yaml
+      - .migration/ledger/hold.repository.yaml
+      - .migration/ledger/hold.storage.yaml
+      - .migration/ledger/data.hold-seed-record.yaml
+      - .migration/evidence/runs/HM-01.md
+      - .migration/returns/HM-01.afs-characterizer.yaml
+    capabilities:
+      - hold.place
+      - hold.list-active
+      - hold.cancel
+      - hold.repository
+      - hold.storage
+      - data.hold-seed-record
+    blocked_by: []
+  - id: HM-02
+    title: Design the hold placement decomposition and loan-state lookup seam
+    role: afs-planner
+    specialty: null
+    files:
+      - .migration/plan/hold-management.md
+      - .migration/returns/HM-02.afs-planner.yaml
+    capabilities: []
+    blocked_by: [HM-01]
+  - id: HM-03
+    title: Implement hold placement, listing, cancellation, and persistence
+    role: afs-migrator
+    specialty: null
+    files:
+      - config/settings.py
+      - config/urls.py
+      - src/holds/
+      - tests/holds/
+      - .migration/ledger/hold.place.yaml
+      - .migration/ledger/hold.list-active.yaml
+      - .migration/ledger/hold.cancel.yaml
+      - .migration/ledger/hold.repository.yaml
+      - .migration/ledger/hold.storage.yaml
+      - .migration/ledger/data.hold-seed-record.yaml
+      - .migration/evidence/runs/HM-03.md
+      - .migration/returns/HM-03.afs-migrator.yaml
+    capabilities:
+      - hold.place
+      - hold.list-active
+      - hold.cancel
+      - hold.repository
+      - hold.storage
+      - data.hold-seed-record
+    blocked_by: [HM-01, HM-02, LL-02]
+    builds:
+      - endpoint=GET /holds
+      - endpoint=POST /holds
+      - endpoint=POST /holds/<str:hold_id>/cancel
+cross_slice:
+  - file: config/settings.py
+    slices: [loan-catalog, monthly-report, hold-management]
+    note: Hold persistence registers alongside the existing loan and report apps.
+  - file: config/urls.py
+    slices: [loan-catalog, loan-circulation, fees-payments, library-info, hold-management]
+    note: The hold API extends the existing root URL composition after the loan slices.
