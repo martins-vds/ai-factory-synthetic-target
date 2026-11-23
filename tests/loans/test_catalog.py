@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import IntegrityError
 from django.utils import timezone
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 from src.loans.models import Loan
 from src.loans.repository import DjangoLoanRepository
@@ -113,7 +113,7 @@ def test_lend_endpoint_rejects_missing_or_blank_fields(client, payload, field):
     assert response.status_code == 400
     assert response['Content-Type'] == 'text/plain'
     assert field.encode() in response.content
-    assert Loan.objects.count() == 3
+    assert Loan.objects.count() == 3  # afs: allow-browser ORM row count, not a browser locator
 
 
 @pytest.mark.django_db
@@ -321,8 +321,10 @@ def test_browser_lending_page_shows_errors_for_blank_fields(client):
 
     assert response.status_code == 200
     assert b'<!doctype html>' in response.content
-    assert response.content.count(b'This field is required.') == 2
-    assert Loan.objects.count() == 3
+    assert (  # afs: allow-browser Django response bytes
+        response.content.count(b'This field is required.') == 2
+    )
+    assert Loan.objects.count() == 3  # afs: allow-browser ORM row count, not a browser locator
 
 
 @pytest.mark.django_db
@@ -354,7 +356,9 @@ def test_htmx_lending_errors_replace_only_the_form(client):
     assert response.status_code == 200
     assert b'<!doctype html>' not in response.content
     assert b'id="loan-form"' in response.content
-    assert response.content.count(b'This field is required.') == 2
+    assert (  # afs: allow-browser Django response bytes
+        response.content.count(b'This field is required.') == 2
+    )
 
 
 @pytest.mark.django_db
@@ -404,8 +408,7 @@ def test_real_browser_can_lend_and_return_a_book(live_server):
             page.get_by_role('button', name='Lend book').click()
 
             if htmx_available:
-                page.get_by_role('status').wait_for()
-                assert page.get_by_role('status').inner_text() == 'Loan L4 is ready.'
+                expect(page.get_by_role('status')).to_have_text('Loan L4 is ready.')
                 page.get_by_role('link', name='View loan').click()
             else:
                 page.wait_for_url('**/ui/loans/L4/')
@@ -413,7 +416,7 @@ def test_real_browser_can_lend_and_return_a_book(live_server):
             page.get_by_role('button', name='Return book').click()
             page.locator('#return-status [role="status"]').wait_for()
             returned_on = timezone.localdate().isoformat()
-            assert page.locator('#return-status').inner_text() == f'Returned on {returned_on}'
+            expect(page.locator('#return-status')).to_have_text(f'Returned on {returned_on}')
         finally:
             browser.close()
 

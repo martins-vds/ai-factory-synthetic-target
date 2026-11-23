@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 from src.fees.gateway import HttpPaymentGateway
 from src.fees.services import PaymentGatewayFailure
@@ -256,8 +256,7 @@ def test_real_browser_can_pay_a_late_fee(live_server, payment_gateway):
             page.get_by_role('button', name='Pay late fee').click()
 
             status = page.get_by_role('status')
-            status.wait_for()
-            assert status.inner_text().strip() == 'charged'
+            expect(status).to_have_text('charged')
             assert payment_gateway.requests == [('POST', '/charge?loan=L3', b'')]
         finally:
             browser.close()

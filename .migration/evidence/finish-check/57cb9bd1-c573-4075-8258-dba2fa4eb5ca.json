@@ -1,0 +1,38 @@
+[
+  {
+    "at": "2026-11-23T04:08:57Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 17766,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "TD-20261122-UI",
+    "role": "afs-migrator",
+    "changed": [
+      ".migration/costs/57cb9bd1-c573-4075-8258-dba2fa4eb5ca.json",
+      ".migration/evidence/runs/TD-20261122-UI.md",
+      ".migration/returns/TD-20261122-UI.afs-migrator.yaml",
+      "tests/fees/test_endpoints.py",
+      "tests/library_info/test_about_page.py",
+      "tests/loans/test_catalog.py",
+      "tests/test_htmx_errors.py",
+      "tests/test_ui_smoke.py"
+    ],
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]

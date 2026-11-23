@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 HTTP_GOLDEN_PATH = (
     Path(__file__).resolve().parents[2] / '.migration/characterization/source/goldens/http.json'
@@ -39,16 +39,17 @@ def test_modern_about_page_shows_library_information_in_browser(live_server):
 
             assert response is not None
             assert response.status == 200
-            assert page.get_by_role('heading', name='About the Lending Library').is_visible()
-            assert page.get_by_text(
-                'A neighborhood collection, kept in motion by the people who read it.'
-            ).is_visible()
-            assert page.get_by_text('Open Monday to Saturday, 9:00 to 18:00.').is_visible()
-            assert page.get_by_text('Books are lent for 14 days.').is_visible()
-            assert (
-                page.get_by_role('link', name='desk@lending-library.invalid').get_attribute('href')
-                == 'mailto:desk@lending-library.invalid'
+            expect(page.get_by_role('heading', name='About the Lending Library')).to_be_visible()
+            expect(
+                page.get_by_text(
+                    'A neighborhood collection, kept in motion by the people who read it.'
+                )
+            ).to_be_visible()
+            expect(page.get_by_text('Open Monday to Saturday, 9:00 to 18:00.')).to_be_visible()
+            expect(page.get_by_text('Books are lent for 14 days.')).to_be_visible()
+            expect(page.get_by_role('link', name='desk@lending-library.invalid')).to_have_attribute(
+                'href', 'mailto:desk@lending-library.invalid'
             )
-            assert page.get_by_role('link', name='Loans').get_attribute('href') == '/ui/loans/'
+            expect(page.get_by_role('link', name='Loans')).to_have_attribute('href', '/ui/loans/')
         finally:
             browser.close()

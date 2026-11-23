@@ -1,6 +1,6 @@
 import pytest
 from django.contrib.staticfiles import finders
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 
 def test_project_stylesheet_is_a_static_file():
@@ -18,7 +18,7 @@ def test_loan_catalog_renders_in_browser_and_admin_is_removed(client, live_serve
             response = page.goto(f'{live_server.url}/ui/loans/')
             assert response is not None
             assert response.status == 200
-            assert page.get_by_role('heading', name='Books in good company.').is_visible()
-            assert page.get_by_text('ana · ISBN 9780134685991').is_visible()
+            expect(page.get_by_role('heading', name='Books in good company.')).to_be_visible()
+            expect(page.get_by_text('ana · ISBN 9780134685991')).to_be_visible()
         finally:
             browser.close()
