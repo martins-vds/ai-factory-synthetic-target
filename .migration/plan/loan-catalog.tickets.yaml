@@ -61,6 +61,18 @@ tickets:
       - .migration/returns/LL-08.afs-migrator.yaml
     capabilities: []
     blocked_by: []
+  - id: TD-20261122-UI
+    title: Make the browser tests wait for the page
+    role: afs-migrator
+    specialty: null
+    files:
+    - tests/fees/test_endpoints.py
+    - tests/library_info/test_about_page.py
+    - tests/loans/test_catalog.py
+    - tests/test_htmx_errors.py
+    - tests/test_ui_smoke.py
+    capabilities: []
+    blocked_by: []
 cross_slice:
   - file: config/settings.py
     slices: [loan-catalog, monthly-report]
