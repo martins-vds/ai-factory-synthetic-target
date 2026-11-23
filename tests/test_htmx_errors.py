@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 HTMX_CDN_URL = 'https://cdn.jsdelivr.net/npm/htmx.org@2.0.11/dist/htmx.min.js'
 HTMX_FIXTURE = Path(__file__).parent / 'fixtures' / 'htmx-2.0.11.min.js'
@@ -76,7 +76,7 @@ def assert_error_fragment_swapped(
     assert response.value.status == status
     assert request['headers']['hx-request'] == 'true'
     assert request['headers']['hx-target'] == target
-    assert page.locator(f'#{target} [role="alert"]').inner_text() == message
+    expect(page.locator(f'#{target} [role="alert"]')).to_have_text(message)
 
 
 @pytest.mark.django_db(transaction=True)
