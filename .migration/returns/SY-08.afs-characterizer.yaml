@@ -1,0 +1,14 @@
+role: afs-characterizer
+ticket: SY-08
+issue: martins-vds/ai-factory-synthetic-target#171
+tier_used: {A: null, B: null, C: null}
+suite:
+  path: .migration/characterization/source/characterize.py
+  cases: null
+  passing: null
+  run_log: .migration/evidence/runs/SY-08.md
+predicted_vs_observed: {match: null, differs: null}
+ledger_updated: []
+quirk_tickets: []
+review_only_requests: []
+handoff: .migration/handoffs/SY-08.md

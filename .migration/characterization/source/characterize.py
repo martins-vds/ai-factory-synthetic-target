@@ -27,6 +27,9 @@ CASES = (
     ('GET /loans', 'GET', '/loans', None),
     ('GET /loans/{id}', 'GET', '/loans/L1', None),
     ('POST /loans', 'POST', '/loans', {'member': 'dee', 'isbn': '123'}),
+    ('GET /holds', 'GET', '/holds', None),
+    ('POST /holds', 'POST', '/holds', {'member': 'dee', 'isbn': '9780134685991'}),
+    ('POST /holds/{id}/cancel', 'POST', '/holds/H2/cancel', None),
     ('POST /loans/{id}/return', 'POST', '/loans/L1/return', None),
 )
 EDGE_CASES = (
@@ -42,6 +45,21 @@ EDGE_CASES = (
     ('POST /loans/L2/return again', 'POST', '/loans/L2/return', None),
     ('POST /payments/unknown', 'POST', '/payments/unknown', None),
     ('GET /loans after writes', 'GET', '/loans', None),
+    ('POST /holds/missing-member', 'POST', '/holds', {'isbn': '9780134685991'}),
+    ('POST /holds/missing-isbn', 'POST', '/holds', {'member': 'dee'}),
+    ('POST /holds/blank-fields', 'POST', '/holds', {'member': ' ', 'isbn': ''}),
+    ('POST /holds/book-available', 'POST', '/holds', {'member': 'dee', 'isbn': '9780596007126'}),
+    ('POST /holds/borrower', 'POST', '/holds', {'member': 'ana', 'isbn': '9780134685991'}),
+    ('POST /holds/duplicate setup', 'POST', '/holds', {'member': 'dee', 'isbn': '9780134685991'}),
+    ('POST /holds/duplicate', 'POST', '/holds', {'member': 'dee', 'isbn': '9780134685991'}),
+    ('POST /holds/second member', 'POST', '/holds', {'member': 'eli', 'isbn': '9780134685991'}),
+    ('GET /holds after writes', 'GET', '/holds', None),
+    ('GET /holds filtered', 'GET', '/holds?isbn=9780134685991', None),
+    ('GET /holds filtered empty', 'GET', '/holds?isbn=', None),
+    ('POST /holds/unknown cancel', 'POST', '/holds/unknown/cancel', None),
+    ('POST /holds/already cancelled', 'POST', '/holds/H2/cancel', None),
+    ('POST /holds/cancel expired seed', 'POST', '/holds/H1/cancel', None),
+    ('POST /holds/cancel expired seed again', 'POST', '/holds/H1/cancel', None),
 )
 
 
@@ -94,7 +112,7 @@ def get_port():
         return sock.getsockname()[1]
 
 
-def run_source(source_dir, env, exercise, port=None):
+def run_source(source_dir, env, exercise, port=None, seed_sql=None):
     base_url = f'http://127.0.0.1:{port or 8080}'
     process_env = os.environ.copy()
     process_env.pop('PORT', None)
@@ -103,6 +121,10 @@ def run_source(source_dir, env, exercise, port=None):
     if port is not None:
         process_env['PORT'] = str(port)
     with tempfile.TemporaryFile() as output:
+        if seed_sql is not None:
+            (source_dir / 'src/main/resources/META-INF/seed.sql').write_text(
+                seed_sql, encoding='utf-8'
+            )
         process = subprocess.Popen(
             ['bash', str(source_dir / 'run.sh')],
             cwd=source_dir,
@@ -197,7 +219,7 @@ def write_or_compare(name, observation, record):
         path.write_text(rendered, encoding='utf-8')
         return
     expected = json.loads(path.read_text(encoding='utf-8'))
-    if name in ('http', 'edge-cases'):
+    if name in ('http', 'edge-cases', 'hold-listing', 'hold-expired', 'hold-limit'):
         actual = {key: normalize(value, key) for key, value in observation.items()}
         baseline = {key: normalize(value, key) for key, value in expected.items()}
     else:
@@ -252,6 +274,142 @@ def exercise_default(base_url):
     http, edge_cases = exercise_http(base_url)
     browser = exercise_browser(base_url)
     return http, edge_cases, browser
+
+
+def source_seed():
+    return (SOURCE / 'src/main/resources/META-INF/seed.sql').read_text(encoding='utf-8')
+
+
+def hold_seed_for_date(days_ago):
+    placed_on = date.today() - timedelta(days=days_ago)
+    return source_seed().replace("DATE '2026-01-05'", f"DATE '{placed_on}'", 1)
+
+
+def exercise_hold_listing(base_url):
+    observations = {
+        'GET /holds on expiry date': get_response('GET', '/holds', None, base_url),
+    }
+    observations['POST /holds first isbn'] = get_response(
+        'POST', '/holds', {'member': 'dee', 'isbn': '9780134685991'}, base_url
+    )
+    observations['POST /holds second isbn'] = get_response(
+        'POST', '/holds', {'member': 'eli', 'isbn': '9781111111111'}, base_url
+    )
+    observations['GET /holds ordered'] = get_response('GET', '/holds', None, base_url)
+    observations['GET /holds filtered second isbn'] = get_response(
+        'GET', '/holds?isbn=9781111111111', None, base_url
+    )
+    observations['GET /holds filtered unknown isbn'] = get_response(
+        'GET', '/holds?isbn=unknown', None, base_url
+    )
+    return observations
+
+
+def hold_listing_seed():
+    today = date.today()
+    return hold_seed_for_date(30) + (
+        "\nINSERT INTO LOAN (ID, MEMBER, ISBN, LENT_ON, RETURNED_ON) "
+        f"VALUES ('L4', 'cy', '9781111111111', DATE '{today}', NULL);\n"
+    )
+
+
+def exercise_hold_expired(base_url):
+    return {'GET /holds one day after expiry': get_response('GET', '/holds', None, base_url)}
+
+
+def hold_limit_seed():
+    today = date.today()
+    seed = hold_seed_for_date(0)
+    extra_loans = (
+        ('L4', '9781111111111'),
+        ('L5', '9782222222222'),
+        ('L6', '9783333333333'),
+        ('L7', '9784444444444'),
+    )
+    for loan_id, isbn in extra_loans:
+        seed += (
+            f"\nINSERT INTO LOAN (ID, MEMBER, ISBN, LENT_ON, RETURNED_ON) "
+            f"VALUES ('{loan_id}', 'cy', '{isbn}', DATE '{today}', NULL);\n"
+        )
+    for hold_id, seq, isbn in (
+        ('H2', 2, '9780134685991'),
+        ('H3', 3, '9781111111111'),
+        ('H4', 4, '9782222222222'),
+    ):
+        seed += (
+            f"INSERT INTO HOLD (ID, SEQ, MEMBER, ISBN, PLACED_ON, CANCELLED_ON) "
+            f"VALUES ('{hold_id}', {seq}, 'dee', '{isbn}', DATE '{today}', NULL);\n"
+        )
+    return seed
+
+
+def exercise_hold_limit(base_url):
+    return {
+        'POST /holds with three active holds': get_response(
+            'POST', '/holds', {'member': 'dee', 'isbn': '9783333333333'}, base_url
+        ),
+        'POST /holds with four active holds': get_response(
+            'POST', '/holds', {'member': 'dee', 'isbn': '9784444444444'}, base_url
+        ),
+    }
+
+
+def assert_hold_predictions(edge_cases, listing, expired, limit):
+    expected_statuses = {
+        'POST /holds/missing-member': 400,
+        'POST /holds/missing-isbn': 400,
+        'POST /holds/blank-fields': 400,
+        'POST /holds/book-available': 409,
+        'POST /holds/borrower': 409,
+        'POST /holds/duplicate setup': 201,
+        'POST /holds/duplicate': 409,
+        'POST /holds/second member': 201,
+        'POST /holds/unknown cancel': 404,
+        'POST /holds/already cancelled': 409,
+        'POST /holds/cancel expired seed': 200,
+        'POST /holds/cancel expired seed again': 409,
+    }
+    for name, status in expected_statuses.items():
+        observed = edge_cases[name]['response']['status']
+        if observed != status:
+            raise AssertionError(f'{name} returned {observed}, expected {status}')
+
+    empty = edge_cases['GET /holds filtered empty']['response']['body']
+    if empty != '\n':
+        raise AssertionError(f'empty hold listing was {empty!r}, expected a newline')
+    ordered = edge_cases['GET /holds after writes']['response']['body'].splitlines()
+    if [row.split(';', 1)[0] for row in ordered] != ['H3', 'H4']:
+        raise AssertionError(f'active holds were not returned in sequence order: {ordered!r}')
+    if edge_cases['GET /holds filtered']['response']['body'] != '\n'.join(ordered) + '\n':
+        raise AssertionError('ISBN-filtered hold listing did not return matching holds')
+    unavailable = edge_cases['POST /holds/book-available']['response']['body']
+    if unavailable != 'book is available\n':
+        raise AssertionError(f'unavailable-book response was {unavailable!r}')
+    seeded = edge_cases['POST /holds/cancel expired seed']['response']['body']
+    if seeded != 'H1;bo;9780134685991;2026-01-05;2026-02-04\n':
+        raise AssertionError(f'seeded hold was {seeded!r}')
+
+    today = date.today().isoformat()
+    boundary = listing['GET /holds on expiry date']['response']['body']
+    expected_boundary = f'H1;bo;9780134685991;{(date.today() - timedelta(days=30)).isoformat()};{today}\n'
+    if boundary != expected_boundary:
+        raise AssertionError(f'hold was not active through its expiry date: {boundary!r}')
+    if listing['GET /holds ordered']['response']['body'].splitlines()[0] != expected_boundary.strip():
+        raise AssertionError('hold ordering did not put the seeded sequence first')
+    filtered = listing['GET /holds filtered second isbn']['response']['body']
+    if not filtered.startswith('H3;eli;9781111111111;'):
+        raise AssertionError(f'ISBN filter returned {filtered!r}')
+    if listing['GET /holds filtered unknown isbn']['response']['body'] != '\n':
+        raise AssertionError('unknown ISBN did not produce an empty newline-terminated listing')
+    if expired['GET /holds one day after expiry']['response']['body'] != '\n':
+        raise AssertionError('expired hold remained active after its expiry date')
+
+    accepted = limit['POST /holds with three active holds']
+    rejected = limit['POST /holds with four active holds']
+    if accepted['response']['status'] != 201 or not accepted['response']['body'].startswith('H5;dee;'):
+        raise AssertionError(f'three active holds did not permit a fourth: {accepted!r}')
+    if rejected['response']['status'] != 409 or rejected['response']['body'] != 'hold limit reached\n':
+        raise AssertionError(f'four active holds did not trigger the limit: {rejected!r}')
 
 
 def assert_predictions(http, edge_cases, browser, restart, payments):
@@ -315,10 +473,28 @@ def main():
         source_dir = Path(workdir) / 'legacy'
         shutil.copytree(SOURCE, source_dir, ignore=shutil.ignore_patterns('target', '.git'))
         http, edge_cases, browser = run_source(source_dir, {}, exercise_default)
+        hold_listing = run_source(
+            source_dir,
+            {},
+            exercise_hold_listing,
+            port=get_port(),
+            seed_sql=hold_listing_seed(),
+        )
+        hold_expired = run_source(
+            source_dir,
+            {},
+            exercise_hold_expired,
+            port=get_port(),
+            seed_sql=hold_seed_for_date(31),
+        )
+        hold_limit = run_source(
+            source_dir, {}, exercise_hold_limit, port=get_port(), seed_sql=hold_limit_seed()
+        )
         restart = run_source(
             source_dir,
             {},
             lambda base_url: get_response('GET', '/loans', None, base_url),
+            port=get_port(),
         )
         gateway, thread, gateway_requests = make_gateway()
         try:
@@ -338,16 +514,21 @@ def main():
             shutil.copytree(source_dir, args.keep_source_copy)
 
     assert_predictions(http, edge_cases, browser, restart, payments)
+    assert_hold_predictions(edge_cases, hold_listing, hold_expired, hold_limit)
 
     write_or_compare('http', http, args.record)
     write_or_compare('edge-cases', edge_cases, args.record)
+    write_or_compare('hold-listing', hold_listing, args.record)
+    write_or_compare('hold-expired', hold_expired, args.record)
+    write_or_compare('hold-limit', hold_limit, args.record)
     write_or_compare('browser', browser, args.record)
     write_or_compare('restart', restart, args.record)
     write_or_compare('gateway', payments, args.record)
     action = 'recorded' if args.record else 'verified'
     print(
         f'{action} {len(http)} source endpoints, {len(edge_cases)} edge cases, '
-        f'{len(browser["pages"])} browser pages, restart reset, and gateway mappings'
+        f'{len(browser["pages"])} browser pages, {len(hold_listing) + len(hold_expired) + len(hold_limit)} '
+        f'hold observations, restart reset, and gateway mappings'
     )
 
 
