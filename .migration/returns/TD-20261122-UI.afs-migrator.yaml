@@ -7,7 +7,7 @@ gates:
   behavior: 0
   spec: 0
   idiom: 0
-  crap: 7.0
+  crap: 0
   mutation_changed: "n/a: no mutable code changed"
   regression: 0
 evidence_logs:
