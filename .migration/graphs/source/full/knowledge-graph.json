@@ -3,45 +3,45 @@
   "project": {
     "name": "lending-library",
     "languages": [
+      "html",
       "java",
+      "markdown",
       "shell",
       "sql",
-      "html",
-      "xml",
-      "markdown"
+      "xml"
     ],
     "frameworks": [
       "Jersey",
       "Hibernate",
+      "H2",
       "Maven"
     ],
-    "description": "The Lending Library: a small Java library lending app using Jersey, Hibernate and Grizzly.",
-    "analyzedAt": "2026-11-08T17:23:45.202Z",
-    "gitCommitHash": "563c316ed51462b08fd6e58f3781a3c8b2890453",
+    "description": "The Lending Library: a small library lending app (legacy Java app using Jersey, Hibernate and H2).",
+    "analyzedAt": "2026-11-23T05:18:00.145Z",
+    "gitCommitHash": "96d50b85a9a456d9c0a58f080414b3badb501e59",
     "afsEnrichment": {
       "enrichers": [
         "graphify",
         "java-ee"
       ],
       "added": {
-        "edge:calls": 24,
-        "edge:contains": 28,
-        "edge:defines_schema": 1,
-        "edge:reads_from": 4,
-        "edge:routes": 8,
-        "edge:writes_to": 2,
-        "node:class": 4,
-        "node:endpoint": 7,
-        "node:method": 27,
+        "edge:calls": 48,
+        "edge:contains": 52,
+        "edge:defines_schema": 2,
+        "edge:reads_from": 8,
+        "edge:routes": 11,
+        "edge:writes_to": 4,
+        "node:endpoint": 10,
+        "node:method": 51,
         "node:page": 1,
-        "node:table": 1
+        "node:table": 2
       },
       "graphify": {
         "schema_version": 1,
         "graphify_version": "0.9.101"
       }
     },
-    "analyzedCommit": "a07cf65063a2134c24572af95f9d494efbc9a1d4"
+    "analyzedCommit": "0fe9de5e394f728c16628f36d7dfdc3b1d7d8cbf"
   },
   "nodes": [
     {
@@ -49,9 +49,9 @@
       "type": "document",
       "name": "export-csv.md",
       "filePath": "legacy/docs/export-csv.md",
-      "summary": "Documents the semicolon-separated CSV format returned by GET /loans, which spreadsheet users depend on.",
+      "summary": "Describes the semicolon-separated CSV output of GET /loans that spreadsheet users depend on.",
       "tags": [
-        "docs",
+        "documentation",
         "csv",
         "api-contract"
       ],
@@ -62,11 +62,12 @@
       "type": "document",
       "name": "reports-spec.md",
       "filePath": "legacy/docs/reports-spec.md",
-      "summary": "Specification of a monthly lending report from a retired reporting module; only this spec remains, no code.",
+      "summary": "Specification of a monthly per-member lending report from a retired reporting module; no corresponding code exists in this project.",
       "tags": [
-        "docs",
+        "documentation",
         "specification",
-        "reporting"
+        "reporting",
+        "legacy"
       ],
       "complexity": "simple"
     },
@@ -75,27 +76,81 @@
       "type": "config",
       "name": "pom.xml",
       "filePath": "legacy/pom.xml",
-      "summary": "Maven build for the lending-library app (Java 17): Jersey/Grizzly, Hibernate, H2 dependencies and dependency copying at package time.",
+      "summary": "Maven build for lending-library declaring Jersey/Grizzly, Hibernate and H2 dependencies and copying dependencies for run.sh.",
       "tags": [
+        "configuration",
+        "build-system",
         "maven",
-        "build",
         "dependencies"
       ],
-      "complexity": "simple"
+      "complexity": "moderate"
     },
     {
       "id": "file:legacy/run.sh",
       "type": "file",
       "name": "run.sh",
       "filePath": "legacy/run.sh",
-      "summary": "Shell script that builds with Maven and launches lib.App.",
+      "summary": "Shell launcher that builds the project with Maven (skipping tests) and starts lib.App.",
       "tags": [
         "script",
-        "startup",
-        "build"
+        "entry-point",
+        "build-system",
+        "shell"
       ],
-      "complexity": "simple",
-      "languageNotes": "Uses set -euo pipefail and exec to replace the shell with the JVM."
+      "complexity": "simple"
+    },
+    {
+      "id": "config:legacy/src/main/resources/META-INF/persistence.xml",
+      "type": "config",
+      "name": "persistence.xml",
+      "filePath": "legacy/src/main/resources/META-INF/persistence.xml",
+      "summary": "JPA persistence unit \"library\" registering Loan and Hold entities on an in-memory H2 database with drop-and-create schema and seed script loading.",
+      "tags": [
+        "configuration",
+        "jpa",
+        "database",
+        "h2"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "type": "table",
+      "name": "LOAN",
+      "filePath": "legacy/src/main/resources/META-INF/seed.sql",
+      "summary": "Seed rows inserted into the LOAN table (three sample loans).",
+      "tags": [
+        "database",
+        "seed-data",
+        "loan"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "table:legacy/src/main/resources/META-INF/seed.sql:HOLD",
+      "type": "table",
+      "name": "HOLD",
+      "filePath": "legacy/src/main/resources/META-INF/seed.sql",
+      "summary": "Seed row inserted into the HOLD table (one sample hold).",
+      "tags": [
+        "database",
+        "seed-data",
+        "hold"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:legacy/src/main/resources/static/about.html",
+      "type": "file",
+      "name": "about.html",
+      "filePath": "legacy/src/main/resources/static/about.html",
+      "summary": "Static about page with opening hours, the 14-day lending period and contact address.",
+      "tags": [
+        "markup",
+        "html",
+        "static-content"
+      ],
+      "complexity": "simple"
     },
     {
       "id": "file:legacy/src/main/java/lib/AboutPage.java",
@@ -104,98 +159,504 @@
       "filePath": "legacy/src/main/java/lib/AboutPage.java",
       "summary": "JAX-RS resource serving GET /about by returning the static about.html from the classpath.",
       "tags": [
+        "api-handler",
         "jax-rs",
-        "endpoint",
         "static-content"
       ],
       "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "class",
+      "name": "AboutPage",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "JAX-RS resource serving GET /about by returning the static about.html from the classpath.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "static-content"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        13,
+        22
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/AboutPage.java:page",
+      "type": "function",
+      "name": "page",
+      "filePath": "legacy/src/main/java/lib/AboutPage.java",
+      "summary": "Method page of AboutPage.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "static-content"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        15,
+        21
+      ]
     },
     {
       "id": "file:legacy/src/main/java/lib/App.java",
       "type": "file",
       "name": "App.java",
       "filePath": "legacy/src/main/java/lib/App.java",
-      "summary": "Application entry point: creates the JPA EntityManagerFactory, wires resources into a Jersey ResourceConfig and starts a Grizzly HTTP server on PORT.",
+      "summary": "Application entry point wiring repositories and JAX-RS resources into a Jersey ResourceConfig and starting a Grizzly HTTP server on JPA/H2.",
       "tags": [
         "entry-point",
         "bootstrap",
-        "grizzly",
-        "wiring"
+        "jersey",
+        "grizzly"
       ],
-      "complexity": "moderate"
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/App.java:App",
+      "type": "class",
+      "name": "App",
+      "filePath": "legacy/src/main/java/lib/App.java",
+      "summary": "Application entry point wiring repositories and JAX-RS resources into a Jersey ResourceConfig and starting a Grizzly HTTP server on JPA/H2.",
+      "tags": [
+        "entry-point",
+        "bootstrap",
+        "jersey",
+        "grizzly"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        12,
+        29
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/App.java:main",
+      "type": "function",
+      "name": "main",
+      "filePath": "legacy/src/main/java/lib/App.java",
+      "summary": "Method main of App.",
+      "tags": [
+        "entry-point",
+        "bootstrap",
+        "jersey"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        13,
+        28
+      ]
     },
     {
       "id": "file:legacy/src/main/java/lib/FinePayments.java",
       "type": "file",
       "name": "FinePayments.java",
       "filePath": "legacy/src/main/java/lib/FinePayments.java",
-      "summary": "JAX-RS resource for POST /payments/{id} that charges a loan's late fee via an external payment gateway (PAYMENT_GATEWAY_URL).",
+      "summary": "JAX-RS resource for POST /payments/{id} that charges a loan late fee through an external payment gateway over HTTP.",
       "tags": [
-        "jax-rs",
+        "api-handler",
         "payments",
-        "external-integration",
-        "http-client"
+        "http-client",
+        "jax-rs"
       ],
-      "complexity": "moderate"
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "type": "class",
+      "name": "FinePayments",
+      "filePath": "legacy/src/main/java/lib/FinePayments.java",
+      "summary": "JAX-RS resource for POST /payments/{id} that charges a loan late fee through an external payment gateway over HTTP.",
+      "tags": [
+        "api-handler",
+        "payments",
+        "http-client",
+        "jax-rs"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        17,
+        42
+      ]
     },
     {
       "id": "function:legacy/src/main/java/lib/FinePayments.java:pay",
       "type": "function",
       "name": "pay",
       "filePath": "legacy/src/main/java/lib/FinePayments.java",
-      "lineRange": [
-        29,
-        41
-      ],
-      "summary": "Checks the loan exists, then POSTs to the payment gateway and maps its response to 200 or 502.",
+      "summary": "Method pay of FinePayments.",
       "tags": [
-        "endpoint",
+        "api-handler",
         "payments",
-        "error-handling"
+        "http-client"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        26,
+        41
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/Hold.java",
+      "type": "file",
+      "name": "Hold.java",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "JPA entity for a book hold with sequence, member, ISBN, placement and cancellation dates, plus expiry and activity rules.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "hold",
+        "domain"
       ],
       "complexity": "moderate"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "type": "class",
+      "name": "Hold",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "JPA entity for a book hold with sequence, member, ISBN, placement and cancellation dates, plus expiry and activity rules.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "hold",
+        "domain"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        11,
+        59
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/Hold.java:expiresOn",
+      "type": "function",
+      "name": "expiresOn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "Method expiresOn of Hold.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "hold"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        48,
+        50
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/Hold.java:activeOn",
+      "type": "function",
+      "name": "activeOn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "Method activeOn of Hold.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "hold"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        52,
+        54
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/Hold.java:cancel",
+      "type": "function",
+      "name": "cancel",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "Method cancel of Hold.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "hold"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        56,
+        58
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "type": "file",
+      "name": "HoldRepository.java",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "JPA repository for holds offering active-hold queries, placement with sequence numbering and cancellation within transactions.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa",
+        "hold"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "type": "class",
+      "name": "HoldRepository",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "JPA repository for holds offering active-hold queries, placement with sequence numbering and cancellation within transactions.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa",
+        "hold"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        13,
+        83
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldRepository.java:active",
+      "type": "function",
+      "name": "active",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "Method active of HoldRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        20,
+        26
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldRepository.java:place",
+      "type": "function",
+      "name": "place",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "Method place of HoldRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        40,
+        47
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldRepository.java:cancel",
+      "type": "function",
+      "name": "cancel",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "Method cancel of HoldRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        49,
+        58
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldRepository.java:read",
+      "type": "function",
+      "name": "read",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "Method read of HoldRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        60,
+        67
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldRepository.java:write",
+      "type": "function",
+      "name": "write",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "Method write of HoldRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        69,
+        82
+      ]
+    },
+    {
+      "id": "file:legacy/src/main/java/lib/HoldResource.java",
+      "type": "file",
+      "name": "HoldResource.java",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "JAX-RS resource for /holds that lists active holds, places holds enforcing business rules and cancels them, emitting semicolon-separated lines.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "hold",
+        "business-rules"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "type": "class",
+      "name": "HoldResource",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "JAX-RS resource for /holds that lists active holds, places holds enforcing business rules and cancels them, emitting semicolon-separated lines.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "hold",
+        "business-rules"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        17,
+        76
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldResource.java:list",
+      "type": "function",
+      "name": "list",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "Method list of HoldResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "hold"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        30,
+        34
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldResource.java:place",
+      "type": "function",
+      "name": "place",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "Method place of HoldResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "hold"
+      ],
+      "complexity": "moderate",
+      "lineRange": [
+        36,
+        57
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldResource.java:cancel",
+      "type": "function",
+      "name": "cancel",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "Method cancel of HoldResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "hold"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        59,
+        70
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/HoldResource.java:line",
+      "type": "function",
+      "name": "line",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "Method line of HoldResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "hold"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        72,
+        75
+      ]
     },
     {
       "id": "file:legacy/src/main/java/lib/LateFeeView.java",
       "type": "file",
       "name": "LateFeeView.java",
       "filePath": "legacy/src/main/java/lib/LateFeeView.java",
-      "summary": "JAX-RS resource for GET /fees/{id} rendering an HTML page with the late fee (25 cents/day, capped at $10, waived up to 2 days late).",
+      "summary": "JAX-RS resource for GET /fees/{id} rendering an HTML page with the late fee (25 cents/day, 10 dollar cap, 2-day grace).",
       "tags": [
-        "jax-rs",
+        "api-handler",
         "late-fees",
-        "business-rules",
-        "html"
+        "html-view",
+        "business-rules"
       ],
-      "complexity": "moderate"
+      "complexity": "simple"
+    },
+    {
+      "id": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "type": "class",
+      "name": "LateFeeView",
+      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
+      "summary": "JAX-RS resource for GET /fees/{id} rendering an HTML page with the late fee (25 cents/day, 10 dollar cap, 2-day grace).",
+      "tags": [
+        "api-handler",
+        "late-fees",
+        "html-view",
+        "business-rules"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        15,
+        39
+      ]
     },
     {
       "id": "function:legacy/src/main/java/lib/LateFeeView.java:page",
       "type": "function",
       "name": "page",
       "filePath": "legacy/src/main/java/lib/LateFeeView.java",
-      "lineRange": [
-        26,
-        38
-      ],
-      "summary": "Computes days late and the fee in cents, then returns an HTML fragment or 404.",
+      "summary": "Method page of LateFeeView.",
       "tags": [
-        "endpoint",
+        "api-handler",
         "late-fees",
-        "business-rules"
+        "html-view"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "lineRange": [
+        23,
+        38
+      ]
     },
     {
       "id": "file:legacy/src/main/java/lib/Loan.java",
       "type": "file",
       "name": "Loan.java",
       "filePath": "legacy/src/main/java/lib/Loan.java",
-      "summary": "JPA entity for the LOAN table; a book lent to a member, due 14 days after lending.",
+      "summary": "JPA entity for a book loan with member, ISBN, lent and returned dates, computing the due date from a loan period.",
       "tags": [
-        "jpa",
-        "entity",
-        "domain-model"
+        "data-model",
+        "jpa-entity",
+        "loan",
+        "domain"
       ],
       "complexity": "simple"
     },
@@ -204,29 +665,64 @@
       "type": "class",
       "name": "Loan",
       "filePath": "legacy/src/main/java/lib/Loan.java",
-      "lineRange": [
-        13,
-        51
-      ],
-      "summary": "Entity with id, member, isbn, lentOn and returnedOn; provides dueOn() and markReturned().",
+      "summary": "JPA entity for a book loan with member, ISBN, lent and returned dates, computing the due date from a loan period.",
       "tags": [
-        "jpa",
-        "entity",
-        "domain-model"
+        "data-model",
+        "jpa-entity",
+        "loan",
+        "domain"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "lineRange": [
+        11,
+        51
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/Loan.java:dueOn",
+      "type": "function",
+      "name": "dueOn",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "Method dueOn of Loan.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "loan"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        44,
+        46
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/Loan.java:markReturned",
+      "type": "function",
+      "name": "markReturned",
+      "filePath": "legacy/src/main/java/lib/Loan.java",
+      "summary": "Method markReturned of Loan.",
+      "tags": [
+        "data-model",
+        "jpa-entity",
+        "loan"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        48,
+        50
+      ]
     },
     {
       "id": "file:legacy/src/main/java/lib/LoanRepository.java",
       "type": "file",
       "name": "LoanRepository.java",
       "filePath": "legacy/src/main/java/lib/LoanRepository.java",
-      "summary": "Repository over JPA providing all/find/lend/markReturned with helper read/write transaction wrappers.",
+      "summary": "JPA repository for loans supporting listing, lookup, lending with generated ids and marking returns within transactions.",
       "tags": [
         "repository",
-        "jpa",
         "persistence",
-        "transactions"
+        "jpa",
+        "loan"
       ],
       "complexity": "moderate"
     },
@@ -235,28 +731,131 @@
       "type": "class",
       "name": "LoanRepository",
       "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "JPA repository for loans supporting listing, lookup, lending with generated ids and marking returns within transactions.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa",
+        "loan"
+      ],
+      "complexity": "moderate",
       "lineRange": [
         12,
         70
-      ],
-      "summary": "Data-access class managing EntityManager lifecycle and transactions for Loan entities.",
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:all",
+      "type": "function",
+      "name": "all",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Method all of LoanRepository.",
       "tags": [
         "repository",
-        "jpa",
-        "persistence"
+        "persistence",
+        "jpa"
       ],
-      "complexity": "moderate"
+      "complexity": "simple",
+      "lineRange": [
+        19,
+        21
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:find",
+      "type": "function",
+      "name": "find",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Method find of LoanRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        23,
+        25
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:lend",
+      "type": "function",
+      "name": "lend",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Method lend of LoanRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        27,
+        34
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:markReturned",
+      "type": "function",
+      "name": "markReturned",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Method markReturned of LoanRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        36,
+        45
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:read",
+      "type": "function",
+      "name": "read",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Method read of LoanRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        47,
+        54
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanRepository.java:write",
+      "type": "function",
+      "name": "write",
+      "filePath": "legacy/src/main/java/lib/LoanRepository.java",
+      "summary": "Method write of LoanRepository.",
+      "tags": [
+        "repository",
+        "persistence",
+        "jpa"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        56,
+        69
+      ]
     },
     {
       "id": "file:legacy/src/main/java/lib/LoanResource.java",
       "type": "file",
       "name": "LoanResource.java",
       "filePath": "legacy/src/main/java/lib/LoanResource.java",
-      "summary": "JAX-RS resource for /loans: list, get, lend and return endpoints, emitting semicolon-separated text lines.",
+      "summary": "JAX-RS resource for /loans that lists, fetches, lends and returns loans, producing semicolon-separated CSV-style lines.",
       "tags": [
+        "api-handler",
         "jax-rs",
-        "rest-api",
-        "loans",
+        "loan",
         "csv"
       ],
       "complexity": "moderate"
@@ -266,56 +865,119 @@
       "type": "class",
       "name": "LoanResource",
       "filePath": "legacy/src/main/java/lib/LoanResource.java",
-      "lineRange": [
-        18,
-        56
-      ],
-      "summary": "REST resource class exposing loan operations and formatting loans via line().",
+      "summary": "JAX-RS resource for /loans that lists, fetches, lends and returns loans, producing semicolon-separated CSV-style lines.",
       "tags": [
+        "api-handler",
         "jax-rs",
-        "rest-api",
-        "loans"
+        "loan",
+        "csv"
       ],
-      "complexity": "moderate"
+      "complexity": "moderate",
+      "lineRange": [
+        16,
+        56
+      ]
     },
     {
-      "id": "config:legacy/src/main/resources/META-INF/persistence.xml",
-      "type": "config",
-      "name": "persistence.xml",
-      "filePath": "legacy/src/main/resources/META-INF/persistence.xml",
-      "summary": "JPA persistence unit 'library': registers Loan, uses in-memory H2, drop-and-create schema, and loads seed.sql.",
+      "id": "function:legacy/src/main/java/lib/LoanResource.java:list",
+      "type": "function",
+      "name": "list",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Method list of LoanResource.",
       "tags": [
-        "jpa",
-        "h2",
-        "configuration"
-      ],
-      "complexity": "simple"
-    },
-    {
-      "id": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
-      "type": "table",
-      "name": "LOAN",
-      "filePath": "legacy/src/main/resources/META-INF/seed.sql",
-      "summary": "LOAN table populated with three sample loans at startup.",
-      "tags": [
-        "sql",
-        "seed-data",
+        "api-handler",
+        "jax-rs",
         "loan"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "lineRange": [
+        25,
+        28
+      ]
     },
     {
-      "id": "file:legacy/src/main/resources/static/about.html",
-      "type": "file",
-      "name": "about.html",
-      "filePath": "legacy/src/main/resources/static/about.html",
-      "summary": "Static About page with opening hours, 14-day lending period and contact details.",
+      "id": "function:legacy/src/main/java/lib/LoanResource.java:one",
+      "type": "function",
+      "name": "one",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Method one of LoanResource.",
       "tags": [
-        "html",
-        "static",
-        "about"
+        "api-handler",
+        "jax-rs",
+        "loan"
       ],
-      "complexity": "simple"
+      "complexity": "simple",
+      "lineRange": [
+        30,
+        35
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanResource.java:lend",
+      "type": "function",
+      "name": "lend",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Method lend of LoanResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "loan"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        37,
+        43
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanResource.java:giveBack",
+      "type": "function",
+      "name": "giveBack",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Method giveBack of LoanResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "loan"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        45,
+        50
+      ]
+    },
+    {
+      "id": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "type": "function",
+      "name": "line",
+      "filePath": "legacy/src/main/java/lib/LoanResource.java",
+      "summary": "Method line of LoanResource.",
+      "tags": [
+        "api-handler",
+        "jax-rs",
+        "loan"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        52,
+        55
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.Hold",
+      "type": "method",
+      "name": "Hold.Hold",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.Hold (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        30,
+        30
+      ]
     },
     {
       "id": "method:legacy/src/main/java/lib/Loan.java:Loan.Loan",
@@ -331,22 +993,6 @@
       "lineRange": [
         28,
         28
-      ]
-    },
-    {
-      "id": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
-      "type": "class",
-      "name": "AboutPage",
-      "filePath": "legacy/src/main/java/lib/AboutPage.java",
-      "summary": "class AboutPage (added by graphify)",
-      "tags": [
-        "afs-enriched",
-        "graphify"
-      ],
-      "complexity": "simple",
-      "lineRange": [
-        13,
-        13
       ]
     },
     {
@@ -366,22 +1012,6 @@
       ]
     },
     {
-      "id": "class:legacy/src/main/java/lib/App.java:App",
-      "type": "class",
-      "name": "App",
-      "filePath": "legacy/src/main/java/lib/App.java",
-      "summary": "class App (added by graphify)",
-      "tags": [
-        "afs-enriched",
-        "graphify"
-      ],
-      "complexity": "simple",
-      "lineRange": [
-        12,
-        12
-      ]
-    },
-    {
       "id": "method:legacy/src/main/java/lib/App.java:App.main",
       "type": "method",
       "name": "App.main",
@@ -395,22 +1025,6 @@
       "lineRange": [
         13,
         13
-      ]
-    },
-    {
-      "id": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
-      "type": "class",
-      "name": "FinePayments",
-      "filePath": "legacy/src/main/java/lib/FinePayments.java",
-      "summary": "class FinePayments (added by graphify)",
-      "tags": [
-        "afs-enriched",
-        "graphify"
-      ],
-      "complexity": "simple",
-      "lineRange": [
-        17,
-        17
       ]
     },
     {
@@ -446,19 +1060,371 @@
       ]
     },
     {
-      "id": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
-      "type": "class",
-      "name": "LateFeeView",
-      "filePath": "legacy/src/main/java/lib/LateFeeView.java",
-      "summary": "class LateFeeView (added by graphify)",
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.getId",
+      "type": "method",
+      "name": "Hold.getId",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.getId (added by graphify)",
       "tags": [
         "afs-enriched",
         "graphify"
       ],
       "complexity": "simple",
       "lineRange": [
-        15,
-        15
+        41,
+        41
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.getSeq",
+      "type": "method",
+      "name": "Hold.getSeq",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.getSeq (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        42,
+        42
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.getMember",
+      "type": "method",
+      "name": "Hold.getMember",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.getMember (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        43,
+        43
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.getIsbn",
+      "type": "method",
+      "name": "Hold.getIsbn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.getIsbn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        44,
+        44
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.getPlacedOn",
+      "type": "method",
+      "name": "Hold.getPlacedOn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.getPlacedOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        45,
+        45
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.getCancelledOn",
+      "type": "method",
+      "name": "Hold.getCancelledOn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.getCancelledOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        46,
+        46
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.expiresOn",
+      "type": "method",
+      "name": "Hold.expiresOn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.expiresOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        48,
+        48
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.activeOn",
+      "type": "method",
+      "name": "Hold.activeOn",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.activeOn (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        52,
+        52
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/Hold.java:Hold.cancel",
+      "type": "method",
+      "name": "Hold.cancel",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "method Hold.cancel (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        56,
+        56
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.HoldRepository",
+      "type": "method",
+      "name": "HoldRepository.HoldRepository",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.HoldRepository (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        16,
+        16
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "type": "method",
+      "name": "HoldRepository.active",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.active (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        20,
+        20
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.activeFor",
+      "type": "method",
+      "name": "HoldRepository.activeFor",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.activeFor (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        28,
+        28
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.holding",
+      "type": "method",
+      "name": "HoldRepository.holding",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.holding (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        32,
+        32
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.find",
+      "type": "method",
+      "name": "HoldRepository.find",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.find (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        36,
+        36
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.place",
+      "type": "method",
+      "name": "HoldRepository.place",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.place (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        40,
+        40
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "type": "method",
+      "name": "HoldRepository.cancel",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.cancel (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        49,
+        49
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.read",
+      "type": "method",
+      "name": "HoldRepository.read",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.read (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        60,
+        60
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.write",
+      "type": "method",
+      "name": "HoldRepository.write",
+      "filePath": "legacy/src/main/java/lib/HoldRepository.java",
+      "summary": "method HoldRepository.write (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        69,
+        69
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.HoldResource",
+      "type": "method",
+      "name": "HoldResource.HoldResource",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "method HoldResource.HoldResource (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        25,
+        25
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.list",
+      "type": "method",
+      "name": "HoldResource.list",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "method HoldResource.list (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        30,
+        30
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "type": "method",
+      "name": "HoldResource.place",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "method HoldResource.place (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        36,
+        36
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
+      "type": "method",
+      "name": "HoldResource.cancel",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "method HoldResource.cancel (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        59,
+        59
+      ]
+    },
+    {
+      "id": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "type": "method",
+      "name": "HoldResource.line",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "method HoldResource.line (added by graphify)",
+      "tags": [
+        "afs-enriched",
+        "graphify"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        72,
+        72
       ]
     },
     {
@@ -814,6 +1780,22 @@
       ]
     },
     {
+      "id": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "table",
+      "name": "HOLD",
+      "filePath": "legacy/src/main/java/lib/Hold.java",
+      "summary": "Table HOLD mapped by JPA entity Hold",
+      "tags": [
+        "afs-enriched",
+        "jpa-entity"
+      ],
+      "complexity": "simple",
+      "lineRange": [
+        11,
+        11
+      ]
+    },
+    {
       "id": "table:legacy/src/main/java/lib/Loan.java:LOAN",
       "type": "table",
       "name": "LOAN",
@@ -847,6 +1829,42 @@
       "name": "POST /payments/{id}",
       "filePath": "legacy/src/main/java/lib/FinePayments.java",
       "summary": "HTTP POST /payments/{id} (FinePayments.pay)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/HoldResource.java:GET /holds",
+      "type": "endpoint",
+      "name": "GET /holds",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "HTTP GET /holds (HoldResource.list)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/HoldResource.java:POST /holds",
+      "type": "endpoint",
+      "name": "POST /holds",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "HTTP POST /holds (HoldResource.place)",
+      "tags": [
+        "afs-enriched",
+        "jax-rs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "endpoint:legacy/src/main/java/lib/HoldResource.java:POST /holds/{id}/cancel",
+      "type": "endpoint",
+      "name": "POST /holds/{id}/cancel",
+      "filePath": "legacy/src/main/java/lib/HoldResource.java",
+      "summary": "HTTP POST /holds/{id}/cancel (HoldResource.cancel)",
       "tags": [
         "afs-enriched",
         "jax-rs"
@@ -928,8 +1946,358 @@
   ],
   "edges": [
     {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "class:legacy/src/main/java/lib/AboutPage.java:AboutPage",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/AboutPage.java",
+      "target": "function:legacy/src/main/java/lib/AboutPage.java:page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "class:legacy/src/main/java/lib/App.java:App",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "class:legacy/src/main/java/lib/App.java:App",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "function:legacy/src/main/java/lib/App.java:main",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/FinePayments.java",
+      "target": "function:legacy/src/main/java/lib/FinePayments.java:pay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Hold.java",
+      "target": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Hold.java",
+      "target": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Hold.java",
+      "target": "function:legacy/src/main/java/lib/Hold.java:expiresOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Hold.java",
+      "target": "function:legacy/src/main/java/lib/Hold.java:activeOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Hold.java",
+      "target": "function:legacy/src/main/java/lib/Hold.java:cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "function:legacy/src/main/java/lib/HoldRepository.java:active",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "function:legacy/src/main/java/lib/HoldRepository.java:place",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "function:legacy/src/main/java/lib/HoldRepository.java:cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "function:legacy/src/main/java/lib/HoldRepository.java:read",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "function:legacy/src/main/java/lib/HoldRepository.java:write",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "function:legacy/src/main/java/lib/HoldResource.java:list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "function:legacy/src/main/java/lib/HoldResource.java:place",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "function:legacy/src/main/java/lib/HoldResource.java:cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "function:legacy/src/main/java/lib/HoldResource.java:line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "class:legacy/src/main/java/lib/LateFeeView.java:LateFeeView",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "function:legacy/src/main/java/lib/LateFeeView.java:page",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Loan.java",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Loan.java",
+      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Loan.java",
+      "target": "function:legacy/src/main/java/lib/Loan.java:dueOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/Loan.java",
+      "target": "function:legacy/src/main/java/lib/Loan.java:markReturned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:all",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:markReturned",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:read",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "target": "function:legacy/src/main/java/lib/LoanRepository.java:write",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:one",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:lend",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:giveBack",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:line",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
       "source": "file:legacy/src/main/java/lib/App.java",
       "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/HoldRepository.java",
       "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
@@ -957,6 +2325,13 @@
     },
     {
       "source": "file:legacy/src/main/java/lib/App.java",
+      "target": "file:legacy/src/main/java/lib/HoldResource.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/App.java",
       "target": "file:legacy/src/main/java/lib/AboutPage.java",
       "type": "depends_on",
       "direction": "forward",
@@ -970,8 +2345,22 @@
       "weight": 0.6
     },
     {
+      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "target": "file:legacy/src/main/java/lib/Loan.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
       "source": "file:legacy/src/main/java/lib/LateFeeView.java",
       "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
+      "target": "file:legacy/src/main/java/lib/Loan.java",
       "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
@@ -984,15 +2373,36 @@
       "weight": 0.6
     },
     {
-      "source": "file:legacy/src/main/java/lib/LoanResource.java",
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "file:legacy/src/main/java/lib/LoanRepository.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
+      "target": "file:legacy/src/main/java/lib/Hold.java",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:legacy/src/main/java/lib/HoldResource.java",
       "target": "file:legacy/src/main/java/lib/Loan.java",
       "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
     },
     {
-      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
-      "target": "file:legacy/src/main/java/lib/Loan.java",
+      "source": "file:legacy/src/main/java/lib/HoldRepository.java",
+      "target": "file:legacy/src/main/java/lib/Hold.java",
       "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
@@ -1007,30 +2417,9 @@
     {
       "source": "file:legacy/src/main/java/lib/AboutPage.java",
       "target": "file:legacy/src/main/resources/static/about.html",
-      "type": "reads_from",
+      "type": "depends_on",
       "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
-      "target": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
-      "type": "reads_from",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
-      "target": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
-      "type": "writes_to",
-      "direction": "forward",
-      "weight": 0.5
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/Loan.java",
-      "target": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
-      "type": "defines_schema",
-      "direction": "forward",
-      "weight": 0.8
+      "weight": 0.6
     },
     {
       "source": "config:legacy/src/main/resources/META-INF/persistence.xml",
@@ -1041,8 +2430,15 @@
     },
     {
       "source": "config:legacy/src/main/resources/META-INF/persistence.xml",
-      "target": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "target": "file:legacy/src/main/java/lib/Hold.java",
       "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:legacy/src/main/resources/META-INF/persistence.xml",
+      "target": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "type": "depends_on",
       "direction": "forward",
       "weight": 0.6
     },
@@ -1056,9 +2452,9 @@
     {
       "source": "file:legacy/run.sh",
       "target": "file:legacy/src/main/java/lib/App.java",
-      "type": "triggers",
+      "type": "deploys",
       "direction": "forward",
-      "weight": 0.6
+      "weight": 0.7
     },
     {
       "source": "file:legacy/run.sh",
@@ -1068,6 +2464,20 @@
       "weight": 0.6
     },
     {
+      "source": "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+      "target": "file:legacy/src/main/java/lib/Loan.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "table:legacy/src/main/resources/META-INF/seed.sql:HOLD",
+      "target": "file:legacy/src/main/java/lib/Hold.java",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
       "source": "document:legacy/docs/export-csv.md",
       "target": "file:legacy/src/main/java/lib/LoanResource.java",
       "type": "documents",
@@ -1075,46 +2485,19 @@
       "weight": 0.5
     },
     {
-      "source": "document:legacy/docs/reports-spec.md",
-      "target": "file:legacy/src/main/java/lib/LoanResource.java",
-      "type": "related",
+      "source": "document:legacy/docs/export-csv.md",
+      "target": "function:legacy/src/main/java/lib/LoanResource.java:list",
+      "type": "documents",
       "direction": "forward",
-      "weight": 0.3
+      "weight": 0.5
     },
     {
-      "source": "file:legacy/src/main/java/lib/FinePayments.java",
-      "target": "function:legacy/src/main/java/lib/FinePayments.java:pay",
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.Hold",
       "type": "contains",
       "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/LateFeeView.java",
-      "target": "function:legacy/src/main/java/lib/LateFeeView.java:page",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/Loan.java",
-      "target": "class:legacy/src/main/java/lib/Loan.java:Loan",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/LoanRepository.java",
-      "target": "class:legacy/src/main/java/lib/LoanRepository.java:LoanRepository",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
-    },
-    {
-      "source": "file:legacy/src/main/java/lib/LoanResource.java",
-      "target": "class:legacy/src/main/java/lib/LoanResource.java:LoanResource",
-      "type": "contains",
-      "direction": "forward",
-      "weight": 1
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
     },
     {
       "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
@@ -1151,6 +2534,190 @@
     {
       "source": "class:legacy/src/main/java/lib/FinePayments.java:FinePayments",
       "target": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getId",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getSeq",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getMember",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getIsbn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getPlacedOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getCancelledOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.expiresOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.activeOn",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.HoldRepository",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.activeFor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.holding",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.find",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.place",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.read",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldRepository.java:HoldRepository",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.write",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.HoldResource",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.list",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 method"
+    },
+    {
+      "source": "class:legacy/src/main/java/lib/HoldResource.java:HoldResource",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
       "type": "contains",
       "direction": "forward",
       "weight": 0.8,
@@ -1333,6 +2900,78 @@
       "description": "afs-enriched:graphify \u2014 method"
     },
     {
+      "source": "method:legacy/src/main/java/lib/Hold.java:Hold.activeOn",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.expiresOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/Hold.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.read",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldRepository.java:L21"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.activeFor",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldRepository.java:L29"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.write",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldRepository.java:L50"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.find",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.read",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldRepository.java:L37"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.holding",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldRepository.java:L33"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.place",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.write",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldRepository.java:L41"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldResource.java:L69"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls EXTRACTED legacy/src/main/java/lib/HoldResource.java:L56"
+    },
+    {
       "source": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
       "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.read",
       "type": "calls",
@@ -1394,7 +3033,7 @@
       "type": "calls",
       "direction": "forward",
       "weight": 0.8,
-      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/App.java:L21"
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/App.java:L23"
     },
     {
       "source": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
@@ -1403,6 +3042,126 @@
       "direction": "forward",
       "weight": 0.8,
       "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/FinePayments.java:L30"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.cancel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldRepository.java:L55"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.find",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L62"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getCancelledOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L66"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L69"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getId",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L73"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getIsbn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L73"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getMember",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L73"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.getPlacedOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L73"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.line",
+      "target": "method:legacy/src/main/java/lib/Hold.java:Hold.expiresOn",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L74"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.list",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L32"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "target": "method:legacy/src/main/java/lib/LoanRepository.java:LoanRepository.all",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L42"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "target": "method:legacy/src/main/java/lib/Loan.java:Loan.getMember",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L47"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.holding",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L50"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.activeFor",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L53"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "target": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.place",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/HoldResource.java:L56"
     },
     {
       "source": "method:legacy/src/main/java/lib/LateFeeView.java:LateFeeView.page",
@@ -1525,6 +3284,14 @@
       "description": "afs-enriched:graphify \u2014 calls INFERRED legacy/src/main/java/lib/LoanResource.java:L33"
     },
     {
+      "source": "class:legacy/src/main/java/lib/Hold.java:Hold",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "defines_schema",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-entity"
+    },
+    {
       "source": "class:legacy/src/main/java/lib/Loan.java:Loan",
       "target": "table:legacy/src/main/java/lib/Loan.java:LOAN",
       "type": "defines_schema",
@@ -1543,6 +3310,78 @@
     {
       "source": "endpoint:legacy/src/main/java/lib/FinePayments.java:POST /payments/{id}",
       "target": "method:legacy/src/main/java/lib/FinePayments.java:FinePayments.pay",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.active",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.find",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.place",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.place",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "reads_from",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "method:legacy/src/main/java/lib/HoldRepository.java:HoldRepository.cancel",
+      "target": "table:legacy/src/main/java/lib/Hold.java:HOLD",
+      "type": "writes_to",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jpa-repository"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/HoldResource.java:GET /holds",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.list",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/HoldResource.java:POST /holds",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.place",
+      "type": "routes",
+      "direction": "forward",
+      "weight": 0.8,
+      "description": "afs-enriched:jax-rs"
+    },
+    {
+      "source": "endpoint:legacy/src/main/java/lib/HoldResource.java:POST /holds/{id}/cancel",
+      "target": "method:legacy/src/main/java/lib/HoldResource.java:HoldResource.cancel",
       "type": "routes",
       "direction": "forward",
       "weight": 0.8,
@@ -1655,43 +3494,47 @@
   ],
   "layers": [
     {
-      "id": "layer:bootstrap-build",
-      "name": "Bootstrap & Build",
-      "description": "Application entry point, build configuration and launch script.",
-      "nodeIds": [
-        "file:legacy/src/main/java/lib/App.java",
-        "config:legacy/pom.xml",
-        "file:legacy/run.sh"
-      ]
-    },
-    {
       "id": "layer:api",
-      "name": "API Resources",
-      "description": "JAX-RS endpoints for loans, late fees, payments and the about page.",
+      "name": "API Layer",
+      "description": "JAX-RS resources and views exposing HTTP endpoints for loans, holds, fees, payments and the about page.",
       "nodeIds": [
         "file:legacy/src/main/java/lib/LoanResource.java",
-        "file:legacy/src/main/java/lib/LateFeeView.java",
+        "file:legacy/src/main/java/lib/HoldResource.java",
         "file:legacy/src/main/java/lib/FinePayments.java",
+        "file:legacy/src/main/java/lib/LateFeeView.java",
         "file:legacy/src/main/java/lib/AboutPage.java"
       ]
     },
     {
-      "id": "layer:domain-persistence",
-      "name": "Domain & Persistence",
-      "description": "Loan entity, repository, JPA configuration and seed data.",
+      "id": "layer:domain-data",
+      "name": "Domain & Data Layer",
+      "description": "JPA entities, repositories, persistence configuration and seed data.",
       "nodeIds": [
         "file:legacy/src/main/java/lib/Loan.java",
+        "file:legacy/src/main/java/lib/Hold.java",
         "file:legacy/src/main/java/lib/LoanRepository.java",
+        "file:legacy/src/main/java/lib/HoldRepository.java",
         "config:legacy/src/main/resources/META-INF/persistence.xml",
-        "table:legacy/src/main/resources/META-INF/seed.sql:LOAN"
+        "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+        "table:legacy/src/main/resources/META-INF/seed.sql:HOLD"
       ]
     },
     {
-      "id": "layer:static-docs",
-      "name": "Static Content & Docs",
-      "description": "Static HTML and project documentation/specifications.",
+      "id": "layer:app-bootstrap",
+      "name": "Application Bootstrap & Build",
+      "description": "Entry point, build configuration, launch script and static assets.",
       "nodeIds": [
-        "file:legacy/src/main/resources/static/about.html",
+        "file:legacy/src/main/java/lib/App.java",
+        "config:legacy/pom.xml",
+        "file:legacy/run.sh",
+        "file:legacy/src/main/resources/static/about.html"
+      ]
+    },
+    {
+      "id": "layer:docs",
+      "name": "Documentation",
+      "description": "Behavior notes and specifications.",
+      "nodeIds": [
         "document:legacy/docs/export-csv.md",
         "document:legacy/docs/reports-spec.md"
       ]
@@ -1700,50 +3543,54 @@
   "tour": [
     {
       "order": 1,
-      "title": "Build and launch",
-      "description": "The Maven POM and run.sh build and start the Lending Library.",
+      "title": "Application Entry Point",
+      "description": "App wires repositories and JAX-RS resources into a Jersey server on Grizzly.",
       "nodeIds": [
-        "config:legacy/pom.xml",
-        "file:legacy/run.sh"
+        "file:legacy/src/main/java/lib/App.java",
+        "file:legacy/run.sh",
+        "config:legacy/pom.xml"
       ]
     },
     {
       "order": 2,
-      "title": "Entry point",
-      "description": "App.java wires the JPA factory, repository and JAX-RS resources into a Grizzly server.",
+      "title": "Domain Entities",
+      "description": "Loan and Hold are JPA entities encoding lending period and hold expiry rules.",
       "nodeIds": [
-        "file:legacy/src/main/java/lib/App.java"
+        "file:legacy/src/main/java/lib/Loan.java",
+        "file:legacy/src/main/java/lib/Hold.java",
+        "config:legacy/src/main/resources/META-INF/persistence.xml"
       ]
     },
     {
       "order": 3,
-      "title": "REST resources",
-      "description": "Endpoints for loans, late fees, fine payments and the about page.",
+      "title": "Repositories",
+      "description": "Repositories encapsulate JPA queries and persistence of loans and holds.",
+      "nodeIds": [
+        "file:legacy/src/main/java/lib/LoanRepository.java",
+        "file:legacy/src/main/java/lib/HoldRepository.java"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "HTTP Resources",
+      "description": "Resources expose loans, holds, fees, payments and the about page over REST.",
       "nodeIds": [
         "file:legacy/src/main/java/lib/LoanResource.java",
+        "file:legacy/src/main/java/lib/HoldResource.java",
         "file:legacy/src/main/java/lib/LateFeeView.java",
         "file:legacy/src/main/java/lib/FinePayments.java",
         "file:legacy/src/main/java/lib/AboutPage.java"
       ]
     },
     {
-      "order": 4,
-      "title": "Domain and persistence",
-      "description": "Loan entity, repository and JPA/H2 configuration with seed data.",
-      "nodeIds": [
-        "file:legacy/src/main/java/lib/Loan.java",
-        "file:legacy/src/main/java/lib/LoanRepository.java",
-        "config:legacy/src/main/resources/META-INF/persistence.xml",
-        "table:legacy/src/main/resources/META-INF/seed.sql:LOAN"
-      ]
-    },
-    {
       "order": 5,
-      "title": "Docs and specs",
-      "description": "The CSV format contract and the orphaned monthly report spec.",
+      "title": "Docs and Seed Data",
+      "description": "Docs record behavior that clients rely on (CSV export format) and a retired reporting spec; seed data populates the DB.",
       "nodeIds": [
         "document:legacy/docs/export-csv.md",
-        "document:legacy/docs/reports-spec.md"
+        "document:legacy/docs/reports-spec.md",
+        "table:legacy/src/main/resources/META-INF/seed.sql:LOAN",
+        "table:legacy/src/main/resources/META-INF/seed.sql:HOLD"
       ]
     }
   ]
