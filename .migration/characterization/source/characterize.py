@@ -217,11 +217,13 @@ def normalize(observation, endpoint):
 
 def write_or_compare(name, observation, record):
     path = GOLDENS / f'{name}.json'
-    rendered = json.dumps(observation, indent=2, sort_keys=True) + '\n'
     if record:
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(rendered, encoding='utf-8')
+        existing = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+        merged = {**observation, **{key: value for key, value in existing.items()}}
+        path.write_text(json.dumps(merged, indent=2, sort_keys=True) + '\n', encoding='utf-8')
         return
+    rendered = json.dumps(observation, indent=2, sort_keys=True) + '\n'
     expected = json.loads(path.read_text(encoding='utf-8'))
     if name in ('http', 'edge-cases', 'hold-listing', 'hold-expired', 'hold-limit'):
         actual = {key: normalize(value, key) for key, value in observation.items()}

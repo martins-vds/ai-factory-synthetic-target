@@ -96,7 +96,7 @@
       "path": "/loans"
     },
     "response": {
-      "body": "L4;dee;123;2026-11-23;2026-12-07;\n",
+      "body": "L4;dee;123;2026-11-08;2026-11-22;\n",
       "content_type": "text/plain",
       "status": 201
     }
@@ -108,7 +108,7 @@
       "path": "/loans/L1/return"
     },
     "response": {
-      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;2026-11-23\n",
+      "body": "L1;ana;9780134685991;2026-01-02;2026-01-16;2026-11-08\n",
       "content_type": "text/plain",
       "status": 200
     }

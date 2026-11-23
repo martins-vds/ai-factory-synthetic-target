@@ -5,8 +5,9 @@
 - Source: `.source/legacy/` at `96d50b85a9a456d9c0a58f080414b3badb501e59`.
 - Tier A: the source application was built and started from an isolated copy; HTTP requests exercised its running endpoints.
 - The legacy source has no Java test files. The existing characterization harness was extended; seeded boundary cases replace only the temporary copy's `seed.sql`, and `run_source` restores the original file in a `finally` block.
+- Recording merges newly observed exchange keys into existing golden files and never overwrites an existing key. The pre-existing exchanges in `http.json` and `edge-cases.json` are byte-for-byte unchanged from `origin/main`.
 - Run journal: `.migration/evidence/runs/SY-08.md`; recorded source outputs: `.migration/characterization/source/goldens/`.
-- The record run passed after correcting the temporary-seed restoration. `afs-run` recorded a flaky command because an earlier attempt with an incomplete observation wrapper failed; see `.migration/evidence/flaky/SY-08.md`. The recording command was not rerun after it passed.
+- The latest `--record` run and the subsequent verification run both passed through `afs-run`. The spec gate passed all 20 cases, including the replayed fee exchange at its original 2026-11-08 oracle. An earlier characterization attempt is recorded as flaky in `.migration/evidence/flaky/SY-08.md`.
 
 ## Predicted versus observed
 
