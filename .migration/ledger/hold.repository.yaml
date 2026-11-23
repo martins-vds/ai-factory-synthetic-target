@@ -8,7 +8,7 @@ boundary: "HoldRepository reads and closes an EntityManager for active, member-c
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md

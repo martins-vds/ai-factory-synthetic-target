@@ -8,7 +8,7 @@ boundary: "The seed script inserts H1 (sequence 1) for member bo and ISBN 978013
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: characterized
+verification: differential
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md

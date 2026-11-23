@@ -1,0 +1,43 @@
+[
+  {
+    "at": "2026-11-23T17:17:00Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 12724,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "SY-09",
+    "role": "afs-planner",
+    "changed": [
+      ".migration/evidence/runs/SY-09.md",
+      ".migration/ledger/data.hold-seed-record.yaml",
+      ".migration/ledger/hold.cancel.yaml",
+      ".migration/ledger/hold.list-active.yaml",
+      ".migration/ledger/hold.place.yaml",
+      ".migration/ledger/hold.repository.yaml",
+      ".migration/ledger/hold.storage.yaml",
+      ".migration/plan/hold-management.md",
+      ".migration/plan/hold-management.tickets.yaml",
+      ".migration/returns/SY-09.afs-planner.yaml",
+      ".migration/slices/hold-management.md",
+      ".migration/slices/hold-management.yaml"
+    ],
+    "snapshot_tests": "ok",
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
