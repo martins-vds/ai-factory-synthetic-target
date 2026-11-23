@@ -47,11 +47,9 @@ def test_modern_about_page_shows_library_information_in_browser(live_server):
             ).to_be_visible()
             expect(page.get_by_text('Open Monday to Saturday, 9:00 to 18:00.')).to_be_visible()
             expect(page.get_by_text('Books are lent for 14 days.')).to_be_visible()
-            expect(
-                page.get_by_role('link', name='desk@lending-library.invalid')
-            ).to_have_attribute('href', 'mailto:desk@lending-library.invalid')
-            expect(page.get_by_role('link', name='Loans')).to_have_attribute(
-                'href', '/ui/loans/'
+            expect(page.get_by_role('link', name='desk@lending-library.invalid')).to_have_attribute(
+                'href', 'mailto:desk@lending-library.invalid'
             )
+            expect(page.get_by_role('link', name='Loans')).to_have_attribute('href', '/ui/loans/')
         finally:
             browser.close()

@@ -321,7 +321,9 @@ def test_browser_lending_page_shows_errors_for_blank_fields(client):
 
     assert response.status_code == 200
     assert b'<!doctype html>' in response.content
-    assert response.content.count(b'This field is required.') == 2  # afs: allow-browser Django response bytes
+    assert (  # afs: allow-browser Django response bytes
+        response.content.count(b'This field is required.') == 2
+    )
     assert Loan.objects.count() == 3  # afs: allow-browser ORM row count, not a browser locator
 
 
@@ -354,7 +356,9 @@ def test_htmx_lending_errors_replace_only_the_form(client):
     assert response.status_code == 200
     assert b'<!doctype html>' not in response.content
     assert b'id="loan-form"' in response.content
-    assert response.content.count(b'This field is required.') == 2  # afs: allow-browser Django response bytes
+    assert (  # afs: allow-browser Django response bytes
+        response.content.count(b'This field is required.') == 2
+    )
 
 
 @pytest.mark.django_db
