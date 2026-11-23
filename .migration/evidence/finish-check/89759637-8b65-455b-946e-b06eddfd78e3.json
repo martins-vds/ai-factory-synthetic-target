@@ -1,0 +1,44 @@
+[
+  {
+    "at": "2026-11-23T12:15:30Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 11907,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "SY-07",
+    "role": "afs-analyst",
+    "changed": [
+      ".migration/evidence/runs/SY-07.md",
+      ".migration/ledger/application.startup.yaml",
+      ".migration/ledger/data.hold-seed-record.yaml",
+      ".migration/ledger/data.loan-storage.yaml",
+      ".migration/ledger/data.seed-records.yaml",
+      ".migration/ledger/hold.cancel.yaml",
+      ".migration/ledger/hold.list-active.yaml",
+      ".migration/ledger/hold.place.yaml",
+      ".migration/ledger/hold.repository.yaml",
+      ".migration/ledger/hold.storage.yaml",
+      ".migration/quirks/hold-limit-off-by-one.md",
+      ".migration/returns/SY-07.afs-analyst.yaml",
+      ".migration/risk-map/SY-07.md"
+    ],
+    "snapshot_tests": "ok",
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
