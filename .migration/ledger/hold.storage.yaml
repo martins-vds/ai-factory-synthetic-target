@@ -1,0 +1,11 @@
+id: hold.storage
+kind: data
+title: Persist hold records
+source:
+  graph_node: table:legacy/src/main/java/lib/Hold.java:HOLD
+  location: legacy/src/main/java/lib/Hold.java:11-59
+boundary: "HOLD stores id, sequence, member, ISBN, placement date, and nullable cancellation date. A hold expires 30 days after placement and remains active through its expiry date unless cancelled. JPA registers the entity in the H2 persistence unit."
+slice: hold-management
+tickets: [martins-vds/ai-factory-synthetic-target#168]
+status: pending
+verification: pending
