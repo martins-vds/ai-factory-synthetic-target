@@ -81,5 +81,55 @@
     "blocks_before": 0,
     "decision": "allow",
     "why": "clean"
+  },
+  {
+    "at": "2026-11-23T16:55:18Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 47282,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "SY-08",
+    "role": "afs-characterizer",
+    "changed": [
+      ".migration/capabilities.yaml",
+      ".migration/characterization/source/characterize.py",
+      ".migration/characterization/source/goldens/edge-cases.json",
+      ".migration/characterization/source/goldens/hold-expired.json",
+      ".migration/characterization/source/goldens/hold-limit.json",
+      ".migration/characterization/source/goldens/hold-listing.json",
+      ".migration/characterization/source/goldens/http.json",
+      ".migration/costs/9f8ed20d-137c-44b1-971d-5ffeb57e10af.json",
+      ".migration/evidence/flaky/SY-08.md",
+      ".migration/evidence/runs/SY-08.md",
+      ".migration/ledger/application.startup.yaml",
+      ".migration/ledger/data.hold-seed-record.yaml",
+      ".migration/ledger/data.loan-storage.yaml",
+      ".migration/ledger/data.seed-records.yaml",
+      ".migration/ledger/hold.cancel.yaml",
+      ".migration/ledger/hold.list-active.yaml",
+      ".migration/ledger/hold.place.yaml",
+      ".migration/ledger/hold.repository.yaml",
+      ".migration/ledger/hold.storage.yaml",
+      ".migration/references/characterization-SY-08.md",
+      ".migration/returns/SY-08.afs-characterizer.yaml"
+    ],
+    "snapshot_tests": "ok",
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
   }
 ]
