@@ -43,5 +43,53 @@
     "blocks_before": 0,
     "decision": "allow",
     "why": "clean"
+  },
+  {
+    "at": "2026-11-23T21:19:08Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 30067,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "HM-01",
+    "role": "afs-characterizer",
+    "changed": [
+      ".migration/costs/5d60784a-1ce1-439c-b5db-5df7324e5018.json",
+      ".migration/evidence/flaky/HM-01.md",
+      ".migration/evidence/runs/HM-01.md",
+      ".migration/ledger/data.hold-seed-record.yaml",
+      ".migration/ledger/hold.cancel.yaml",
+      ".migration/ledger/hold.list-active.yaml",
+      ".migration/ledger/hold.place.yaml",
+      ".migration/ledger/hold.repository.yaml",
+      ".migration/ledger/hold.storage.yaml",
+      ".migration/returns/HM-01.afs-characterizer.yaml",
+      ".migration/spec/hold-management/data.hold-seed-record.yaml",
+      ".migration/spec/hold-management/fixtures/expiry-hold.json",
+      ".migration/spec/hold-management/hold.cancel.yaml",
+      ".migration/spec/hold-management/hold.list-active.yaml",
+      ".migration/spec/hold-management/hold.place.yaml",
+      ".migration/spec/hold-management/hold.repository.yaml",
+      ".migration/spec/hold-management/hold.storage.yaml"
+    ],
+    "snapshot_tests": "ok",
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [
+      "[scope] These files are outside ticket HM-01's planned files: `.migration/evidence/flaky/HM-01.md`. Don't widen your own scope: revert them, or, if the work truly needs them, write a handoff (afs-handoff) that names each file and why, set `handoff:` in your return, and stop. The operator decides."
+    ],
+    "blocks_before": 0,
+    "decision": "block",
+    "why": "block 1 of 2"
   }
 ]
