@@ -8,11 +8,23 @@ boundary: "HoldRepository reads and closes an EntityManager for active, member-c
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: differential
+verification: characterized
+characterization_tier: A
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md
   - .migration/evidence/runs/SY-08.md
+  - .migration/evidence/runs/HM-01.md
   - .migration/characterization/source/goldens/edge-cases.json
   - .migration/characterization/source/goldens/hold-listing.json
 notes: "Public reads, placement and cancellation were observed at tier A. The rollback-on-failure branch has no public HTTP trigger and is source-confirmed at HoldRepository.java:69-81."
+rules:
+  - id: active-query-order-filter
+    rule: Active holds are read in sequence order and an optional ISBN limits the results.
+    source: legacy/src/main/java/lib/HoldRepository.java:20-35
+  - id: next-sequence-id
+    rule: A new hold receives the identifier for one greater than the highest stored sequence.
+    source: legacy/src/main/java/lib/HoldRepository.java:37-51
+  - id: persisted-holds-readable
+    rule: Active holds written by prior operations are returned by later reads unless cancelled or expired.
+    source: legacy/src/main/java/lib/HoldRepository.java:20-35

@@ -10,10 +10,24 @@ boundary: "POST /holds/{id}/cancel returns 404 for an unknown id and 409 for an 
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: differential
+verification: characterized
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md
   - .migration/evidence/runs/SY-08.md
+  - .migration/evidence/runs/HM-01.md
   - .migration/characterization/source/goldens/http.json
   - .migration/characterization/source/goldens/edge-cases.json
+rules:
+  - id: unknown-hold
+    rule: Cancelling an unknown hold returns HTTP 404 with "no such hold".
+    source: legacy/src/main/java/lib/HoldResource.java:60-63
+  - id: already-cancelled
+    rule: Cancelling an already-cancelled hold returns HTTP 409 with "hold already cancelled".
+    source: legacy/src/main/java/lib/HoldResource.java:64-66
+  - id: expired-hold-cancellable
+    rule: An uncancelled hold can be cancelled even after it expires.
+    source: legacy/src/main/java/lib/HoldResource.java:64-70
+  - id: cancellation-returns-hold
+    rule: Successful cancellation returns HTTP 200 and the hold's identifier, member, ISBN, placement date, and expiry.
+    source: legacy/src/main/java/lib/HoldResource.java:67-70

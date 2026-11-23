@@ -10,11 +10,12 @@ boundary: "POST /holds requires nonblank member and isbn (400 otherwise); return
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: differential
+verification: characterized
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md
   - .migration/evidence/runs/SY-08.md
+  - .migration/evidence/runs/HM-01.md
   - .migration/characterization/source/goldens/http.json
   - .migration/characterization/source/goldens/edge-cases.json
   - .migration/characterization/source/goldens/hold-limit.json

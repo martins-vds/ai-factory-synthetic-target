@@ -1,0 +1,25 @@
+capability: hold.storage
+title: Persist hold records
+cases:
+  - title: A listed hold shows its identifying details and dates
+    rule: hold-details
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/active-listing.json]}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds ordered"}}
+    then: {replay: {body: exact}}
+
+  - title: A hold expires 30 days after placement and remains active through that date
+    rule: expiry-inclusive
+    given: {clock: "{today}", fixtures: [tests/holds/fixtures/expiry-day.json]}
+    examples:
+      columns: [recording, exchange, today]
+      rows:
+        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds on expiry date", "2026-11-23"]
+        - [.migration/characterization/source/goldens/hold-expired.json, "GET /holds one day after expiry", "2026-11-24"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A cancelled hold is not returned as active
+    rule: cancellation-removes-active
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/after-writes.json]}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "GET /holds after writes"}}
+    then: {replay: {body: exact}}

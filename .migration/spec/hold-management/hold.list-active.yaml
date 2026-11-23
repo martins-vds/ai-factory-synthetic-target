@@ -1,0 +1,42 @@
+capability: hold.list-active
+title: List active holds
+cases:
+  - title: Active holds are listed in sequence order and an ISBN filter narrows the list
+    rule: [sequence-order, isbn-filter]
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/active-listing.json]}
+    examples:
+      columns: [recording, exchange]
+      rows:
+        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds ordered"]
+        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds filtered second isbn"]
+        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds filtered unknown isbn"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A hold remains listed on its expiry date and is absent the next day
+    rule: active-through-expiry-day
+    given: {clock: "{today}", fixtures: [tests/holds/fixtures/expiry-day.json]}
+    examples:
+      columns: [recording, exchange, today]
+      rows:
+        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds on expiry date", "2026-11-23"]
+        - [.migration/characterization/source/goldens/hold-expired.json, "GET /holds one day after expiry", "2026-11-24"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: An empty or blank-filter result is one newline
+    rule: empty-result
+    given: {clock: "2026-11-23"}
+    examples:
+      columns: [recording, exchange]
+      rows:
+        - [.migration/characterization/source/goldens/http.json, "GET /holds"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "GET /holds filtered empty"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: Cancelled holds do not appear in the active list
+    rule: cancelled-excluded
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/after-writes.json]}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "GET /holds after writes"}}
+    then: {replay: {body: exact}}

@@ -1,0 +1,59 @@
+capability: hold.place
+title: Place a hold on a checked-out book
+cases:
+  - title: Missing or blank member and ISBN values are rejected
+    rule: required-fields
+    given: {clock: "2026-11-23"}
+    examples:
+      columns: [recording, exchange]
+      rows:
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/missing-member"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/missing-isbn"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/blank-fields"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A hold is refused when the book is available or the member has borrowed it
+    rule: on-loan
+    given: {clock: "2026-11-23"}
+    examples:
+      columns: [recording, exchange]
+      rows:
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/book-available"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/borrower"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A member cannot place a duplicate active hold for the same ISBN
+    rule: no-duplicate-active-hold
+    given:
+      clock: "2026-11-23"
+      fixtures: [tests/holds/fixtures/duplicate-active.json]
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/duplicate"}}
+    then: {replay: {body: exact}}
+
+  - title: An eligible placement receives the next identifier and today's date
+    rule: [on-loan, hold-placement-date]
+    given: {clock: "{today}", fixtures: ["{fixture}"]}
+    examples:
+      columns: [recording, exchange, fixture, today]
+      rows:
+        - [.migration/characterization/source/goldens/http.json, "POST /holds", tests/holds/fixtures/seed-only.json, "2026-11-23"]
+        - [.migration/characterization/source/goldens/hold-listing.json, "POST /holds first isbn", tests/holds/fixtures/seed-only.json, "2026-11-23"]
+        - [.migration/characterization/source/goldens/hold-listing.json, "POST /holds second isbn", tests/holds/fixtures/two-holds.json, "2026-11-23"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/duplicate setup", tests/holds/fixtures/two-holds.json, "2026-11-23"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/second member", tests/holds/fixtures/three-holds.json, "2026-11-23"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: The recorded hold limit accepts a fourth active hold and refuses a fifth
+    rule: active-hold-limit
+    ruling: martins-vds/ai-factory-synthetic-target#170
+    given: {clock: "2026-11-23", fixtures: ["{fixture}"]}
+    examples:
+      columns: [exchange, fixture]
+      rows:
+        - ["POST /holds with three active holds", tests/holds/fixtures/hold-limit-three.json]
+        - ["POST /holds with four active holds", tests/holds/fixtures/hold-limit-four.json]
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-limit.json, exchange: "{exchange}"}}
+    then: {replay: {body: exact}}

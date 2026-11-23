@@ -10,12 +10,29 @@ boundary: "GET /holds lists uncancelled holds whose expiry date is today or late
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: differential
+verification: characterized
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md
   - .migration/evidence/runs/SY-08.md
+  - .migration/evidence/runs/HM-01.md
   - .migration/characterization/source/goldens/http.json
   - .migration/characterization/source/goldens/edge-cases.json
   - .migration/characterization/source/goldens/hold-listing.json
   - .migration/characterization/source/goldens/hold-expired.json
+rules:
+  - id: active-through-expiry-day
+    rule: An uncancelled hold appears through its expiry date and is absent the following day.
+    source: legacy/src/main/java/lib/Hold.java:46-58
+  - id: sequence-order
+    rule: Active holds are listed in sequence order.
+    source: legacy/src/main/java/lib/HoldRepository.java:20-35
+  - id: isbn-filter
+    rule: When an ISBN is supplied, only active holds for that ISBN are listed.
+    source: legacy/src/main/java/lib/HoldResource.java:30-34
+  - id: empty-result
+    rule: An empty active-hold result is one newline.
+    source: legacy/src/main/java/lib/HoldResource.java:30-34
+  - id: cancelled-excluded
+    rule: Cancelled holds do not appear in the active-hold list.
+    source: legacy/src/main/java/lib/Hold.java:46-58

@@ -1,0 +1,25 @@
+capability: hold.repository
+title: Query and persist holds
+cases:
+  - title: Reads return active holds in order and apply the optional ISBN filter
+    rule: active-query-order-filter
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/active-listing.json]}
+    examples:
+      columns: [exchange]
+      rows:
+        - ["GET /holds ordered"]
+        - ["GET /holds filtered second isbn"]
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A new hold uses the next sequence-based identifier
+    rule: next-sequence-id
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/seed-only.json]}
+    when: {replay: {recording: .migration/characterization/source/goldens/http.json, exchange: "POST /holds"}}
+    then: {replay: {body: exact}}
+
+  - title: Active holds written earlier remain readable unless cancelled or expired
+    rule: persisted-holds-readable
+    given: {clock: "2026-11-23", fixtures: [tests/holds/fixtures/after-writes.json]}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "GET /holds after writes"}}
+    then: {replay: {body: exact}}
