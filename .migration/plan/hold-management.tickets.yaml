@@ -64,6 +64,30 @@ tickets:
       - endpoint=GET /holds
       - endpoint=POST /holds
       - endpoint=POST /holds/<str:hold_id>/cancel
+  - id: HM-04
+    title: Characterize and specify the precedence of simultaneous hold-placement refusals
+    role: afs-characterizer
+    specialty: null
+    files:
+      - .migration/characterization/source/characterize.py
+      - .migration/characterization/source/goldens/hold-precedence.json
+      - .migration/references/characterization-HM-04.md
+      - .migration/spec/hold-management/hold.place.yaml
+      - .migration/ledger/hold.place.yaml
+      - .migration/returns/HM-04.afs-characterizer.yaml
+    capabilities: [hold.place]
+    blocked_by: [HM-03]
+  - id: HM-05
+    title: Prove hold repository rollback on a failed write at the persistence boundary
+    role: afs-migrator
+    specialty: null
+    files:
+      - tests/holds/test_repository.py
+      - src/holds/repository.py
+      - .migration/ledger/hold.repository.yaml
+      - .migration/returns/HM-05.afs-migrator.yaml
+    capabilities: [hold.repository]
+    blocked_by: [HM-03]
 cross_slice:
   - file: config/settings.py
     slices: [loan-catalog, monthly-report, hold-management]
