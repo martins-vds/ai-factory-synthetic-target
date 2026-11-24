@@ -1,13 +1,23 @@
+from contextlib import contextmanager
 from datetime import timedelta
 
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Max
 
 from .models import Hold
 from .services import HoldIdentity
 
+_HOLD_PLACEMENT_LOCK = 0x484F4C44
+
 
 class DjangoHoldRepository:
+    @contextmanager
+    def placement(self):
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT pg_advisory_xact_lock(%s)', [_HOLD_PLACEMENT_LOCK])
+            yield
+
     def active(self, isbn, today):
         holds = Hold.objects.filter(
             cancelled_on__isnull=True,

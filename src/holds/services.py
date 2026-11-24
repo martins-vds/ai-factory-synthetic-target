@@ -1,9 +1,8 @@
-import csv
 from collections.abc import Iterable
+from contextlib import AbstractContextManager
 from dataclasses import dataclass
 from datetime import date
 from enum import StrEnum
-from io import StringIO
 from typing import Protocol
 
 
@@ -51,6 +50,8 @@ class HoldFailure:
 
 
 class HoldRepository(Protocol):
+    def placement(self) -> AbstractContextManager[None]: ...
+
     def active(self, isbn: str | None, today: date) -> Iterable[HoldRecord]: ...
 
     def active_count_for_member(self, member: str, today: date) -> int: ...
@@ -80,22 +81,26 @@ class HoldApplication:
         self.loan_state_lookup = loan_state_lookup
 
     def place(self, member: str, isbn: str) -> HoldRecord | HoldFailure:
-        for check in (
-            lambda: self._required_fields_error(member, isbn),
-            lambda: self._loan_error(member, isbn),
-            lambda: self._duplicate_error(member, isbn),
-            lambda: self._limit_error(member),
-        ):
-            error = check()
-            if error is not None:
-                return error
+        error = self._required_fields_error(member, isbn)
+        if error is not None:
+            return error
 
-        return self.repository.create(
-            identity=self.repository.next_identity(),
-            member=member,
-            isbn=isbn,
-            placed_on=self.clock.today(),
-        )
+        with self.repository.placement():
+            for check in (
+                lambda: self._loan_error(member, isbn),
+                lambda: self._duplicate_error(member, isbn),
+                lambda: self._limit_error(member),
+            ):
+                error = check()
+                if error is not None:
+                    return error
+
+            return self.repository.create(
+                identity=self.repository.next_identity(),
+                member=member,
+                isbn=isbn,
+                placed_on=self.clock.today(),
+            )
 
     def _required_fields_error(self, member: str, isbn: str) -> HoldFailure | None:
         if not member or not member.strip() or not isbn or not isbn.strip():
@@ -136,15 +141,7 @@ class HoldApplication:
 
 
 def hold_line(hold: HoldRecord) -> str:
-    output = StringIO(newline='')
-    writer = csv.writer(output, delimiter=';', lineterminator='\n')
-    writer.writerow(
-        [
-            hold.id,
-            hold.member,
-            hold.isbn,
-            hold.placed_on.isoformat(),
-            hold.expires_on.isoformat(),
-        ]
+    return (
+        f'{hold.id};{hold.member};{hold.isbn};{hold.placed_on.isoformat()};'
+        f'{hold.expires_on.isoformat()}\n'
     )
-    return output.getvalue()

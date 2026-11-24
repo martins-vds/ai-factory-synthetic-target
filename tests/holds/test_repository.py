@@ -1,10 +1,57 @@
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from datetime import date
+from threading import Barrier, local
 
 import pytest
+from django.db import connections
 
 from src.holds.models import Hold
 from src.holds.repository import DjangoHoldRepository
-from src.holds.services import HoldIdentity
+from src.holds.services import (
+    HoldApplication,
+    HoldFailure,
+    HoldFailureCode,
+    HoldIdentity,
+)
+
+
+class ConcurrentPlacementRepository(DjangoHoldRepository):
+    def __init__(self):
+        self.ready = Barrier(2)
+        self.state = local()
+
+    @contextmanager
+    def placement(self):
+        self.ready.wait(timeout=5)
+        with super().placement():
+            self.state.in_placement = True
+            try:
+                yield
+            finally:
+                self.state.in_placement = False
+
+    def active_count_for_member(self, member, today):
+        assert self.state.in_placement
+        return super().active_count_for_member(member, today)
+
+    def next_identity(self):
+        assert self.state.in_placement
+        return super().next_identity()
+
+    def create(self, **kwargs):
+        assert self.state.in_placement
+        return super().create(**kwargs)
+
+
+class FixedClock:
+    def today(self):
+        return date(2026, 11, 23)
+
+
+class LoanStateLookup:
+    def active_loan_for_isbn(self, isbn):
+        return type('LoanState', (), {'borrower': 'ana'})()
 
 
 @pytest.mark.django_db
@@ -68,3 +115,33 @@ def test_repository_cancellation_is_atomic():
     cancelled = DjangoHoldRepository().cancel('H2', date(2026, 11, 24))
 
     assert cancelled.cancelled_on == date(2026, 11, 24)
+
+
+@pytest.mark.django_db(transaction=True)
+def test_concurrent_placements_cannot_exceed_member_limit_or_reuse_ids():
+    Hold.objects.all().delete()
+    today = date(2026, 11, 23)
+    for sequence in range(1, 4):
+        Hold.objects.create(
+            id=f'H{sequence}',
+            sequence=sequence,
+            member='dee',
+            isbn=f'existing-{sequence}',
+            placed_on=today,
+        )
+    repository = ConcurrentPlacementRepository()
+
+    def place(isbn):
+        connections.close_all()
+        try:
+            return HoldApplication(repository, FixedClock(), LoanStateLookup()).place('dee', isbn)
+        finally:
+            connections.close_all()
+
+    with ThreadPoolExecutor(max_workers=2) as workers:
+        results = list(workers.map(place, ['first', 'second']))
+
+    assert results.count(HoldFailure(HoldFailureCode.HOLD_LIMIT)) == 1
+    assert sum(not isinstance(result, HoldFailure) for result in results) == 1
+    assert Hold.objects.filter(member='dee', cancelled_on__isnull=True).count() == 4
+    assert Hold.objects.filter(id='H4', member='dee').exists()

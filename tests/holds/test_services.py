@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import date, timedelta
 
@@ -47,6 +48,9 @@ class FakeLoanStateLookup:
 class FakeHoldRepository:
     def __init__(self, holds=None):
         self.holds = list(holds or [])
+
+    def placement(self):
+        return nullcontext()
 
     def active(self, isbn, today):
         return [
@@ -149,6 +153,12 @@ def test_active_holds_are_ordered_filtered_and_include_the_expiry_date():
         'H1;eli;456;2026-11-01;2026-12-01\nH2;dee;123;2026-10-24;2026-11-23\n'
     )
     assert app.list_active_text('missing') == '\n'
+
+
+def test_active_hold_lines_preserve_delimiters_and_quotes_in_field_values():
+    app = application([FakeHold('H1', 1, 'member;name', 'book"edition', date(2026, 11, 1))])
+
+    assert app.list_active_text() == ('H1;member;name;book"edition;2026-11-01;2026-12-01\n')
 
 
 def test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation():
