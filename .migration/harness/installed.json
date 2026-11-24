@@ -1,7 +1,7 @@
 {
   "harness_version": "0.2.0",
-  "harness_commit": "a4202e963cdc92b48b07f7e8ad47e0cf5147989e",
-  "installed_at": "2026-11-24T00:47:44Z",
+  "harness_commit": "2f875e5a366882c47493771f281b91bb6af677af",
+  "installed_at": "2026-11-24T02:55:23Z",
   "entries": [
     {
       "path": ".github/agents/afs-analyst.agent.md",
@@ -1054,7 +1054,7 @@
         ".migration/harness/tools/afs-refactor-ticket": "3b852894f7deb780301714044d8cae0d77c83a0eecea22c83bb66074da9a4952",
         ".migration/harness/tools/afs-run": "1859d286fa0dc25a39ab8655bb5ef7fb2673924c5de3e775bdab5dbf96fb0a75",
         ".migration/harness/tools/afs-services": "9ba61468eef1d55329963d02ae05bee14d8ad3ed2afcb620208ca3e9c16f2669",
-        ".migration/harness/tools/afs-spec": "86386f44247cb27623542d0105eb74e8e58766c5db17dbd0b6ed13aeb6d89363",
+        ".migration/harness/tools/afs-spec": "bee1159250a370714dd81d2f423e15aecab677da974b1823fa84d7b44c333224",
         ".migration/harness/tools/afs-test-health": "cf57249cfe79ad5926c05352a4319dce2f8a32fc5d6f214258f9e07bdad2649e",
         ".migration/harness/tools/afs_spec_django.py": "22606a1c7ab704a5c1830fd71501fca9099908bfc04e6067f4ed6b32ed141d4c",
         ".migration/harness/tools/afs_spec_stub.py": "b9e788ef150c73c67df897f7145bbc63c2210fb4e9244db4b0a5574d7afced10",
