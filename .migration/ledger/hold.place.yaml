@@ -9,7 +9,14 @@ source:
 boundary: "POST /holds requires nonblank member and isbn (400 otherwise); returns 409 if the ISBN has no open loan, the requester has that loan, or the requester already has an active hold for that ISBN. It checks activeFor(member) > 3 before creating a hold, so a member with three active holds can create a fourth; this discrepancy is raised as quirk martins-vds/ai-factory-synthetic-target#170. Success creates H{max sequence + 1} dated today and returns 201 with a semicolon-separated hold line and trailing newline."
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
-status: pending
+target:
+  components:
+    - src.holds.services.HoldApplication.place
+    - src.holds.views.hold_collection
+    - src.loans.services.ActiveLoan
+    - src.loans.services.LoanApplication.active_loan_for_isbn
+    - src.loans.repository.DjangoLoanRepository.active_loan_for_isbn
+status: migrated
 verification: characterized
 characterization_tier: A
 evidence:
@@ -19,6 +26,16 @@ evidence:
   - .migration/characterization/source/goldens/http.json
   - .migration/characterization/source/goldens/edge-cases.json
   - .migration/characterization/source/goldens/hold-limit.json
+  - tests/holds/test_services.py::test_placement_rejects_missing_or_blank_values
+  - tests/holds/test_services.py::test_placement_requires_an_open_loan_and_another_borrower
+  - tests/holds/test_services.py::test_placement_rejects_a_duplicate_active_hold
+  - tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+  - tests/loans/test_services.py::test_active_loan_query_exposes_the_borrower_without_storage_details
+  - tests/loans/test_catalog.py::test_repository_finds_only_an_open_loan_for_an_isbn
+  - tests/holds/test_endpoints.py::test_placement_endpoint_renders_policy_failures
+  - tests/holds/test_endpoints.py::test_placement_endpoint_renders_duplicate_hold_failure
+  - tests/holds/test_endpoints.py::test_placement_endpoint_renders_active_hold_limit_failure
+  - .migration/evidence/runs/HM-03.md
 notes: "Quirk martins-vds/ai-factory-synthetic-target#170 is ruled preserve: the source accepts a fourth active hold and rejects a fifth."
 quirks: [martins-vds/ai-factory-synthetic-target#170]
 rules:

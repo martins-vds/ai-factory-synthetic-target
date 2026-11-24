@@ -9,7 +9,12 @@ source:
 boundary: "POST /holds/{id}/cancel returns 404 for an unknown id and 409 for an already-cancelled hold. Otherwise it records today's date and returns the hold line with HTTP 200; an expired but not-yet-cancelled hold is still cancellable."
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
-status: pending
+target:
+  components:
+    - src.holds.services.HoldApplication.cancel
+    - src.holds.views.hold_cancel
+    - src.holds.repository.DjangoHoldRepository.cancel
+status: migrated
 verification: characterized
 characterization_tier: A
 evidence:
@@ -18,6 +23,11 @@ evidence:
   - .migration/evidence/runs/HM-01.md
   - .migration/characterization/source/goldens/http.json
   - .migration/characterization/source/goldens/edge-cases.json
+  - tests/holds/test_services.py::test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation
+  - tests/holds/test_services.py::test_cancellation_of_unknown_hold_is_not_found
+  - tests/holds/test_endpoints.py::test_cancel_endpoint_records_the_date_and_removes_hold_from_active_list
+  - tests/holds/test_endpoints.py::test_cancel_endpoint_renders_unknown_and_already_cancelled_failures
+  - .migration/evidence/runs/HM-03.md
 rules:
   - id: unknown-hold
     rule: Cancelling an unknown hold returns HTTP 404 with "no such hold".

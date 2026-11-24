@@ -21,4 +21,5 @@ urlpatterns = [
     path('', include('src.loans.urls')),
     path('', include('src.fees.urls')),
     path('', include('src.library_info.urls')),
+    path('', include('src.holds.urls')),
 ]

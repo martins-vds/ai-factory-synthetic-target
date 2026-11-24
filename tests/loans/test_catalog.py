@@ -35,6 +35,21 @@ def test_list_endpoint_returns_seeded_records(client):
 
 
 @pytest.mark.django_db
+def test_repository_finds_only_an_open_loan_for_an_isbn():
+    Loan.objects.create(
+        id='L0',
+        member='reader',
+        isbn='9780134685991',
+        lent_on=date(2026, 3, 1),
+        returned_on=date(2026, 3, 10),
+    )
+    repository = DjangoLoanRepository()
+
+    assert repository.active_loan_for_isbn('9780134685991').id == 'L1'
+    assert repository.active_loan_for_isbn('9780596007126') is None
+
+
+@pytest.mark.django_db
 def test_detail_endpoint_returns_one_formatted_loan(client):
     response = client.get('/loans/L1')
     expected = HTTP_GOLDENS['GET /loans/{id}']['response']

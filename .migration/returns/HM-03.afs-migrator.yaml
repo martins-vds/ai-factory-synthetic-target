@@ -1,0 +1,153 @@
+role: afs-migrator
+ticket: HM-03
+issue: martins-vds/ai-factory-synthetic-target#186
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/187
+gates:
+  build: 0
+  behavior: 0
+  idiom: 0
+  spec: 0
+  crap: 0
+  mutation_changed: 0.832
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/HM-03.md
+ledger_updated:
+  - .migration/ledger/hold.place.yaml
+  - .migration/ledger/hold.list-active.yaml
+  - .migration/ledger/hold.cancel.yaml
+  - .migration/ledger/hold.repository.yaml
+  - .migration/ledger/hold.storage.yaml
+  - .migration/ledger/data.hold-seed-record.yaml
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#170
+new_tickets: []
+handoff: none
+rules:
+  - capability: hold.place
+    rule: Missing or whitespace-only member or ISBN returns HTTP 400.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_placement_rejects_missing_or_blank_values
+    enforced: true
+    ledger_rule: required-fields
+  - capability: hold.place
+    rule: A hold may be placed only when the ISBN has an open loan and the requesting member is not the borrower.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_placement_requires_an_open_loan_and_another_borrower
+    enforced: true
+    ledger_rule: on-loan
+  - capability: hold.place
+    rule: A member with an active hold for the ISBN is rejected with HTTP 409.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_placement_rejects_a_duplicate_active_hold
+    enforced: true
+    ledger_rule: no-duplicate-active-hold
+  - capability: hold.place
+    rule: Placement is rejected only when the member already has more than three active holds.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: active-hold-limit
+  - capability: hold.place
+    rule: A newly placed hold records the current local date as placedOn.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: hold-placement-date
+  - capability: hold.list-active
+    rule: An uncancelled hold appears through its expiry date and is absent the following day.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: active-through-expiry-day
+  - capability: hold.list-active
+    rule: Active holds are listed in sequence order.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: sequence-order
+  - capability: hold.list-active
+    rule: When an ISBN is supplied, only active holds for that ISBN are listed.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: isbn-filter
+  - capability: hold.list-active
+    rule: An empty active-hold result is one newline.
+    use_case: HoldApplication.list_active_text
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: empty-result
+  - capability: hold.list-active
+    rule: Cancelled holds do not appear in the active-hold list.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: cancelled-excluded
+  - capability: hold.cancel
+    rule: Cancelling an unknown hold returns HTTP 404 with "no such hold".
+    use_case: HoldApplication.cancel
+    test: tests/holds/test_services.py::test_cancellation_of_unknown_hold_is_not_found
+    enforced: true
+    ledger_rule: unknown-hold
+  - capability: hold.cancel
+    rule: Cancelling an already-cancelled hold returns HTTP 409 with "hold already cancelled".
+    use_case: HoldApplication.cancel
+    test: tests/holds/test_services.py::test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation
+    enforced: true
+    ledger_rule: already-cancelled
+  - capability: hold.cancel
+    rule: An uncancelled hold can be cancelled even after it expires.
+    use_case: HoldApplication.cancel
+    test: tests/holds/test_services.py::test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation
+    enforced: true
+    ledger_rule: expired-hold-cancellable
+  - capability: hold.cancel
+    rule: Successful cancellation returns HTTP 200 and the hold's identifier, member, ISBN, placement date, and expiry.
+    use_case: HoldApplication.cancel
+    test: tests/holds/test_services.py::test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation
+    enforced: true
+    ledger_rule: cancellation-returns-hold
+  - capability: hold.repository
+    rule: Active holds are read in sequence order and an optional ISBN limits the results.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: active-query-order-filter
+  - capability: hold.repository
+    rule: A new hold receives the identifier for one greater than the highest stored sequence.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: next-sequence-id
+  - capability: hold.repository
+    rule: Active holds written earlier remain readable unless cancelled or expired.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: persisted-holds-readable
+  - capability: hold.storage
+    rule: A listed hold shows its identifier, member, ISBN, placement date, and expiry date.
+    use_case: HoldApplication.list_active_text
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: hold-details
+  - capability: hold.storage
+    rule: A hold expires 30 days after placement and remains active through that date.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: expiry-inclusive
+  - capability: hold.storage
+    rule: A cancelled hold is not returned as active.
+    use_case: HoldApplication.cancel
+    test: tests/holds/test_services.py::test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation
+    enforced: true
+    ledger_rule: cancellation-removes-active
+  - capability: data.hold-seed-record
+    rule: Startup seeds uncancelled H1, sequence 1, for bo and ISBN 9780134685991, placed 2026-01-05.
+    use_case: src.holds.migrations.0001_initial.seed_holds
+    test: tests/holds/test_endpoints.py::test_seeded_hold_matches_the_characterized_record
+    enforced: true
+    ledger_rule: seeded-hold-values
+no_rules: {}

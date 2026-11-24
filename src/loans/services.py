@@ -1,5 +1,6 @@
 import csv
 from collections.abc import Iterable
+from dataclasses import dataclass
 from datetime import date
 from io import StringIO
 from typing import Protocol
@@ -23,11 +24,18 @@ class LoanRepository(Protocol):
 
     def find(self, loan_id: str) -> LoanRecord | None: ...
 
+    def active_loan_for_isbn(self, isbn: str) -> LoanRecord | None: ...
+
     def next_id(self) -> str: ...
 
     def create(self, *, id: str, member: str, isbn: str, lent_on: date) -> LoanRecord: ...
 
     def mark_returned(self, loan_id: str, returned_on: date) -> tuple[LoanRecord | None, bool]: ...
+
+
+@dataclass(frozen=True)
+class ActiveLoan:
+    borrower: str
 
 
 class LoanApplication:
@@ -52,6 +60,10 @@ class LoanApplication:
     def get_loan_text(self, loan_id: str) -> str | None:
         loan = self.repository.find(loan_id)
         return loan_line(loan) if loan else None
+
+    def active_loan_for_isbn(self, isbn: str) -> ActiveLoan | None:
+        loan = self.repository.active_loan_for_isbn(isbn)
+        return ActiveLoan(loan.member) if loan is not None else None
 
 
 def loan_line(loan):
