@@ -1,0 +1,23 @@
+role: afs-auditor
+ticket: HM-AUDIT
+issue: martins-vds/ai-factory-synthetic-target#189
+scope: hold-management
+report: .migration/evidence/hold-management/report.md
+capabilities_checked: 6
+gaps:
+  - class: untested
+    ledger_id: hold.place
+    ticket: null
+  - class: untested
+    ledger_id: hold.list-active
+    ticket: null
+  - class: untested
+    ledger_id: hold.cancel
+    ticket: null
+  - class: untested
+    ledger_id: hold.repository
+    ticket: null
+graph_inconsistencies:
+  - "Acceptance target graph maps GET /holds through HoldApplication.place and DjangoHoldRepository.create; the view's GET branch calls list_active_text and the repository reads active holds."
+verdict: gaps-remain
+acceptance_run: .migration/evidence/acceptance-runs/45394010303-1.json
