@@ -372,8 +372,7 @@ def send_setup_requests(base_url, requests):
         response = get_response(method, path, form, base_url)
         if response['status'] != expected_status:
             raise AssertionError(
-                f'setup {method} {path} returned {response["status"]}, '
-                f'expected {expected_status}'
+                f'setup {method} {path} returned {response["status"]}, expected {expected_status}'
             )
 
 
@@ -564,9 +563,7 @@ def main():
                 exercise_duplicate_and_limit,
                 exercise_available_and_limit,
             ):
-                observations.update(
-                    run_source(source_dir, {}, exercise, port=get_port())
-                )
+                observations.update(run_source(source_dir, {}, exercise, port=get_port()))
         assert_hold_precedence(observations)
         write_or_compare('hold-precedence', observations, args.record)
         action = 'recorded' if args.record else 'verified'

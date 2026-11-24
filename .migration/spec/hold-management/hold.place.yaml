@@ -117,3 +117,47 @@ cases:
         - {method: POST, path: /holds, form: {member: dee, isbn: "9783333333333"}}
     when: {replay: {recording: .migration/characterization/source/goldens/hold-limit.json, exchange: "POST /holds with four active holds"}}
     then: {replay: {body: exact}}
+
+  - title: Borrower refusal precedes duplicate-hold refusal
+    rule: [on-loan, no-duplicate-active-hold, first-refusal-wins]
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans/L1/return, clock: "2026-11-23"}
+        - {method: POST, path: /loans/L4/return, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: ana, isbn: "9780134685991"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans/L6/return, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: ana, isbn: "9780134685991"}, clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-precedence.json, exchange: "POST /holds borrower and duplicate"}}
+    then: {replay: {body: exact}}
+
+  - title: Duplicate-hold refusal precedes the active-hold limit
+    rule: [no-duplicate-active-hold, active-hold-limit, first-refusal-wins]
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9781111111111"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9782222222222"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9782222222222"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9783333333333"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9783333333333"}, clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-precedence.json, exchange: "POST /holds duplicate and limit"}}
+    then: {replay: {body: exact}}
+
+  - title: Available-book refusal precedes the active-hold limit
+    rule: [on-loan, active-hold-limit, first-refusal-wins]
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9781111111111"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9782222222222"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9782222222222"}, clock: "2026-11-23"}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9783333333333"}, clock: "2026-11-23"}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9783333333333"}, clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-precedence.json, exchange: "POST /holds available and limit"}}
+    then: {replay: {body: exact}}
