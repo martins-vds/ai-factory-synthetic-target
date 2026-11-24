@@ -1,0 +1,14 @@
+role: afs-planner
+ticket: HM-02
+issue: martins-vds/ai-factory-synthetic-target#182
+plan: .migration/plan/hold-management.md
+slices:
+  - name: hold-management
+    anchor: GET /holds; POST /holds; POST /holds/{id}/cancel; placement also reads active loan state
+    tickets: 3
+    blocked_by: [loan-catalog, loan-circulation]
+design_tickets: [HM-02]
+data_slices: []
+unmapped_capabilities: []
+open_questions:
+  - Amend HM-03's file scope to include the loans application query, its repository implementation, and the corresponding loans tests before implementation.
