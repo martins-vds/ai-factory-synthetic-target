@@ -40,6 +40,10 @@ tickets:
       - config/urls.py
       - src/holds/
       - tests/holds/
+      - src/loans/services.py
+      - src/loans/repository.py
+      - tests/loans/test_services.py
+      - tests/loans/test_catalog.py
       - .migration/ledger/hold.place.yaml
       - .migration/ledger/hold.list-active.yaml
       - .migration/ledger/hold.cancel.yaml
