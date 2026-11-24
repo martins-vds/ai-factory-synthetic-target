@@ -37,7 +37,7 @@ cases:
   - title: A hold remains listed on its expiry date (the recording's seed supplied H1)
     rule: active-through-expiry-day
     given:
-      clock: "{today}"
+      clock: "2026-11-23"
       requests:
         - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
     when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds on expiry date"}}

@@ -30,4 +30,5 @@ spec:
     - .migration/spec/hold-management/data.hold-seed-record.yaml
   cases: 36
   rules_proved: 21
+  gate_result: "AFS-RESULT gate=spec cases=20 failed=0 pending=36 pending_caps=data.hold-seed-record,hold.cancel,hold.list-active,hold.place,hold.repository,hold.storage"
 handoff: null
