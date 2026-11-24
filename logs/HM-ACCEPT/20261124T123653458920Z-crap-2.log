@@ -1,0 +1,32 @@
+AFS-TOOL crap.py exit=0
+# CRAP risk map
+
+- Methods: 72 · coverage input: yes
+- Above 30: **0** (0.0%)
+
+## Top 20
+
+| CRAP | CCN | Cov | Method | File:lines |
+|---:|---:|---:|---|---|
+| 7 | 7 | 100% | `loan_lend_page( request )` | src/loans/views.py:40-52 |
+| 6 | 6 | 100% | `for_previous_month( self , as_of : date )` | src/reports/services.py:47-73 |
+| 6 | 6 | 100% | `charge( self , loan_id )` | src/fees/gateway.py:20-35 |
+| 5 | 5 | 100% | `_required_fields_error( self , member : str , isbn : str )` | src/holds/services.py:105-108 |
+| 4 | 4 | 100% | `loan_lend( request )` | src/loans/views.py:27-36 |
+| 4 | 4 | 100% | `loan_return_page( request , loan_id )` | src/loans/views.py:73-91 |
+| 4 | 4 | 100% | `fee_for( self , loan_id : str )` | src/fees/services.py:49-57 |
+| 4 | 4 | 100% | `gateway_result( loan_id )` | src/fees/view_helpers.py:11-18 |
+| 4 | 4 | 100% | `place( self , member : str , isbn : str )` | src/holds/services.py:83-103 |
+| 3 | 3 | 100% | `mark_returned( self , loan_id , returned_on )` | src/loans/repository.py:24-31 |
+| 3 | 3 | 100% | `loan_return( request , loan_id )` | src/loans/views.py:63-69 |
+| 3 | 3 | 100% | `payment_page( request , loan_id )` | src/fees/views.py:47-72 |
+| 3 | 3 | 100% | `hold_collection( request )` | src/holds/views.py:24-37 |
+| 3 | 3 | 100% | `_loan_error( self , member : str , isbn : str )` | src/holds/services.py:110-116 |
+| 3 | 3 | 100% | `list_active_text( self , isbn : str | None = None )` | src/holds/services.py:131-132 |
+| 3 | 3 | 100% | `cancel( self , hold_id : str )` | src/holds/services.py:134-140 |
+| 2 | 2 | 80% | `fee_page( request , loan_id )` | src/fees/views.py:34-43 |
+| 2 | 2 | 100% | `handle( self , * args , ** options )` | src/reports/management/commands/monthly_report.py:13-27 |
+| 2 | 2 | 100% | `loan_collection( request )` | src/loans/views.py:21-24 |
+| 2 | 2 | 100% | `loan_detail( request , loan_id )` | src/loans/views.py:55-59 |
+
+AFS-RESULT gate=crap max=7.0 threshold=30 over=0 methods=72
