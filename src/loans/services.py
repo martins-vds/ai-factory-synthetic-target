@@ -23,6 +23,8 @@ class LoanRepository(Protocol):
 
     def find(self, loan_id: str) -> LoanRecord | None: ...
 
+    def active_loan_for_isbn(self, isbn: str) -> LoanRecord | None: ...
+
     def next_id(self) -> str: ...
 
     def create(self, *, id: str, member: str, isbn: str, lent_on: date) -> LoanRecord: ...
@@ -52,6 +54,9 @@ class LoanApplication:
     def get_loan_text(self, loan_id: str) -> str | None:
         loan = self.repository.find(loan_id)
         return loan_line(loan) if loan else None
+
+    def active_loan_for_isbn(self, isbn: str) -> LoanRecord | None:
+        return self.repository.active_loan_for_isbn(isbn)
 
 
 def loan_line(loan):

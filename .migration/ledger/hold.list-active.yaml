@@ -9,7 +9,12 @@ source:
 boundary: "GET /holds lists uncancelled holds whose expiry date is today or later, in sequence order; an optional isbn query filters the list. Each line is id;member;isbn;placedOn;expiresOn with a trailing newline; an empty result is a single newline."
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
-status: pending
+target:
+  components:
+    - src.holds.services.HoldApplication.list_active
+    - src.holds.repository.DjangoHoldRepository.active
+    - src.holds.views.hold_collection
+status: migrated
 verification: characterized
 characterization_tier: A
 evidence:
@@ -20,6 +25,9 @@ evidence:
   - .migration/characterization/source/goldens/edge-cases.json
   - .migration/characterization/source/goldens/hold-listing.json
   - .migration/characterization/source/goldens/hold-expired.json
+  - tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+  - tests/holds/test_repository.py::test_repository_filters_active_holds_by_expiry_cancellation_and_isbn
+  - .migration/evidence/runs/HM-03.md
 rules:
   - id: active-through-expiry-day
     rule: An uncancelled hold appears through its expiry date and is absent the following day.

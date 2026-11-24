@@ -37,6 +37,16 @@ class InMemoryLoanRepository:
         return loan, True
 
 
+class LoanStateRepository:
+    def __init__(self, loan):
+        self.loan = loan
+
+    def active_loan_for_isbn(self, isbn):
+        if self.loan.isbn != isbn or self.loan.returned_on is not None:
+            return None
+        return self.loan
+
+
 class FixedClock:
     def today(self):
         return date(2026, 11, 9)
@@ -70,3 +80,11 @@ def test_return_use_case_uses_injected_clock_and_preserves_repeat_date():
     assert loan.returned_on == date(2026, 11, 9)
     assert repeated_update is False
     assert repeated_loan.returned_on == date(2026, 11, 9)
+
+
+def test_active_loan_query_exposes_the_borrower_without_storage_details():
+    loan = InMemoryLoan('L1', 'dee', '123', date(2026, 11, 1))
+    application = LoanApplication(LoanStateRepository(loan), FixedClock())
+
+    assert application.active_loan_for_isbn('123') is loan
+    assert application.active_loan_for_isbn('456') is None

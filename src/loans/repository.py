@@ -10,6 +10,9 @@ class DjangoLoanRepository:
     def find(self, loan_id):
         return Loan.objects.filter(pk=loan_id).first()
 
+    def active_loan_for_isbn(self, isbn):
+        return Loan.objects.filter(isbn=isbn, returned_on__isnull=True).first()
+
     def next_id(self):
         return f'L{Loan.objects.count() + 1}'
 
