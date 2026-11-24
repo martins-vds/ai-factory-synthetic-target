@@ -143,13 +143,17 @@ def test_active_holds_are_ordered_filtered_and_include_the_expiry_date():
 
 def test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation():
     expired = FakeHold('H1', 1, 'dee', '123', date(2026, 1, 5))
-    app = application([expired])
+    active = FakeHold('H2', 2, 'eli', '456', date(2026, 11, 1))
+    app = application([expired, active])
 
     cancelled = app.cancel('H1')
 
     assert cancelled is expired
     assert cancelled.cancelled_on == date(2026, 11, 23)
     assert app.cancel('H1') == HoldError(409, 'hold already cancelled')
+    assert app.list_active_text() == 'H2;eli;456;2026-11-01;2026-12-01\n'
+    assert app.cancel('H2') is active
+    assert app.list_active_text() == '\n'
 
 
 def test_cancellation_of_unknown_hold_is_not_found():
