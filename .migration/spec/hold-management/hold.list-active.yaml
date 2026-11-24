@@ -5,9 +5,8 @@ cases:
     rule: [sequence-order, isbn-filter]
     given:
       clock: "2026-11-23"
-      fixtures: [.migration/spec/hold-management/fixtures/expiry-hold.json]
       requests:
-        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
         - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
         - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
         - {method: POST, path: /holds, form: {member: eli, isbn: "9781111111111"}}
@@ -22,7 +21,10 @@ cases:
 
   - title: A hold remains listed on its expiry date and is absent the next day
     rule: active-through-expiry-day
-    given: {clock: "{today}", fixtures: [.migration/spec/hold-management/fixtures/expiry-hold.json]}
+    given:
+      clock: "{today}"
+      requests:
+        - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
     examples:
       columns: [recording, exchange, today]
       rows:
