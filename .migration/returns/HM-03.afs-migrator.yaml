@@ -8,7 +8,7 @@ gates:
   idiom: 0
   spec: 0
   crap: 0
-  mutation_changed: 0.822
+  mutation_changed: 0.843
   regression: 0
 evidence_logs:
   - .migration/evidence/runs/HM-03.md

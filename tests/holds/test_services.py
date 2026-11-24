@@ -3,7 +3,12 @@ from datetime import date, timedelta
 
 import pytest
 
-from src.holds.services import HoldApplication, HoldError, HoldIdentity
+from src.holds.services import (
+    HoldApplication,
+    HoldFailure,
+    HoldFailureCode,
+    HoldIdentity,
+)
 
 
 @dataclass
@@ -25,13 +30,18 @@ class FixedClock:
         return date(2026, 11, 23)
 
 
+@dataclass(frozen=True)
+class FakeLoanState:
+    borrower: str
+
+
 class FakeLoanStateLookup:
     def __init__(self, borrowers=None):
         self.borrowers = borrowers or {}
 
     def active_loan_for_isbn(self, isbn):
-        member = self.borrowers.get(isbn)
-        return None if member is None else type('LoanState', (), {'member': member})()
+        borrower = self.borrowers.get(isbn)
+        return None if borrower is None else FakeLoanState(borrower)
 
 
 class FakeHoldRepository:
@@ -89,14 +99,14 @@ def application(holds=None, borrowers=None):
 def test_placement_rejects_missing_or_blank_values(member, isbn):
     result = application(borrowers={'123': 'ana'}).place(member, isbn)
 
-    assert result == HoldError(400, 'member and isbn are required')
+    assert result == HoldFailure(HoldFailureCode.REQUIRED_FIELDS)
 
 
 def test_placement_requires_an_open_loan_and_another_borrower():
     app = application(borrowers={'borrowed': 'dee'})
 
-    assert app.place('dee', 'available') == HoldError(409, 'book is available')
-    assert app.place('dee', 'borrowed') == HoldError(409, 'member has this book')
+    assert app.place('dee', 'available') == HoldFailure(HoldFailureCode.BOOK_AVAILABLE)
+    assert app.place('dee', 'borrowed') == HoldFailure(HoldFailureCode.BORROWER)
 
 
 def test_placement_rejects_a_duplicate_active_hold():
@@ -104,7 +114,7 @@ def test_placement_rejects_a_duplicate_active_hold():
 
     result = application([existing], {'123': 'ana'}).place('dee', '123')
 
-    assert result == HoldError(409, 'already on hold')
+    assert result == HoldFailure(HoldFailureCode.DUPLICATE)
 
 
 def test_fourth_active_hold_is_allowed_but_fifth_is_refused():
@@ -122,7 +132,7 @@ def test_fourth_active_hold_is_allowed_but_fifth_is_refused():
         'H3;dee;3;2026-11-01;2026-12-01\n'
         'H4;dee;4;2026-11-23;2026-12-23\n'
     )
-    assert fifth == HoldError(409, 'hold limit reached')
+    assert fifth == HoldFailure(HoldFailureCode.HOLD_LIMIT)
 
 
 def test_active_holds_are_ordered_filtered_and_include_the_expiry_date():
@@ -150,11 +160,11 @@ def test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation():
 
     assert cancelled is expired
     assert cancelled.cancelled_on == date(2026, 11, 23)
-    assert app.cancel('H1') == HoldError(409, 'hold already cancelled')
+    assert app.cancel('H1') == HoldFailure(HoldFailureCode.ALREADY_CANCELLED)
     assert app.list_active_text() == 'H2;eli;456;2026-11-01;2026-12-01\n'
     assert app.cancel('H2') is active
     assert app.list_active_text() == '\n'
 
 
 def test_cancellation_of_unknown_hold_is_not_found():
-    assert application().cancel('unknown') == HoldError(404, 'no such hold')
+    assert application().cancel('unknown') == HoldFailure(HoldFailureCode.NOT_FOUND)

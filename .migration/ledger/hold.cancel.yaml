@@ -26,6 +26,7 @@ evidence:
   - tests/holds/test_services.py::test_cancellation_allows_expired_holds_and_rejects_repeat_cancellation
   - tests/holds/test_services.py::test_cancellation_of_unknown_hold_is_not_found
   - tests/holds/test_endpoints.py::test_cancel_endpoint_records_the_date_and_removes_hold_from_active_list
+  - tests/holds/test_endpoints.py::test_cancel_endpoint_renders_unknown_and_already_cancelled_failures
   - .migration/evidence/runs/HM-03.md
 rules:
   - id: unknown-hold

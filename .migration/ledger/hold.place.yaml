@@ -13,6 +13,9 @@ target:
   components:
     - src.holds.services.HoldApplication.place
     - src.holds.views.hold_collection
+    - src.loans.services.ActiveLoan
+    - src.loans.services.LoanApplication.active_loan_for_isbn
+    - src.loans.repository.DjangoLoanRepository.active_loan_for_isbn
 status: migrated
 verification: characterized
 characterization_tier: A
@@ -27,6 +30,11 @@ evidence:
   - tests/holds/test_services.py::test_placement_requires_an_open_loan_and_another_borrower
   - tests/holds/test_services.py::test_placement_rejects_a_duplicate_active_hold
   - tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+  - tests/loans/test_services.py::test_active_loan_query_exposes_the_borrower_without_storage_details
+  - tests/loans/test_catalog.py::test_repository_finds_only_an_open_loan_for_an_isbn
+  - tests/holds/test_endpoints.py::test_placement_endpoint_renders_policy_failures
+  - tests/holds/test_endpoints.py::test_placement_endpoint_renders_duplicate_hold_failure
+  - tests/holds/test_endpoints.py::test_placement_endpoint_renders_active_hold_limit_failure
   - .migration/evidence/runs/HM-03.md
 notes: "Quirk martins-vds/ai-factory-synthetic-target#170 is ruled preserve: the source accepts a fourth active hold and rejects a fifth."
 quirks: [martins-vds/ai-factory-synthetic-target#170]

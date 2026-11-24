@@ -22,6 +22,8 @@ evidence:
   - .migration/characterization/source/goldens/edge-cases.json
   - .migration/characterization/source/goldens/hold-listing.json
   - tests/holds/test_repository.py::test_repository_filters_active_holds_by_expiry_cancellation_and_isbn
+  - tests/holds/test_repository.py::test_repository_starts_identifier_sequence_at_one_when_empty
+  - tests/holds/test_repository.py::test_repository_cancellation_is_atomic
   - tests/holds/test_endpoints.py::test_placement_persists_a_hold_for_later_listing
   - .migration/evidence/runs/HM-03.md
 notes: "Public reads, placement and cancellation were observed at tier A. The rollback-on-failure branch has no public HTTP trigger and is source-confirmed at HoldRepository.java:69-81."

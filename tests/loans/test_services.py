@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import date, timedelta
 
-from src.loans.services import LoanApplication
+from src.loans.services import ActiveLoan, LoanApplication
 
 
 @dataclass
@@ -86,5 +86,5 @@ def test_active_loan_query_exposes_the_borrower_without_storage_details():
     loan = InMemoryLoan('L1', 'dee', '123', date(2026, 11, 1))
     application = LoanApplication(LoanStateRepository(loan), FixedClock())
 
-    assert application.active_loan_for_isbn('123') is loan
+    assert application.active_loan_for_isbn('123') == ActiveLoan('dee')
     assert application.active_loan_for_isbn('456') is None
