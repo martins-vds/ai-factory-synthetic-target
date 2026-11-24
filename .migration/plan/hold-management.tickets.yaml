@@ -95,6 +95,7 @@ tickets:
     files:
       - tests/holds/test_services.py
       - src/holds/services.py
+      - .migration/ledger/hold.place.yaml
       - .migration/returns/HM-06.afs-migrator.yaml
     capabilities: [hold.place]
     blocked_by: [HM-04]
