@@ -1,0 +1,47 @@
+{
+  "POST /holds available and limit": {
+    "request": {
+      "form": {
+        "isbn": "9780596007126",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "book is available\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds borrower and duplicate": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "ana"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "member has this book\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  },
+  "POST /holds duplicate and limit": {
+    "request": {
+      "form": {
+        "isbn": "9780134685991",
+        "member": "dee"
+      },
+      "method": "POST",
+      "path": "/holds"
+    },
+    "response": {
+      "body": "already on hold\n",
+      "content_type": "text/plain",
+      "status": 409
+    }
+  }
+}
