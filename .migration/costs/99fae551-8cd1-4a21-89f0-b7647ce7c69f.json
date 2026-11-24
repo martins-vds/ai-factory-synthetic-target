@@ -251,37 +251,37 @@
       ]
     },
     "event_types": {
-      "assistant.message": 397,
-      "assistant.turn_end": 295,
-      "assistant.turn_start": 295,
+      "assistant.message": 400,
+      "assistant.turn_end": 297,
+      "assistant.turn_start": 297,
       "external_tool.completed": 5,
       "external_tool.requested": 5,
-      "hook.end": 786,
-      "hook.start": 787,
-      "permission.completed": 449,
-      "permission.requested": 449,
+      "hook.end": 792,
+      "hook.start": 793,
+      "permission.completed": 450,
+      "permission.requested": 450,
       "session.compaction_complete": 1,
       "session.compaction_start": 1,
       "session.start": 1,
       "session.usage_checkpoint": 2,
-      "session.usage_record": 295,
+      "session.usage_record": 297,
       "skill.context_delivered_ref": 14,
       "skill.invoked": 7,
       "skill.invoked_ref": 7,
-      "subagent.completed": 3,
+      "subagent.completed": 4,
       "subagent.configured": 4,
       "subagent.selected": 5,
       "subagent.started": 4,
       "system.message": 5,
-      "system.notification": 1,
-      "tool.execution_complete": 451,
-      "tool.execution_start": 451,
+      "system.notification": 2,
+      "tool.execution_complete": 453,
+      "tool.execution_start": 453,
       "user.message": 5
     },
-    "events": 4725,
+    "events": 4754,
     "usage_fields": []
   },
-  "ended_at": "2026-11-24T04:06:43.354Z",
+  "ended_at": "2026-11-24T04:06:59.698Z",
   "event": "agentStop",
   "harness_tools": [
     {
@@ -364,11 +364,11 @@
   "models": {
     "gpt-6-luna": {
       "output": 0,
-      "requests": 397
+      "requests": 400
     }
   },
   "prompt_head": null,
-  "recorded_at": "2026-11-24T04:06:48+00:00",
+  "recorded_at": "2026-11-24T04:07:07+00:00",
   "schema": "afs-cost/1",
   "session_id": "99fae551-8cd1-4a21-89f0-b7647ce7c69f",
   "shutdown_wait_s": "skipped: the coding agent writes session.shutdown after session hooks",
@@ -404,6 +404,5 @@
   ],
   "started_at": "2026-11-24T03:21:57.738Z",
   "surface": "coding-agent",
-  "trigger_id": "8b43e14f-f902-4fcb-a571-0ae37f7fd84a",
   "usage_source": "assistant.message (output only, partial)"
 }
