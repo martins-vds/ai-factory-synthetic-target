@@ -1,0 +1,21 @@
+role: afs-characterizer
+ticket: HM-04
+issue: martins-vds/ai-factory-synthetic-target#193
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/195
+tier_used: {A: 3, B: 0, C: 0}
+suite:
+  path: .migration/characterization/source/characterize.py
+  cases: 3
+  passing: 3
+  run_log: .migration/evidence/runs/HM-04.md
+predicted_vs_observed: {match: 3, differs: 0}
+ledger_updated:
+  - hold.place
+quirk_tickets: []
+review_only_requests: []
+spec:
+  files:
+    - .migration/spec/hold-management/hold.place.yaml
+  cases: 3
+  rules_proved: 1
+handoff: null

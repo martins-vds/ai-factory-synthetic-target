@@ -367,6 +367,75 @@ def exercise_hold_limit(base_url):
     }
 
 
+def send_setup_requests(base_url, requests):
+    for method, path, form, expected_status in requests:
+        response = get_response(method, path, form, base_url)
+        if response['status'] != expected_status:
+            raise AssertionError(
+                f'setup {method} {path} returned {response["status"]}, expected {expected_status}'
+            )
+
+
+def exercise_borrower_and_duplicate(base_url):
+    send_setup_requests(
+        base_url,
+        [
+            ('POST', '/loans/L1/return', None, 200),
+            ('POST', '/loans', {'member': 'cy', 'isbn': '9780134685991'}, 201),
+            ('POST', '/holds', {'member': 'ana', 'isbn': '9780134685991'}, 201),
+            ('POST', '/loans/L4/return', None, 200),
+            ('POST', '/loans', {'member': 'ana', 'isbn': '9780134685991'}, 201),
+        ],
+    )
+    return {
+        'POST /holds borrower and duplicate': observe(
+            'POST', '/holds', {'member': 'ana', 'isbn': '9780134685991'}, base_url
+        )
+    }
+
+
+def exercise_four_active_holds(base_url):
+    for isbn in (
+        '9780134685991',
+        '9781111111111',
+        '9782222222222',
+        '9783333333333',
+    ):
+        if isbn != '9780134685991':
+            send_setup_requests(base_url, [('POST', '/loans', {'member': 'cy', 'isbn': isbn}, 201)])
+        send_setup_requests(base_url, [('POST', '/holds', {'member': 'dee', 'isbn': isbn}, 201)])
+
+
+def exercise_duplicate_and_limit(base_url):
+    exercise_four_active_holds(base_url)
+    return {
+        'POST /holds duplicate and limit': observe(
+            'POST', '/holds', {'member': 'dee', 'isbn': '9780134685991'}, base_url
+        )
+    }
+
+
+def exercise_available_and_limit(base_url):
+    exercise_four_active_holds(base_url)
+    return {
+        'POST /holds available and limit': observe(
+            'POST', '/holds', {'member': 'dee', 'isbn': '9780596007126'}, base_url
+        )
+    }
+
+
+def assert_hold_precedence(observations):
+    expected = {
+        'POST /holds borrower and duplicate': (409, 'member has this book\n'),
+        'POST /holds duplicate and limit': (409, 'already on hold\n'),
+        'POST /holds available and limit': (409, 'book is available\n'),
+    }
+    for name, (status, body) in expected.items():
+        response = observations[name]['response']
+        if response['status'] != status or response['body'] != body:
+            raise AssertionError(f'{name} returned {response!r}, expected {(status, body)!r}')
+
+
 def assert_hold_predictions(edge_cases, listing, expired, limit):
     expected_statuses = {
         'POST /holds/missing-member': 400,
@@ -480,7 +549,27 @@ def main():
         type=Path,
         help='retain the isolated built source copy at this path for coverage reporting',
     )
+    parser.add_argument(
+        '--hold-precedence', action='store_true', help='characterize hold refusal precedence only'
+    )
     args = parser.parse_args()
+    if args.hold_precedence:
+        with tempfile.TemporaryDirectory() as workdir:
+            source_dir = Path(workdir) / 'legacy'
+            shutil.copytree(SOURCE, source_dir, ignore=shutil.ignore_patterns('target', '.git'))
+            observations = {}
+            for exercise in (
+                exercise_borrower_and_duplicate,
+                exercise_duplicate_and_limit,
+                exercise_available_and_limit,
+            ):
+                observations.update(run_source(source_dir, {}, exercise, port=get_port()))
+        assert_hold_precedence(observations)
+        write_or_compare('hold-precedence', observations, args.record)
+        action = 'recorded' if args.record else 'verified'
+        print(f'{action} {len(observations)} hold refusal precedence exchanges')
+        return
+
     verify_graph_coverage()
     with tempfile.TemporaryDirectory() as workdir:
         source_dir = Path(workdir) / 'legacy'

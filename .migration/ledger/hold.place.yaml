@@ -54,3 +54,8 @@ rules:
   - id: hold-placement-date
     rule: A newly placed hold records the current local date as placedOn.
     source: legacy/src/main/java/lib/HoldResource.java:55-57
+  - id: first-refusal-wins
+    rule: >-
+      When multiple placement refusals apply, the first matching check determines the response:
+      unavailable book, requester is the borrower, duplicate active hold, then active-hold limit.
+    source: legacy/src/main/java/lib/HoldResource.java:41-54
