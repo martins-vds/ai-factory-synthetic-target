@@ -1,0 +1,119 @@
+capability: hold.place
+title: Place a hold on a checked-out book
+background:
+  given:
+    clock: "2026-11-23"
+    requests:
+      - {method: POST, path: /loans, form: {member: ana, isbn: "9780134685991"}}
+      - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+cases:
+  - title: Missing or blank member and ISBN values are rejected
+    rule: required-fields
+    given: {clock: "2026-11-23"}
+    examples:
+      columns: [recording, exchange]
+      rows:
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/missing-member"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/missing-isbn"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/blank-fields"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A hold is refused when the book is available or the member has borrowed it
+    rule: on-loan
+    given: {clock: "2026-11-23"}
+    examples:
+      columns: [recording, exchange]
+      rows:
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/book-available"]
+        - [.migration/characterization/source/goldens/edge-cases.json, "POST /holds/borrower"]
+    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: A member cannot place a duplicate active hold for the same ISBN
+    rule: no-duplicate-active-hold
+    given:
+      requests:
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/duplicate"}}
+    then: {replay: {body: exact}}
+
+  - title: An eligible placement receives the next identifier and today's date
+    rule: [on-loan, hold-placement-date]
+    given:
+      clock: "2026-11-23"
+    when: {replay: {recording: .migration/characterization/source/goldens/http.json, exchange: "POST /holds"}}
+    then: {replay: {body: exact}}
+
+  - title: An eligible placement receives the next identifier and today's date
+    rule: [on-loan, hold-placement-date]
+    given: {clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "POST /holds first isbn"}}
+    then: {replay: {body: exact}}
+
+  - title: An eligible placement receives the next identifier and today's date
+    rule: [on-loan, hold-placement-date]
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "POST /holds second isbn"}}
+    then: {replay: {body: exact}}
+
+  - title: An eligible placement receives the next identifier and today's date
+    rule: [on-loan, hold-placement-date]
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/duplicate setup"}}
+    then: {replay: {body: exact}}
+
+  - title: An eligible placement receives the next identifier and today's date
+    rule: [on-loan, hold-placement-date]
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/second member"}}
+    then: {replay: {body: exact}}
+
+  - title: The recorded hold limit accepts a fourth active hold and refuses a fifth
+    rule: active-hold-limit
+    ruling: martins-vds/ai-factory-synthetic-target#170
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9782222222222"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9783333333333"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9784444444444"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9781111111111"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9782222222222"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-limit.json, exchange: "POST /holds with three active holds"}}
+    then: {replay: {body: exact}}
+
+  - title: The recorded hold limit accepts a fourth active hold and refuses a fifth
+    rule: active-hold-limit
+    ruling: martins-vds/ai-factory-synthetic-target#170
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9782222222222"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9783333333333"}}
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9784444444444"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9781111111111"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9782222222222"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9783333333333"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-limit.json, exchange: "POST /holds with four active holds"}}
+    then: {replay: {body: exact}}

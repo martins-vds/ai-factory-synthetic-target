@@ -1,0 +1,47 @@
+capability: hold.cancel
+title: Cancel a hold
+cases:
+  - title: Cancelling an unknown hold returns not found
+    rule: unknown-hold
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/unknown cancel"}}
+    then: {replay: {body: exact}}
+
+  - title: An already-cancelled hold cannot be cancelled again
+    rule: already-cancelled
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds/H2/cancel}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/already cancelled"}}
+    then: {replay: {body: exact}}
+
+  - title: An expired hold can still be cancelled and its details are returned
+    rule: [expired-hold-cancellable, cancellation-returns-hold]
+    given: {clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/cancel expired seed"}}
+    then: {replay: {body: exact}}
+
+  - title: A recently placed hold can be cancelled
+    rule: cancellation-returns-hold
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+    examples:
+      columns: [exchange]
+      rows:
+        - ["POST /holds/{id}/cancel"]
+    when: {replay: {recording: .migration/characterization/source/goldens/http.json, exchange: "{exchange}"}}
+    then: {replay: {body: exact}}
+
+  - title: Cancelling the seed hold twice returns the recorded conflict
+    rule: already-cancelled
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /holds/H1/cancel}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/cancel expired seed again"}}
+    then: {replay: {body: exact}}

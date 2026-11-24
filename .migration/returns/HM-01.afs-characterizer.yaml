@@ -1,0 +1,34 @@
+role: afs-characterizer
+ticket: HM-01
+issue: martins-vds/ai-factory-synthetic-target#178
+pr: martins-vds/ai-factory-synthetic-target#179
+tier_used: {A: 6, B: 0, C: 0}
+suite:
+  path: .migration/characterization/source/characterize.py
+  cases: 52
+  passing: 52
+  run_log: .migration/evidence/runs/SY-08.md
+predicted_vs_observed: {match: 6, differs: 0}
+ledger_updated:
+  - hold.place
+  - hold.list-active
+  - hold.cancel
+  - hold.repository
+  - hold.storage
+  - data.hold-seed-record
+quirk_tickets:
+  - martins-vds/ai-factory-synthetic-target#170
+review_only_requests: []
+spec:
+  # Starting state uses public setup requests; the historical expiry hold is placed with its own clock.
+  files:
+    - .migration/spec/hold-management/hold.place.yaml
+    - .migration/spec/hold-management/hold.list-active.yaml
+    - .migration/spec/hold-management/hold.cancel.yaml
+    - .migration/spec/hold-management/hold.repository.yaml
+    - .migration/spec/hold-management/hold.storage.yaml
+    - .migration/spec/hold-management/data.hold-seed-record.yaml
+  cases: 36
+  rules_proved: 21
+  gate_result: "AFS-RESULT gate=spec cases=20 failed=0 pending=36 pending_caps=data.hold-seed-record,hold.cancel,hold.list-active,hold.place,hold.repository,hold.storage"
+handoff: null

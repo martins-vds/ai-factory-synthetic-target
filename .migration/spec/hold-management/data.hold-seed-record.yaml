@@ -1,0 +1,17 @@
+capability: data.hold-seed-record
+title: Seed one example hold
+cases:
+  - title: The seeded hold is H1 for bo and expires 30 days after its placement
+    rule: seeded-hold-values
+    given: {clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/edge-cases.json, exchange: "POST /holds/cancel expired seed"}}
+    then: {replay: {body: exact}}
+
+  - title: The seeded first sequence makes the next hold H2
+    rule: seeded-hold-values
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: ana, isbn: "9780134685991"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/http.json, exchange: "POST /holds"}}
+    then: {replay: {body: exact}}

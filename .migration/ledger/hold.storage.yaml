@@ -8,11 +8,22 @@ boundary: "HOLD stores id, sequence, member, ISBN, placement date, and nullable 
 slice: hold-management
 tickets: [martins-vds/ai-factory-synthetic-target#168]
 status: pending
-verification: differential
+verification: characterized
 characterization_tier: A
 evidence:
   - .migration/references/characterization-SY-08.md
   - .migration/evidence/runs/SY-08.md
+  - .migration/evidence/runs/HM-01.md
   - .migration/characterization/source/goldens/hold-listing.json
   - .migration/characterization/source/goldens/hold-expired.json
   - .migration/characterization/source/goldens/edge-cases.json
+rules:
+  - id: hold-details
+    rule: A listed hold shows its identifier, member, ISBN, placement date, and expiry date.
+    source: legacy/src/main/java/lib/Hold.java:11-44
+  - id: expiry-inclusive
+    rule: A hold expires 30 days after placement and remains active through that date.
+    source: legacy/src/main/java/lib/Hold.java:46-58
+  - id: cancellation-removes-active
+    rule: A cancelled hold is not returned as active.
+    source: legacy/src/main/java/lib/Hold.java:46-58
