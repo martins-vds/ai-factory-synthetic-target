@@ -2,9 +2,11 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import date
 from threading import Barrier, local
+from unittest.mock import patch
 
 import pytest
-from django.db import connections
+from django.db import DatabaseError, connections
+from django.db.backends.utils import CursorWrapper
 
 from src.holds.models import Hold
 from src.holds.repository import DjangoHoldRepository
@@ -52,6 +54,18 @@ class FixedClock:
 class LoanStateLookup:
     def active_loan_for_isbn(self, isbn):
         return type('LoanState', (), {'borrower': 'ana'})()
+
+
+def fail_after_write(statement):
+    execute = CursorWrapper.execute
+
+    def execute_then_fail(cursor, sql, params=None):
+        result = execute(cursor, sql, params)
+        if sql.lstrip().upper().startswith(statement):
+            raise DatabaseError('simulated failure after database write')
+        return result
+
+    return execute_then_fail
 
 
 @pytest.mark.django_db
@@ -115,6 +129,55 @@ def test_repository_cancellation_is_atomic():
     cancelled = DjangoHoldRepository().cancel('H2', date(2026, 11, 24))
 
     assert cancelled.cancelled_on == date(2026, 11, 24)
+
+
+@pytest.mark.django_db(transaction=True)
+def test_repository_placement_rolls_back_after_database_write_failure():
+    repository = DjangoHoldRepository()
+    identity = repository.next_identity()
+
+    with (
+        pytest.raises(DatabaseError, match='simulated failure'),
+        patch.object(
+            CursorWrapper,
+            'execute',
+            fail_after_write('INSERT'),
+        ),
+        repository.placement(),
+    ):  # afs: allow-mock inject a database write failure after PostgreSQL executes it
+        repository.create(
+            identity=identity,
+            member='dee',
+            isbn='123',
+            placed_on=date(2026, 11, 23),
+        )
+
+    assert not Hold.objects.filter(pk=identity.id).exists()
+    assert repository.next_identity() == identity
+
+
+@pytest.mark.django_db(transaction=True)
+def test_repository_cancellation_rolls_back_after_database_write_failure():
+    hold = Hold.objects.create(
+        id='H2',
+        sequence=2,
+        member='dee',
+        isbn='123',
+        placed_on=date(2026, 11, 23),
+    )
+
+    with (
+        pytest.raises(DatabaseError, match='simulated failure'),
+        patch.object(
+            CursorWrapper,
+            'execute',
+            fail_after_write('UPDATE'),
+        ),
+    ):  # afs: allow-mock inject a database write failure after PostgreSQL executes it
+        DjangoHoldRepository().cancel(hold.id, date(2026, 11, 24))
+
+    hold.refresh_from_db()
+    assert hold.cancelled_on is None
 
 
 @pytest.mark.django_db(transaction=True)

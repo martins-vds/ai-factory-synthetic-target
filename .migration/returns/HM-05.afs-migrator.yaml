@@ -1,0 +1,40 @@
+role: afs-migrator
+ticket: HM-05
+issue: martins-vds/ai-factory-synthetic-target#194
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/196
+gates:
+  build: 0
+  behavior: 0
+  spec: 0
+  idiom: 0
+  layering: 0
+  crap: 0
+  mutation_changed: "n/a: no mutable code changed"
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/HM-05.md
+ledger_updated:
+  - .migration/ledger/hold.repository.yaml
+quirk_tickets: []
+new_tickets: []
+handoff: none
+rules:
+  - capability: hold.repository
+    rule: Active holds are read in sequence order and an optional ISBN limits the results.
+    use_case: HoldApplication.list_active
+    test: tests/holds/test_services.py::test_active_holds_are_ordered_filtered_and_include_the_expiry_date
+    enforced: true
+    ledger_rule: active-query-order-filter
+  - capability: hold.repository
+    rule: A new hold receives the identifier for one greater than the highest stored sequence.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: next-sequence-id
+  - capability: hold.repository
+    rule: Active holds written by prior operations are returned by later reads unless cancelled or expired.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: persisted-holds-readable
+notes: "No production repository change was needed: the existing atomic placement and cancellation transactions roll back after a PostgreSQL write executes and raises DatabaseError. The tests verify no placement row or sequence advance and no partial cancellation."
