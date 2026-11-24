@@ -88,6 +88,17 @@ tickets:
       - .migration/returns/HM-05.afs-migrator.yaml
     capabilities: [hold.repository]
     blocked_by: [HM-03]
+  - id: HM-06
+    title: Prove the first-refusal-wins rule at the hold placement use case
+    role: afs-migrator
+    specialty: null
+    files:
+      - tests/holds/test_services.py
+      - src/holds/services.py
+      - .migration/ledger/hold.place.yaml
+      - .migration/returns/HM-06.afs-migrator.yaml
+    capabilities: [hold.place]
+    blocked_by: [HM-04]
 cross_slice:
   - file: config/settings.py
     slices: [loan-catalog, monthly-report, hold-management]
