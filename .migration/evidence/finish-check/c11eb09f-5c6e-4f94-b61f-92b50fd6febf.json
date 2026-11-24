@@ -1,0 +1,35 @@
+[
+  {
+    "at": "2026-11-24T12:58:31Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 14194,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "HM-AUDIT",
+    "role": "afs-auditor",
+    "changed": [
+      ".migration/evidence/acceptance-runs/45394010303-1.json",
+      ".migration/evidence/hold-management/report.md",
+      ".migration/evidence/runs/HM-AUDIT.md",
+      ".migration/returns/HM-AUDIT.afs-auditor.yaml"
+    ],
+    "snapshot_tests": "ok",
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [],
+    "blocks_before": 0,
+    "decision": "allow",
+    "why": "clean"
+  }
+]
