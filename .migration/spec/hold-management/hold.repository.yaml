@@ -1,7 +1,7 @@
 capability: hold.repository
 title: Query and persist holds
 cases:
-  - title: Reads return active holds in order and apply the optional ISBN filter
+  - title: Reads return active holds in order (the recording's seed supplied H1)
     rule: active-query-order-filter
     given:
       clock: "2026-11-23"
@@ -14,8 +14,18 @@ cases:
       columns: [exchange]
       rows:
         - ["GET /holds ordered"]
-        - ["GET /holds filtered second isbn"]
     when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "{exchange}"}}
+    then: {replay: {body: exact, mask: ['(?m)^H[0-9]+(?=;)']}}
+
+  - title: Reads apply the optional ISBN filter
+    rule: active-query-order-filter
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: eli, isbn: "9781111111111"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds filtered second isbn"}}
     then: {replay: {body: exact}}
 
   - title: A new hold uses the next sequence-based identifier

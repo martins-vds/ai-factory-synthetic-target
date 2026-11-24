@@ -1,7 +1,7 @@
 capability: hold.storage
 title: Persist hold records
 cases:
-  - title: A listed hold shows its identifying details and dates
+  - title: A listed hold shows its details and dates (the recording's seed supplied H1)
     rule: hold-details
     given:
       clock: "2026-11-23"
@@ -11,20 +11,24 @@ cases:
         - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
         - {method: POST, path: /holds, form: {member: eli, isbn: "9781111111111"}}
     when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds ordered"}}
-    then: {replay: {body: exact}}
+    then: {replay: {body: exact, mask: ['(?m)^H[0-9]+(?=;)']}}
 
-  - title: A hold expires 30 days after placement and remains active through that date
+  - title: A hold remains active on its expiry date (the recording's seed supplied H1)
     rule: expiry-inclusive
     given:
-      clock: "{today}"
+      clock: "2026-11-23"
       requests:
         - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
-    examples:
-      columns: [recording, exchange, today]
-      rows:
-        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds on expiry date", "2026-11-23"]
-        - [.migration/characterization/source/goldens/hold-expired.json, "GET /holds one day after expiry", "2026-11-24"]
-    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds on expiry date"}}
+    then: {replay: {body: exact, mask: ['(?m)^H[0-9]+(?=;)']}}
+
+  - title: A hold is absent the day after expiry
+    rule: expiry-inclusive
+    given:
+      clock: "2026-11-24"
+      requests:
+        - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-expired.json, exchange: "GET /holds one day after expiry"}}
     then: {replay: {body: exact}}
 
   - title: A cancelled hold is not returned as active

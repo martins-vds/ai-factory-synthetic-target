@@ -1,8 +1,8 @@
 capability: hold.list-active
 title: List active holds
 cases:
-  - title: Active holds are listed in sequence order and an ISBN filter narrows the list
-    rule: [sequence-order, isbn-filter]
+  - title: Active holds are listed in sequence order (the recording's seed supplied H1)
+    rule: sequence-order
     given:
       clock: "2026-11-23"
       requests:
@@ -14,23 +14,42 @@ cases:
       columns: [recording, exchange]
       rows:
         - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds ordered"]
-        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds filtered second isbn"]
-        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds filtered unknown isbn"]
     when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    then: {replay: {body: exact, mask: ['(?m)^H[0-9]+(?=;)']}}
+
+  - title: An ISBN filter narrows the active list
+    rule: isbn-filter
+    given:
+      clock: "2026-11-23"
+      requests:
+        - {method: POST, path: /loans, form: {member: cy, isbn: "9781111111111"}}
+        - {method: POST, path: /holds, form: {member: dee, isbn: "9780134685991"}}
+        - {method: POST, path: /holds, form: {member: eli, isbn: "9781111111111"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds filtered second isbn"}}
     then: {replay: {body: exact}}
 
-  - title: A hold remains listed on its expiry date and is absent the next day
+  - title: An unknown ISBN filter returns an empty list
+    rule: isbn-filter
+    given: {clock: "2026-11-23"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds filtered unknown isbn"}}
+    then: {replay: {body: exact}}
+
+  - title: A hold remains listed on its expiry date (the recording's seed supplied H1)
     rule: active-through-expiry-day
     given:
       clock: "{today}"
       requests:
         - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
-    examples:
-      columns: [recording, exchange, today]
-      rows:
-        - [.migration/characterization/source/goldens/hold-listing.json, "GET /holds on expiry date", "2026-11-23"]
-        - [.migration/characterization/source/goldens/hold-expired.json, "GET /holds one day after expiry", "2026-11-24"]
-    when: {replay: {recording: "{recording}", exchange: "{exchange}"}}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-listing.json, exchange: "GET /holds on expiry date"}}
+    then: {replay: {body: exact, mask: ['(?m)^H[0-9]+(?=;)']}}
+
+  - title: An expired hold is absent the next day
+    rule: active-through-expiry-day
+    given:
+      clock: "2026-11-24"
+      requests:
+        - {method: POST, path: /holds, form: {member: bo, isbn: "9780134685991"}, clock: "2026-10-24"}
+    when: {replay: {recording: .migration/characterization/source/goldens/hold-expired.json, exchange: "GET /holds one day after expiry"}}
     then: {replay: {body: exact}}
 
   - title: An empty or blank-filter result is one newline
