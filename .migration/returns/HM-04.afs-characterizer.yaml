@@ -18,4 +18,4 @@ spec:
     - .migration/spec/hold-management/hold.place.yaml
   cases: 3
   rules_proved: 1
-handoff: .migration/handoffs/HM-04.md
+handoff: null
