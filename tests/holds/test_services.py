@@ -121,6 +121,38 @@ def test_placement_rejects_a_duplicate_active_hold():
     assert result == HoldFailure(HoldFailureCode.DUPLICATE)
 
 
+@pytest.mark.parametrize(
+    ('holds', 'borrowers', 'expected'),
+    [
+        pytest.param(
+            [FakeHold(f'H{i}', i, 'dee', str(i), date(2026, 11, 1)) for i in range(1, 5)],
+            {},
+            HoldFailureCode.BOOK_AVAILABLE,
+            id='available-book-precedes-limit',
+        ),
+        pytest.param(
+            [FakeHold('H1', 1, 'dee', '123', date(2026, 11, 1))],
+            {'123': 'dee'},
+            HoldFailureCode.BORROWER,
+            id='borrower-precedes-duplicate',
+        ),
+        pytest.param(
+            [
+                FakeHold(f'H{i}', i, 'dee', isbn, date(2026, 11, 1))
+                for i, isbn in enumerate(('123', '2', '3', '4'), start=1)
+            ],
+            {'123': 'ana'},
+            HoldFailureCode.DUPLICATE,
+            id='duplicate-precedes-limit',
+        ),
+    ],
+)
+def test_first_refusal_wins_for_combined_placement_refusals(holds, borrowers, expected):
+    result = application(holds, borrowers).place('dee', '123')
+
+    assert result == HoldFailure(expected)
+
+
 def test_fourth_active_hold_is_allowed_but_fifth_is_refused():
     holds = [FakeHold(f'H{i}', i, 'dee', str(i), date(2026, 11, 1)) for i in range(1, 4)]
     app = application(holds, {str(i): 'ana' for i in range(1, 6)})

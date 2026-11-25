@@ -1,0 +1,57 @@
+role: afs-migrator
+ticket: HM-06
+issue: martins-vds/ai-factory-synthetic-target#199
+pr: https://github.com/martins-vds/ai-factory-synthetic-target/pull/200
+gates:
+  build: 0
+  behavior: 0
+  spec: 0
+  idiom: 0
+  layering: 0
+  crap: 0
+  mutation_changed: "n/a: no mutable code changed"
+  regression: 0
+evidence_logs:
+  - .migration/evidence/runs/HM-06.md
+ledger_updated:
+  - .migration/ledger/hold.place.yaml
+quirk_tickets: []
+new_tickets: []
+handoff: none
+rules:
+  - capability: hold.place
+    rule: Missing or whitespace-only member or ISBN returns HTTP 400.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_placement_rejects_missing_or_blank_values
+    enforced: true
+    ledger_rule: required-fields
+  - capability: hold.place
+    rule: A hold may be placed only when the ISBN has an open loan and the requesting member is not the borrower.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_placement_requires_an_open_loan_and_another_borrower
+    enforced: true
+    ledger_rule: on-loan
+  - capability: hold.place
+    rule: A member with an active hold for the ISBN is rejected with HTTP 409.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_placement_rejects_a_duplicate_active_hold
+    enforced: true
+    ledger_rule: no-duplicate-active-hold
+  - capability: hold.place
+    rule: The source rejects placement only when the member already has more than three active holds; with three it accepts a fourth.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: active-hold-limit
+  - capability: hold.place
+    rule: A newly placed hold records the current local date as placedOn.
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_fourth_active_hold_is_allowed_but_fifth_is_refused
+    enforced: true
+    ledger_rule: hold-placement-date
+  - capability: hold.place
+    rule: "When multiple placement refusals apply, the first matching check determines the response: unavailable book, requester is the borrower, duplicate active hold, then active-hold limit."
+    use_case: HoldApplication.place
+    test: tests/holds/test_services.py::test_first_refusal_wins_for_combined_placement_refusals
+    enforced: true
+    ledger_rule: first-refusal-wins
