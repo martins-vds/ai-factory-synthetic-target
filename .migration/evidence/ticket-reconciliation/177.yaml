@@ -1,0 +1,55 @@
+epic: 177
+scope: slice-epic-descendants
+generated_by: reconcile_epic.py (ADR-0049)
+issues:
+- number: 178
+  disposition: completed
+  pull_requests:
+  - 179
+  returns:
+  - .migration/returns/HM-01.afs-characterizer.yaml
+- number: 182
+  disposition: completed
+  pull_requests:
+  - 183
+  returns:
+  - .migration/returns/HM-02.afs-planner.yaml
+- number: 186
+  disposition: completed
+  pull_requests:
+  - 187
+  returns:
+  - .migration/returns/HM-03.afs-migrator.yaml
+- number: 189
+  disposition: superseded
+  replacement: 201
+  failure:
+    pull_request: 190
+    return: .migration/returns/HM-AUDIT.afs-auditor.yaml
+  note: 'HM-AUDIT returned gaps-remain (landed as evidence in #190); HM-04, HM-05,
+    HM-06 and harness #262/#263 closed the gaps; HM-REAUDIT (#201, PR #202) returned
+    complete.'
+- number: 193
+  disposition: completed
+  pull_requests:
+  - 195
+  returns:
+  - .migration/returns/HM-04.afs-characterizer.yaml
+- number: 194
+  disposition: completed
+  pull_requests:
+  - 196
+  returns:
+  - .migration/returns/HM-05.afs-migrator.yaml
+- number: 199
+  disposition: completed
+  pull_requests:
+  - 200
+  returns:
+  - .migration/returns/HM-06.afs-migrator.yaml
+- number: 201
+  disposition: completed
+  pull_requests:
+  - 202
+  returns:
+  - .migration/returns/HM-REAUDIT.afs-auditor.yaml
