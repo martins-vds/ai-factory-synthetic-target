@@ -1,0 +1,10 @@
+role: afs-auditor
+ticket: HM-REAUDIT
+issue: martins-vds/ai-factory-synthetic-target#201
+scope: hold-management
+report: .migration/evidence/hold-management/report.md
+capabilities_checked: 6
+gaps: []
+graph_inconsistencies: []
+verdict: complete
+acceptance_run: .migration/evidence/acceptance-runs/45521850054-1.json
