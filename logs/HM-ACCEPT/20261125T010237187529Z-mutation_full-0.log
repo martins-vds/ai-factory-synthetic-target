@@ -1,0 +1,34 @@
+AFS-TOOL afs-mutation exit=0
+afs-mutation: ok score=0.921 threshold=0.8 killed=406 survived=35 skipped=0 files=29 jobs=4 base=all
+AFS-RESULT gate=mutation score=0.921 threshold=0.8 killed=406 survived=35 files=29 base=all
+  tests: coverage; runner for src/core/database.py: /opt/hostedtoolcache/Python/3.13.18/x64/bin/python /home/runner/work/ai-factory-synthetic-target/ai-factory-synthetic-target/.migration/harness/tools/afs-mutation --pytest -q -x -p no:cacheprovider --no-cov
+  survived: src/holds/services.py:31 Mutant #1
+  survived: src/holds/services.py:38 Mutant #3
+  survived: src/holds/services.py:39 Mutant #5
+  survived: src/holds/services.py:40 Mutant #7
+  survived: src/holds/services.py:41 Mutant #9
+  survived: src/holds/services.py:42 Mutant #11
+  survived: src/holds/services.py:43 Mutant #13
+  survived: src/holds/services.py:44 Mutant #15
+  survived: src/holds/services.py:47 Mutant #17
+  survived: src/loans/repository.py:23 Mutant #52
+  survived: src/loans/views.py:12 Mutant #1
+  survived: src/loans/views.py:12 Mutant #2
+  survived: src/holds/views.py:27 Mutant #107
+  survived: src/holds/views.py:28 Mutant #108
+  survived: src/holds/views.py:32 Mutant #110
+  survived: src/holds/views.py:33 Mutant #112
+  survived: src/holds/views.py:45 Mutant #118
+  survived: src/reports/management/commands/monthly_report.py:11 Mutant #119
+  survived: src/reports/management/commands/monthly_report.py:11 Mutant #120
+  survived: src/loans/services.py:36 Mutant #1
+  survived: src/holds/repository.py:10 Mutant #15
+  survived: src/holds/repository.py:40 Mutant #34
+  survived: src/fees/services.py:24 Mutant #39
+  survived: src/fees/services.py:31 Mutant #41
+  survived: src/holds/models.py:7 Mutant #62
+  survived: src/holds/models.py:8 Mutant #65
+  survived: src/holds/models.py:9 Mutant #67
+  survived: src/holds/models.py:10 Mutant #69
+  survived: src/holds/models.py:12 Mutant #72
+  survived: src/holds/models.py:12 Mutant #73

@@ -1,0 +1,1176 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "analyze",
+    "languages": [
+      "html",
+      "python"
+    ],
+    "frameworks": [
+      "Django"
+    ],
+    "description": "Library management app: lending, holds, late fees and payments, monthly reporting, library information.",
+    "analyzedAt": "2026-11-25T00:59:14.851Z",
+    "gitCommitHash": "9179fc5ced6a543ca557d877f389c1f3e8c987fe",
+    "analyzedCommit": "7424b4640ca12db1c1ab17744700b509b901d48f"
+  },
+  "nodes": [
+    {
+      "id": "domain:lending",
+      "type": "domain",
+      "name": "Lending & Loans",
+      "summary": "Lets staff lend books to members, record returns and browse loans via JSON/text API and HTMX UI pages.",
+      "tags": [
+        "loans",
+        "circulation"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Loan",
+          "LoanRecord",
+          "ActiveLoan"
+        ],
+        "businessRules": [
+          "A loan has a computed due date (Loan.due_on)",
+          "Returning an already-returned loan is reported, not repeated",
+          "Member and ISBN are validated on the lend form"
+        ],
+        "crossDomainInteractions": [
+          "Holds reads active loans; Fees and Reports read loan data"
+        ]
+      }
+    },
+    {
+      "id": "domain:holds",
+      "type": "domain",
+      "name": "Holds & Reservations",
+      "summary": "Lets members reserve books that are currently on loan, enforcing eligibility rules, and cancel holds.",
+      "tags": [
+        "holds",
+        "reservations"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entities": [
+          "Hold",
+          "HoldRecord",
+          "HoldFailureCode"
+        ],
+        "businessRules": [
+          "Member and ISBN are required",
+          "Hold only allowed if the book is on loan to someone else",
+          "No duplicate active hold per member/ISBN",
+          "Member hold limit enforced (more than 3 active rejected)",
+          "Holds expire (expires_on)"
+        ],
+        "crossDomainInteractions": [
+          "Uses Lending active-loan lookup"
+        ]
+      }
+    },
+    {
+      "id": "domain:fees",
+      "type": "domain",
+      "name": "Late Fees & Payments",
+      "summary": "Calculates late fees for loans and collects payment through an external payment gateway.",
+      "tags": [
+        "fees",
+        "payments"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entities": [
+          "Fee",
+          "GatewayResponse",
+          "PaymentGateway"
+        ],
+        "businessRules": [
+          "No fee for 2 or fewer days late",
+          "25 cents per late day, capped at 1000 cents",
+          "Gateway failure maps to HTTP 502"
+        ],
+        "crossDomainInteractions": [
+          "Reads loans from Lending; calls external payment gateway"
+        ]
+      }
+    },
+    {
+      "id": "domain:reporting",
+      "type": "domain",
+      "name": "Monthly Reporting",
+      "summary": "Produces the previous month's per-member lending report as CSV with loans, late returns and late fees.",
+      "tags": [
+        "reports",
+        "csv"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "MemberMonthlyReport"
+        ],
+        "businessRules": [
+          "Report covers the previous calendar month",
+          "Sorted by late fees descending then member id"
+        ],
+        "crossDomainInteractions": [
+          "Uses Fees for late fee amounts and Lending data for loans"
+        ]
+      }
+    },
+    {
+      "id": "domain:library-information",
+      "type": "domain",
+      "name": "Library Information",
+      "summary": "Serves static visitor information such as opening hours, loan period and contact email.",
+      "tags": [
+        "info",
+        "static"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entities": [
+          "About page"
+        ],
+        "businessRules": [],
+        "crossDomainInteractions": []
+      }
+    },
+    {
+      "id": "flow:lend-book",
+      "type": "flow",
+      "name": "Lend a Book",
+      "summary": "Validate member and ISBN and create a new loan dated today.",
+      "tags": [
+        "lend"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "POST /loans, /ui/loans/new/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:lend-book:validate-input",
+      "type": "step",
+      "name": "Validate member and ISBN",
+      "summary": "LoanForm cleans member id and ISBN fields.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/forms.py",
+      "lineRange": [
+        6,
+        24
+      ]
+    },
+    {
+      "id": "step:lend-book:generate-id",
+      "type": "step",
+      "name": "Generate loan id",
+      "summary": "Repository supplies the next loan identifier.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        6,
+        31
+      ]
+    },
+    {
+      "id": "step:lend-book:create-loan",
+      "type": "step",
+      "name": "Create loan with today's date",
+      "summary": "LoanApplication.lend persists the loan using the clock's date.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        46,
+        52
+      ]
+    },
+    {
+      "id": "step:lend-book:confirm",
+      "type": "step",
+      "name": "Confirm creation",
+      "summary": "View returns the loan line or the loan-created partial.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        27,
+        52
+      ]
+    },
+    {
+      "id": "flow:return-book",
+      "type": "flow",
+      "name": "Return a Book",
+      "summary": "Mark a loan as returned and report whether it was already returned.",
+      "tags": [
+        "return"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /loans/<id>/return, /ui/loans/<id>/return/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:return-book:find-loan",
+      "type": "step",
+      "name": "Look up loan by id",
+      "summary": "Repository locates the loan record.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/repository.py",
+      "lineRange": [
+        6,
+        31
+      ]
+    },
+    {
+      "id": "step:return-book:mark-returned",
+      "type": "step",
+      "name": "Mark returned today",
+      "summary": "LoanApplication.return_loan stamps the return date.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        54,
+        55
+      ]
+    },
+    {
+      "id": "step:return-book:report-status",
+      "type": "step",
+      "name": "Report outcome",
+      "summary": "View renders returned or already-returned status.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        63,
+        91
+      ]
+    },
+    {
+      "id": "flow:browse-loans",
+      "type": "flow",
+      "name": "Browse Loans",
+      "summary": "List all loans or view one loan's details.",
+      "tags": [
+        "list",
+        "detail"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /loans, /ui/loans/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:browse-loans:fetch-loans",
+      "type": "step",
+      "name": "Fetch loans",
+      "summary": "Repository returns all loans or one by id.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        57,
+        62
+      ]
+    },
+    {
+      "id": "step:browse-loans:format-lines",
+      "type": "step",
+      "name": "Format loan lines",
+      "summary": "loan_line serialises each loan to a text line.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/services.py",
+      "lineRange": [
+        69,
+        82
+      ]
+    },
+    {
+      "id": "step:browse-loans:render-page",
+      "type": "step",
+      "name": "Render list or detail",
+      "summary": "Views return text or render loan list/detail templates.",
+      "tags": [
+        "lending"
+      ],
+      "complexity": "simple",
+      "filePath": "src/loans/views.py",
+      "lineRange": [
+        11,
+        59
+      ]
+    },
+    {
+      "id": "flow:place-hold",
+      "type": "flow",
+      "name": "Place a Hold",
+      "summary": "Validate and create a hold on a loaned book.",
+      "tags": [
+        "hold"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "POST /holds",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:place-hold:check-required",
+      "type": "step",
+      "name": "Check required fields",
+      "summary": "Reject blank member or ISBN.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        105,
+        108
+      ]
+    },
+    {
+      "id": "step:place-hold:check-loan",
+      "type": "step",
+      "name": "Verify book is on loan",
+      "summary": "Reject if available or the member is the borrower.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        110,
+        116
+      ]
+    },
+    {
+      "id": "step:place-hold:check-duplicate",
+      "type": "step",
+      "name": "Check duplicate hold",
+      "summary": "Reject if member already has an active hold for ISBN.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        118,
+        121
+      ]
+    },
+    {
+      "id": "step:place-hold:check-limit",
+      "type": "step",
+      "name": "Check hold limit",
+      "summary": "Reject if member exceeds the active hold limit.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        123,
+        126
+      ]
+    },
+    {
+      "id": "step:place-hold:create-hold",
+      "type": "step",
+      "name": "Create hold",
+      "summary": "Persist hold in an atomic placement context with today's date.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        83,
+        103
+      ]
+    },
+    {
+      "id": "step:place-hold:map-response",
+      "type": "step",
+      "name": "Map result to HTTP",
+      "summary": "View converts failure codes to HTTP responses.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/views.py",
+      "lineRange": [
+        24,
+        37
+      ]
+    },
+    {
+      "id": "flow:list-holds",
+      "type": "flow",
+      "name": "List Active Holds",
+      "summary": "List unexpired, uncancelled holds optionally filtered by ISBN.",
+      "tags": [
+        "list"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /holds",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:list-holds:query-active",
+      "type": "step",
+      "name": "Query active holds",
+      "summary": "Repository filters by ISBN and today's date.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        128,
+        129
+      ]
+    },
+    {
+      "id": "step:list-holds:format-holds",
+      "type": "step",
+      "name": "Format hold lines",
+      "summary": "hold_line renders semicolon-delimited lines.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        131,
+        147
+      ]
+    },
+    {
+      "id": "flow:cancel-hold",
+      "type": "flow",
+      "name": "Cancel a Hold",
+      "summary": "Cancel an existing hold unless missing or already cancelled.",
+      "tags": [
+        "cancel"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "POST /holds/<id>/cancel",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:cancel-hold:find-hold",
+      "type": "step",
+      "name": "Find hold",
+      "summary": "Return NOT_FOUND if absent.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        135,
+        137
+      ]
+    },
+    {
+      "id": "step:cancel-hold:check-cancelled",
+      "type": "step",
+      "name": "Check already cancelled",
+      "summary": "Return ALREADY_CANCELLED if cancelled.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        138,
+        139
+      ]
+    },
+    {
+      "id": "step:cancel-hold:cancel",
+      "type": "step",
+      "name": "Cancel hold",
+      "summary": "Set cancelled date to today.",
+      "tags": [
+        "holds"
+      ],
+      "complexity": "simple",
+      "filePath": "src/holds/services.py",
+      "lineRange": [
+        140,
+        140
+      ]
+    },
+    {
+      "id": "flow:calculate-fee",
+      "type": "flow",
+      "name": "Calculate Late Fee",
+      "summary": "Compute days late and fee amount for a loan.",
+      "tags": [
+        "fee"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "GET /fees/<id>, /ui/fees/<id>/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:calculate-fee:find-loan",
+      "type": "step",
+      "name": "Find loan",
+      "summary": "Look up the loan; missing yields not found.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        50,
+        52
+      ]
+    },
+    {
+      "id": "step:calculate-fee:compute-days",
+      "type": "step",
+      "name": "Compute days late",
+      "summary": "Compare return date (or today) with due date.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        54,
+        55
+      ]
+    },
+    {
+      "id": "step:calculate-fee:compute-amount",
+      "type": "step",
+      "name": "Compute amount",
+      "summary": "Grace period then per-day rate with cap.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        56,
+        57
+      ]
+    },
+    {
+      "id": "step:calculate-fee:display",
+      "type": "step",
+      "name": "Format and display fee",
+      "summary": "Format amount and render fee response or page.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/view_helpers.py",
+      "lineRange": [
+        7,
+        8
+      ]
+    },
+    {
+      "id": "flow:pay-fee",
+      "type": "flow",
+      "name": "Pay Late Fee",
+      "summary": "Charge a loan's late fee via the external payment gateway.",
+      "tags": [
+        "payment"
+      ],
+      "complexity": "complex",
+      "domainMeta": {
+        "entryPoint": "POST /payments/<id>, /ui/payments/<id>/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:pay-fee:verify-loan",
+      "type": "step",
+      "name": "Verify loan exists",
+      "summary": "Return not found for unknown loan.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/services.py",
+      "lineRange": [
+        60,
+        61
+      ]
+    },
+    {
+      "id": "step:pay-fee:charge-gateway",
+      "type": "step",
+      "name": "Charge payment gateway",
+      "summary": "POST the charge to PAYMENT_GATEWAY_URL without following redirects.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/gateway.py",
+      "lineRange": [
+        19,
+        35
+      ]
+    },
+    {
+      "id": "step:pay-fee:translate-result",
+      "type": "step",
+      "name": "Translate gateway outcome",
+      "summary": "Map gateway status or failure to 200/502/404.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/view_helpers.py",
+      "lineRange": [
+        11,
+        18
+      ]
+    },
+    {
+      "id": "step:pay-fee:show-status",
+      "type": "step",
+      "name": "Show payment status",
+      "summary": "Render payment status partial.",
+      "tags": [
+        "fees"
+      ],
+      "complexity": "simple",
+      "filePath": "src/fees/views.py",
+      "lineRange": [
+        47,
+        72
+      ]
+    },
+    {
+      "id": "flow:monthly-report",
+      "type": "flow",
+      "name": "Generate Monthly Report",
+      "summary": "Print the previous month's per-member lending report as CSV.",
+      "tags": [
+        "report",
+        "cli"
+      ],
+      "complexity": "moderate",
+      "domainMeta": {
+        "entryPoint": "manage.py monthly_report",
+        "entryType": "cli"
+      }
+    },
+    {
+      "id": "step:monthly-report:determine-period",
+      "type": "step",
+      "name": "Determine previous month",
+      "summary": "Derive start and end dates from today.",
+      "tags": [
+        "reporting"
+      ],
+      "complexity": "simple",
+      "filePath": "src/reports/services.py",
+      "lineRange": [
+        47,
+        50
+      ]
+    },
+    {
+      "id": "step:monthly-report:fetch-loans",
+      "type": "step",
+      "name": "Fetch loans started in period",
+      "summary": "Repository queries loans in date range.",
+      "tags": [
+        "reporting"
+      ],
+      "complexity": "simple",
+      "filePath": "src/reports/repository.py",
+      "lineRange": [
+        6,
+        8
+      ]
+    },
+    {
+      "id": "step:monthly-report:aggregate",
+      "type": "step",
+      "name": "Aggregate per member",
+      "summary": "Count loans, late returns and sum late fees.",
+      "tags": [
+        "reporting"
+      ],
+      "complexity": "simple",
+      "filePath": "src/reports/services.py",
+      "lineRange": [
+        52,
+        60
+      ]
+    },
+    {
+      "id": "step:monthly-report:sort",
+      "type": "step",
+      "name": "Sort members",
+      "summary": "Order by late fees descending then member id.",
+      "tags": [
+        "reporting"
+      ],
+      "complexity": "simple",
+      "filePath": "src/reports/services.py",
+      "lineRange": [
+        62,
+        73
+      ]
+    },
+    {
+      "id": "step:monthly-report:write-csv",
+      "type": "step",
+      "name": "Write CSV",
+      "summary": "Command writes rows to stdout.",
+      "tags": [
+        "reporting"
+      ],
+      "complexity": "simple",
+      "filePath": "src/reports/management/commands/monthly_report.py",
+      "lineRange": [
+        10,
+        27
+      ]
+    },
+    {
+      "id": "flow:view-about",
+      "type": "flow",
+      "name": "View About Information",
+      "summary": "Show opening hours, loan period and contact email.",
+      "tags": [
+        "about"
+      ],
+      "complexity": "simple",
+      "domainMeta": {
+        "entryPoint": "GET /about, /ui/about/",
+        "entryType": "http"
+      }
+    },
+    {
+      "id": "step:view-about:route",
+      "type": "step",
+      "name": "Route request",
+      "summary": "URLs map legacy and UI about paths.",
+      "tags": [
+        "library-information"
+      ],
+      "complexity": "simple",
+      "filePath": "src/library_info/urls.py"
+    },
+    {
+      "id": "step:view-about:render",
+      "type": "step",
+      "name": "Render about page",
+      "summary": "Views render legacy or styled template.",
+      "tags": [
+        "library-information"
+      ],
+      "complexity": "simple",
+      "filePath": "src/library_info/views.py",
+      "lineRange": [
+        8,
+        17
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "domain:lending",
+      "target": "flow:lend-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:validate-input",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:generate-id",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:create-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:lend-book",
+      "target": "step:lend-book:confirm",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:lending",
+      "target": "flow:return-book",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:find-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:mark-returned",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:return-book",
+      "target": "step:return-book:report-status",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:lending",
+      "target": "flow:browse-loans",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:fetch-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:format-lines",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:browse-loans",
+      "target": "step:browse-loans:render-page",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:holds",
+      "target": "flow:place-hold",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:place-hold",
+      "target": "step:place-hold:check-required",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.17
+    },
+    {
+      "source": "flow:place-hold",
+      "target": "step:place-hold:check-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:place-hold",
+      "target": "step:place-hold:check-duplicate",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:place-hold",
+      "target": "step:place-hold:check-limit",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:place-hold",
+      "target": "step:place-hold:create-hold",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.83
+    },
+    {
+      "source": "flow:place-hold",
+      "target": "step:place-hold:map-response",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:holds",
+      "target": "flow:list-holds",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:list-holds",
+      "target": "step:list-holds:query-active",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:list-holds",
+      "target": "step:list-holds:format-holds",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:holds",
+      "target": "flow:cancel-hold",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:cancel-hold",
+      "target": "step:cancel-hold:find-hold",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.33
+    },
+    {
+      "source": "flow:cancel-hold",
+      "target": "step:cancel-hold:check-cancelled",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.67
+    },
+    {
+      "source": "flow:cancel-hold",
+      "target": "step:cancel-hold:cancel",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fees",
+      "target": "flow:calculate-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:calculate-fee",
+      "target": "step:calculate-fee:find-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:calculate-fee",
+      "target": "step:calculate-fee:compute-days",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:calculate-fee",
+      "target": "step:calculate-fee:compute-amount",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:calculate-fee",
+      "target": "step:calculate-fee:display",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:fees",
+      "target": "flow:pay-fee",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:pay-fee",
+      "target": "step:pay-fee:verify-loan",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.25
+    },
+    {
+      "source": "flow:pay-fee",
+      "target": "step:pay-fee:charge-gateway",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:pay-fee",
+      "target": "step:pay-fee:translate-result",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.75
+    },
+    {
+      "source": "flow:pay-fee",
+      "target": "step:pay-fee:show-status",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:reporting",
+      "target": "flow:monthly-report",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:monthly-report",
+      "target": "step:monthly-report:determine-period",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.2
+    },
+    {
+      "source": "flow:monthly-report",
+      "target": "step:monthly-report:fetch-loans",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.4
+    },
+    {
+      "source": "flow:monthly-report",
+      "target": "step:monthly-report:aggregate",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "flow:monthly-report",
+      "target": "step:monthly-report:sort",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "flow:monthly-report",
+      "target": "step:monthly-report:write-csv",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:library-information",
+      "target": "flow:view-about",
+      "type": "contains_flow",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "flow:view-about",
+      "target": "step:view-about:route",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "flow:view-about",
+      "target": "step:view-about:render",
+      "type": "flow_step",
+      "direction": "forward",
+      "weight": 1.0
+    },
+    {
+      "source": "domain:holds",
+      "target": "domain:lending",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Holds look up active loans to decide eligibility",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:fees",
+      "target": "domain:lending",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Fees compute from loan due and return dates",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:reporting",
+      "target": "domain:fees",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Reports sum late fees per member",
+      "weight": 0.6
+    },
+    {
+      "source": "domain:reporting",
+      "target": "domain:lending",
+      "type": "cross_domain",
+      "direction": "forward",
+      "description": "Reports aggregate loans started in the month",
+      "weight": 0.6
+    }
+  ],
+  "layers": [],
+  "tour": []
+}

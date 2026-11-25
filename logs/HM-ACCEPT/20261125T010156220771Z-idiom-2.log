@@ -1,0 +1,3 @@
+AFS-TOOL check_layers.py exit=0
+src/loans/views.py:7: known, not failing: web adapters and commands call use cases, not persistence (the layering of LL-02's ruling (#79), from the adapter side (harness ADR-0043, step 4.4)): imports `src.loans.models.Loan`, which `src.*.models` forbids. Still to fix: the loan list and detail pages query the ORM directly (Loan.objects, get_object_or_404) instead of the loan use case; a fix ticket moves them behind LoanApplication
+AFS-RESULT gate=layering contracts=3 violations=0 known=1
