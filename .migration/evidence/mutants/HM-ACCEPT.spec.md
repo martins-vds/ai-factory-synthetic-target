@@ -2740,4 +2740,3 @@ Written by `afs-mutation` on its last run (base `all`): score 0.510, threshold 0
   -    return render(request, 'library_info/about.html')
   +    return render(request, 'XXlibrary_info/about.htmlXX')
   ```
-
