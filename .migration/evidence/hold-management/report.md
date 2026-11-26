@@ -127,3 +127,7 @@ Compare the pinned legacy behavior against the target, using the same inputs and
 - Startup seed: compare the H1 record's ID, sequence, member, ISBN, placement date, and null cancellation date.
 
 The check is requested only. The human approver must record its outcome; this report does not grant sign-off.
+
+### Human side-by-side check: recorded
+
+The operator reported the requested legacy-versus-target comparison passed on 2026-11-26. Sign-off is the operator's approving review of this PR, with nothing more claimed.
