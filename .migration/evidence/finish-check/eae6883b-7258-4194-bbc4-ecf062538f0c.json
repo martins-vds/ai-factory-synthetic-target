@@ -1,0 +1,38 @@
+[
+  {
+    "at": "2026-11-26T21:08:33Z",
+    "python": "/opt/hostedtoolcache/Python/3.13.18/x64/bin/python3",
+    "payload_keys": [
+      "cwd",
+      "sessionId",
+      "stopReason",
+      "stop_hook_active",
+      "timestamp",
+      "transcriptPath"
+    ],
+    "prompt_chars": 12463,
+    "prompt_from": "transcript",
+    "scope_lines": [],
+    "enabled": true,
+    "ticket": "HM-ACCEPT",
+    "role": "afs-program-orchestrator",
+    "changed": [
+      ".migration/evidence/hold-management/report.md",
+      ".migration/evidence/runs/HM-SIGNOFF.md",
+      ".migration/evidence/ticket-reconciliation/177.yaml",
+      ".migration/returns/HM-ACCEPT.afs-program-orchestrator.yaml",
+      ".migration/returns/HM-SIGNOFF.afs-program-orchestrator.yaml"
+    ],
+    "snapshot_tests": "ok",
+    "test_health": {
+      "block": true,
+      "findings": []
+    },
+    "findings": [
+      "[mechanical] You changed another role's or ticket's return file: `.migration/returns/HM-SIGNOFF.afs-program-orchestrator.yaml`. A session writes only its own return (`.migration/returns/HM-ACCEPT.afs-program-orchestrator.yaml`). Restore each one exactly as it was on your base branch (`git checkout <base> -- <file>`) and commit."
+    ],
+    "blocks_before": 0,
+    "decision": "block",
+    "why": "block 1 of 2"
+  }
+]
