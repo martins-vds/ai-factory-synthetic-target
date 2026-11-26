@@ -53,3 +53,9 @@ issues:
   - 202
   returns:
   - .migration/returns/HM-REAUDIT.afs-auditor.yaml
+- number: 205
+  disposition: completed
+  pull_requests:
+  - 206
+  returns:
+  - .migration/returns/HM-ACCEPT.afs-program-orchestrator.yaml

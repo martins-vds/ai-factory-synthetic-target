@@ -59,3 +59,71 @@ The verified full run reports 35 survivors and a score above threshold. Hold sur
 ## G. Gaps and verdict
 
 The four prior HM-AUDIT gaps are closed by the evidence above. No missing, misplaced, broken-flow, integration, or untested capability gap was found; the accepted target graph has no inconsistency. **Verdict: `complete` for this audit.** The operator's side-by-side sign-off under ADR-0031 remains pending and is not granted by this report.
+
+## H. HM-ACCEPT slice acceptance update
+
+### Acceptance run and audits
+
+The verified AFS acceptance run [45521850054, attempt 1](https://github.com/martins-vds/ai-factory-synthetic-target/actions/runs/45521850054) passed on `main` commit `9179fc5ced6a543ca557d877f389c1f3e8c987fe`. It recorded 59 spec cases with 0 failures, passing source and target graphs, CRAP maximum 7.0, 0 layering violations, and full mutation score 0.921 (406 killed, 35 survived; threshold 0.8). No acceptance gates were rerun for this acceptance ticket.
+
+| Audit | Issue / PR | Result |
+|---|---|---|
+| HM-AUDIT | #189 / #190 | `gaps-remain`; superseded after HM-04, HM-05 and HM-06 addressed its findings. |
+| HM-REAUDIT | #201 / #202 | `complete`; six capabilities checked, no gaps or graph inconsistencies. |
+
+### Spec mutation report
+
+The required report run was `.migration/harness/tools/afs-run --ticket HM-ACCEPT --name spec-mutation -- python .migration/harness/tools/afs-mutation --all --spec`. It passed as a report command in 673.81 seconds and recorded **`spec_mutation_score: 0.510`** (225 killed, 216 survived, 0 skipped, 29 files, base `all`; threshold 0.8). This is a characterization report, not an acceptance gate, and does not replace the passing full-mutation gate score above. The raw run and its `AFS-RESULT` are in [.migration/evidence/runs/HM-ACCEPT.md](../runs/HM-ACCEPT.md); the tool-generated survivor diffs are in [.migration/evidence/mutants/HM-ACCEPT.spec.md](../mutants/HM-ACCEPT.spec.md).
+
+The all-spec run spans the project's customer cases, so survivors also occur outside hold management. The following maps every survivor ID to the changed behavior or property that its customer cases did not distinguish. Internal representation and storage-constraint survivors are noted as such; they are not claims of additional hold API failures.
+
+| Source | Survivor IDs | Behavior or property not pinned down by those cases |
+|---|---|---|
+| `src/holds/services.py` | #1, #17; #3, #5, #7, #9, #11, #13, #15; #33 | Hold value-object mutability; internal failure-code values; the exact whitespace-only member validation branch. |
+| `src/holds/views.py` | #104, #116 | Whether unsupported methods on the hold collection and cancellation endpoints are rejected by their method guards. |
+| `src/holds/repository.py` | #15, #16; #28; #34, #35 | Advisory-lock key / lock use under concurrent placement; first sequence value when storage is empty; atomicity of placement and cancellation writes. |
+| `src/holds/models.py` | #62, #67, #69; #65; #72, #73; #76 | Maximum lengths of hold ID, member, and ISBN; uniqueness of sequence; nullable/blank cancellation-date storage; model-default ordering (the endpoint repository applies its own ordering). |
+| `src/loans/repository.py` | #51, #52; #56, #57 | Transaction boundaries on loan writes; active-loan filtering and the lookup's returned status when a loan is absent or returned. |
+| `src/loans/services.py` | #1; #5; #6; #12; #14 | Loan value-object mutability; separator in multi-loan text; missing-loan lookup; CSV line ending; formatting of a missing return date. |
+| `src/loans/models.py` | #131, #134, #136; #139, #140; #143 | Loan ID/member/ISBN maximum lengths; null/blank handling for return date; model-default ordering. |
+| `src/loans/forms.py` | #93, #94, #95, #96; #104, #108 | Whether member and ISBN values are stripped or their fields exist; exact required-field validation message. |
+| `src/loans/urls.py` | #82, #83, #84, #85, #86 | The five loan detail/catalog/new/return route paths. |
+| `src/loans/views.py` | #1, #2; #3, #4, #5; #6, #8, #22, #23, #24, #54, #65; #11, #18, #21, #52, #53, #59, #63, #64, #70 | Loan list/detail templates and contexts; detail lookup; supported-method guards; text response media types. |
+| `src/loans/views.py` | #14, #15, #16, #17; #20; #25, #26, #27, #28, #29, #30, #31; #32, #33, #34, #35, #36, #37, #38; #39, #40, #41, #42, #43, #44, #45, #46, #47 | Lending validation/error rendering and status; form binding and policy execution; successful status; HTMX detection, partial templates, context fields, and redirect destinations. |
+| `src/loans/views.py` | #48, #49, #50, #51; #57, #58; #61, #62; #66, #67, #68, #69; #71, #72, #73, #74, #75, #76, #77, #78, #79, #80, #81, #82, #83 | Loan detail/return missing-ID and already-returned responses; return operation and status; HTMX return rendering, updated-state branch, failure template/context/status, and redirect. |
+| `src/reports/composition.py` | #80 | Whether the monthly-report application is composed and available to its command. |
+| `src/reports/services.py` | #1, #2, #3; #4, #5, #6, #7, #8, #9; #10, #11; #12, #13, #14, #15, #16, #17; #18, #19; #20, #21, #22; #23, #24, #25; #26, #27, #28; #29, #30; #31, #32; #33, #34 | Report value-object mutability/dataclass construction and default totals; injected loan/fee dependencies; monthly period boundaries and accumulator initialization; loan/late-return/fee aggregation, late-date boundary, and report sort order. |
+| `src/reports/management/commands/monthly_report.py` | #119, #120; #121; #122, #123, #124, #125; #126, #127, #128, #129; #130 | Command help text and report retrieval; CSV buffer/writer and line ending; each output header; final stdout newline behavior. |
+| `src/core/database.py` | #81, #82 | Database health-check query and returned result column. |
+| `src/fees/services.py` | #39, #41 | Mutability of fee/payment value objects. |
+| `src/fees/urls.py` | #150 | Payment-page route path. |
+| `src/fees/views.py` | #35, #42, #50, #56; #57, #58, #59, #60, #61, #62; #63, #64, #65, #66, #67; #68, #69, #70, #71, #72, #73, #74, #75, #76, #77 | Supported-method guards; payment gateway result and 404 response; payment status/context fields; HTMX selection, status/detail templates, and template context. |
+| `src/fees/gateway.py` | #78, #79; #85, #86, #88, #89; #91, #92 | Default gateway URL; response charset fallback/decoding; gateway-failure message. |
+| `src/library_info/urls.py` | #156, #157 | Legacy and UI about-page route paths. |
+| `src/library_info/views.py` | #109, #112; #110, #113; #111 | Supported-method guards; legacy/UI about templates; legacy response media type. |
+
+HM-REAUDIT observed that full pytest mutation survivors #108 (hold-list content type) and #118 (successful-cancellation content type) were not killed by the pytest-only run. Neither content-type change is a survivor in this spec-mutation report: the spec's recorded-media-type replays kill both. The surviving hold-view mutants here are method-guard removals (#104, #116), not media-type changes.
+
+### Ledger status
+
+Every `hold-management` ledger entry is evidenced as migrated; the existing ledger statuses were already correct and are retained.
+
+| Ledger entry | Status |
+|---|---|
+| `hold.place` | `migrated` |
+| `hold.list-active` | `migrated` |
+| `hold.cancel` | `migrated` |
+| `hold.repository` | `migrated` |
+| `hold.storage` | `migrated` |
+| `data.hold-seed-record` | `migrated` |
+
+### Human side-by-side check — requested
+
+Compare the pinned legacy behavior against the target, using the same inputs and recording status, response body/line, and relevant persisted state:
+
+- `GET /holds`: compare the complete active list and the result for `?isbn=<ISBN>`, including ordering, empty-result formatting, and response media type.
+- `POST /holds`: compare every refusal's exact message and status; compare a successful placement's complete line; verify that a fourth active hold is allowed and a fifth is refused.
+- `POST /holds/{id}/cancel`: compare successful and refusal responses, and verify that an expired but uncancelled hold can still be cancelled.
+- Startup seed: compare the H1 record's ID, sequence, member, ISBN, placement date, and null cancellation date.
+
+The check is requested only. The human approver must record its outcome; this report does not grant sign-off.

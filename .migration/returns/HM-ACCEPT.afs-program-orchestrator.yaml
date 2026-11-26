@@ -1,0 +1,25 @@
+role: afs-program-orchestrator
+ticket: HM-ACCEPT
+issue: martins-vds/ai-factory-synthetic-target#205
+phase: 6
+decisions:
+  - "martins-vds/ai-factory-synthetic-target#170: preserve the hold limit"
+dispatched: []
+awaiting_human:
+  - "martins-vds/ai-factory-synthetic-target#205: complete and record the requested side-by-side check"
+next_step: "The human approver compares legacy and target behavior as listed in the acceptance report; do not mark sign-off passed."
+acceptance:
+  slice: hold-management
+  tickets:
+    total: 6
+    merged: 6
+    open: 0
+    blocked: []
+  report: .migration/evidence/hold-management/report.md
+  gates: all-green
+  mutation_score: 0.921
+  coverage_gaps: 0
+  human_check: requested
+  human_check_issues: []
+  quirk_tickets:
+    - martins-vds/ai-factory-synthetic-target#170
